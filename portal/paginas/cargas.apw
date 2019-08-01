@@ -1,0 +1,22 @@
+#Include "Protheus.ch"
+#Include "Apwebex.ch"
+#Include "Topconn.ch"
+#Include "Tbiconn.ch"
+
+
+///*******************************
+//   Atialização dos dados dos usuários
+///*******************************
+Webuser function fxCargas()
+local xcHtml	:=	''
+	
+Prepare Environment EMPRESA '01' FILIAL '01' TABLES 'PAC' 
+
+
+U_fxColab()
+
+web EXTENDED init xcHtml
+xcHtml +=  RedirPage( "b_fxColab.apw" )
+web EXTENDED end
+
+return xcHtml

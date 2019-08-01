@@ -1,0 +1,1283 @@
+#Include "Protheus.ch"
+#Include "Apwebex.ch"
+#Include "Topconn.ch"
+#Include "Tbiconn.ch"
+
+
+
+///*******************************
+//   Tela dos Produtos
+///*******************************
+Webuser function fxTabProd()
+local xcHtml	:=	''
+local xcCodUser	:=	'' 
+local xcNomUser	:=	'' 
+
+
+PrepEnvPor()
+
+if type('HttpSession->xcCodUser') == 'C'
+	xcCodUser	:=	HttpSession->xcCodUser	
+	xcNomUser	:=	HttpSession->xcNomUser	
+elseif type('httpGet->xcPar') == 'C'
+	xcCodUser	:=	left(httpGet->xcPar,3)
+	xcNomUser	:=	alltrim(substring(httpGet->xcPar,3, 15))
+else
+	if empty(alltrim(xcCodUser))
+		if type('httpPost->xcCodUser03')=='C'
+			xcCodUser	:=	httpPost->xcCodUser03
+			xcNomUser	:=	httpPost->xcNomUser03
+		else
+			xcCodUser	:=	httpPost->xcCodUser01
+			xcNomUser	:=	httpPost->xcNomUser01
+		endif
+	endif
+endif
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('13-tabela_precos.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela dos Produtos
+///*******************************
+Webuser function fxCadProd()
+local xcHtml	:=	''
+local xcCodUser	:=	'' 
+local xcNomUser	:=	'' 
+
+
+PrepEnvPor()
+
+if type('HttpSession->xcCodUser') == 'C'
+	xcCodUser	:=	HttpSession->xcCodUser	
+	xcNomUser	:=	HttpSession->xcNomUser	
+elseif type('httpGet->xcPar') == 'C'
+	xcCodUser	:=	left(httpGet->xcPar,3)
+	xcNomUser	:=	alltrim(substring(httpGet->xcPar,3, 15))
+else
+	if empty(alltrim(xcCodUser))
+		if type('httpPost->xcCodUser03')=='C'
+			xcCodUser	:=	httpPost->xcCodUser03
+			xcNomUser	:=	httpPost->xcNomUser03
+		else
+			xcCodUser	:=	httpPost->xcCodUser01
+			xcNomUser	:=	httpPost->xcNomUser01
+		endif
+	endif
+endif
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('13-cadastro_produtos.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+
+///*******************************
+//   Tela Inicial da área de Mkt
+///*******************************
+Webuser function fxMkt()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('13-inicial_Mkt.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+///*******************************
+//   Tela de acesso para leitura
+//   dos xmls
+///*******************************
+Webuser function fxXml01() //Leitura do xml
+
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('12-xml_01.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+
+///*******************************
+//   Tela Inicial da área Fiscal
+///*******************************
+Webuser function fxFis()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('12-inicial_fiscal.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela Inicial da área Fiscal
+///*******************************
+Webuser function fxEstoque()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('14-inicial_Estoque.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela Inicial da área Fiscal
+///*******************************
+Webuser function fxEstInv()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('14-estoque_invent.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela de acesso para os custos
+//   Gráficos 
+///*******************************
+Webuser function fxAdmDiari()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('08-adm_posic_diaria.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+///*******************************
+//   Tela de acesso para os custos
+//   Gráficos 
+///*******************************
+Webuser function fxAdmLb()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('08-adm_LB.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela Inicial da área Administrativa
+///*******************************
+Webuser function fxComis()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+	xcCodUser	:=	httpPost->xcCodUser04
+	xcNomUser	:=	httpPost->xcNomUser04
+else
+	xcCodUser	:=	httpPost->xcCodUser02
+	xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('11-fin_comissoes.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+
+///*******************************
+//   Tela Inicial da área Administrativa
+///*******************************
+Webuser function fxFin()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('11-inicial_financeiro.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+
+
+///*******************************
+//   Tela dos pedidos em andamento nivel 04
+///*******************************
+Webuser function fxUsoCad()
+local xcHtml	:=	''
+local xcCodUser	:=	'' 
+local xcNomUser	:=	'' 
+
+
+PrepEnvPor()
+
+if type('HttpSession->xcCodUser') == 'C'
+	xcCodUser	:=	HttpSession->xcCodUser	
+	xcNomUser	:=	HttpSession->xcNomUser	
+elseif type('httpGet->xcPar') == 'C'
+	xcCodUser	:=	left(httpGet->xcPar,3)
+	xcNomUser	:=	alltrim(substring(httpGet->xcPar,3, 15))
+else
+	if empty(alltrim(xcCodUser))
+		if type('httpPost->xcCodUser03')=='C'
+			xcCodUser	:=	httpPost->xcCodUser03
+			xcNomUser	:=	httpPost->xcNomUser03
+		else
+			xcCodUser	:=	httpPost->xcCodUser01
+			xcNomUser	:=	httpPost->xcNomUser01
+		endif
+	endif
+endif
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('09-tic_usoCad.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+
+///*******************************
+//   Tela Inicial da área Administrativa
+///*******************************
+Webuser function fxUso()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('09-tic_uso.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+///*******************************
+//   Tela Inicial da área Administrativa
+///*******************************
+Webuser function fxTic()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('09-inicial_tic.html', xcCodUser, xcNomUser)
+
+web EXTENDED end 
+
+return xcHtml
+
+
+
+
+///*******************************
+//   Tela dos representantes MB
+///*******************************
+Webuser function fxCadRc()
+local xcHtml	:=	''
+local xcCodUser	:=	'' 
+local xcNomUser	:=	'' 
+
+
+PrepEnvPor()
+
+if type('HttpSession->xcCodUser') == 'C'
+	xcCodUser	:=	HttpSession->xcCodUser	
+	xcNomUser	:=	HttpSession->xcNomUser	
+elseif type('httpGet->xcPar') == 'C'
+	xcCodUser	:=	left(httpGet->xcPar,3)
+	xcNomUser	:=	alltrim(substring(httpGet->xcPar,3, 15))
+else
+	if empty(alltrim(xcCodUser))
+		if type('httpPost->xcCodUser03')=='C'
+			xcCodUser	:=	httpPost->xcCodUser03
+			xcNomUser	:=	httpPost->xcNomUser03
+		else
+			xcCodUser	:=	httpPost->xcCodUser01
+			xcNomUser	:=	httpPost->xcNomUser01
+		endif
+	endif
+endif
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('01-cadastro_representante.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+
+///*******************************
+//   Tela dos pedidos em andamento nivel 04
+///*******************************
+Webuser function fxInativ()
+local xcHtml	:=	''
+local xcCodUser	:=	'' 
+local xcNomUser	:=	'' 
+
+
+PrepEnvPor()
+
+if type('HttpSession->xcCodUser') == 'C'
+	xcCodUser	:=	HttpSession->xcCodUser	
+	xcNomUser	:=	HttpSession->xcNomUser	
+elseif type('httpGet->xcPar') == 'C'
+	xcCodUser	:=	left(httpGet->xcPar,3)
+	xcNomUser	:=	alltrim(substring(httpGet->xcPar,3, 15))
+else
+	if empty(alltrim(xcCodUser))
+		if type('httpPost->xcCodUser03')=='C'
+			xcCodUser	:=	httpPost->xcCodUser03
+			xcNomUser	:=	httpPost->xcNomUser03
+		else
+			xcCodUser	:=	httpPost->xcCodUser01
+			xcNomUser	:=	httpPost->xcNomUser01
+		endif
+	endif
+endif
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('01-clientesInativos.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela dos pedidos em andamento nivel 04
+///*******************************
+Webuser function fxPedCli()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('01-pedidosClientes.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+///*******************************
+//   Tela Inicial da área Geral
+///*******************************
+Webuser function fxGeral()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('05-inicial_geral.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+
+///*******************************
+//   Tela Inicial da área Administrativa
+///*******************************
+Webuser function fxChamados()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('05-chamados.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//  Tela de consulta peso e estoque PCP
+///*******************************
+Webuser function fxPcpEst()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('03-pcp_estoque.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+// Tela das OPs
+///*******************************
+Webuser function fxPcpOp()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if httpPost->xcPasUser=='02'
+	xcCodUser	:=	httpPost->xcCodUser02
+	xcNomUser	:=	httpPost->xcNomUser02
+elseif httpPost->xcPasUser == '03'
+	xcCodUser	:=	httpPost->xcCodUser03
+	xcNomUser	:=	httpPost->xcNomUser03
+elseif httpPost->xcPasUser == '04'
+	xcCodUser	:=	httpPost->xcCodUser04
+	xcNomUser	:=	httpPost->xcNomUser04
+endif
+
+
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('03-pcp_op.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+///*******************************
+//   Tela Inicial da área Administrativa
+///*******************************
+Webuser function fxPcp()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('03-inicial_pcp.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+
+
+///*******************************
+//   Tela de acesso para os custos
+//   Gráficos 
+///*******************************
+Webuser function fxFecham()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('08-adm_fechamento.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela de acesso para os custos
+//   Gráficos 
+///*******************************
+Webuser function fxCustos()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('08-adm_custos.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela Inicial da área Administrativa
+///*******************************
+Webuser function fxMargens()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('08-adm_margens.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela Inicial da área Administrativa
+///*******************************
+Webuser function fxAdm()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('08-inicial_Adm.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+
+///*******************************
+//   Tela Inicial de Login
+///*******************************
+Webuser function fxLogin()
+local xcHtml	:=	' '
+
+PrepEnvPor()
+
+web EXTENDED init xcHtml
+xcHtml := U_MontaPag('pgLogin.html','coduser','nomuser')
+web EXTENDED end
+
+
+return xcHtml
+
+
+
+
+
+
+///*******************************
+//   Tela Inicial de Acesso as módulos
+///*******************************
+Webuser function fxInicial()
+local xcHtml	:=	''
+local xcNomUser	:=	''
+local xcCodUser	:=	''
+local xcSenha	:=	alltrim(httpPost->xcSenha)
+
+
+if type('httpPost->xcCodUser02')=='C'
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+else
+xcNomUser	:=	httpPost->xcNomUser
+endif
+
+HttpPost->xcErro			:=	''
+HttpSession->cAut			:=	''
+HttpSession->xcCodUser		:=	''
+HttpSession->xcNomUser		:=	''
+
+
+PrepEnvPor()
+
+If empty(xcNomUser) .OR. Empty(xcSenha)
+httpPost->xcErro :=	"Usu&aacute;rio e/ou Senha Incorretos! Verifique."
+httpLeaveSession()
+EndIf
+
+if empty(alltrim(xcCodUser))
+PswOrder(2)
+If	PswSeek(xcNomUser)
+If	!PswName(xcSenha) .or. upper(alltrim(pswret()[1][2])) != upper(alltrim(xcNomUser))
+HttpPost->xcErro	:=	"Erro encontrado.  Efetue o processo de login novamente!"
+HttpSession->cAut	:=	'blq'
+HttpLeaveSession()
+Else
+HttpSession->cAut		:=	'lib'
+xcCodUser				:=	right(alltrim(pswret()[1][1]),3)
+HttpSession->xcCodUser	:=	xcCodUser
+HttpSession->xcNomUser	:=	xcNomUser
+
+EndIf
+Else
+HttpPost->xcErro :=	"Usuário não encontrado.  Digite Novamente!"
+HttpSession->cAut	:=	'blq'
+HttpLeaveSession()
+EndIf
+else
+HttpSession->cAut		:=	'lib'
+endif
+web EXTENDED init xcHtml
+
+if HttpSession->cAut == 'blq'
+xcHtml := RedirPage('b_fxLogin.apw')
+else
+xcHtml :=  U_MontaPag('telainicial.html', xcCodUser, xcNomUser)
+endif
+
+web EXTENDED end
+
+Return(xcHtml)
+
+
+
+
+///*******************************
+//   Tela dos itens do Comercial nivel 03
+///*******************************
+Webuser function fxComercial()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser03')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+elseif type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+web EXTENDED init xcHtml
+xcHtml := U_MontaPag('01-comercial.html', xcCodUser, xcNomUser)
+web EXTENDED end
+return xcHtml
+
+
+///*******************************
+//   Pedidos de vendas para representantes nivel 03
+///*******************************
+Webuser function fxRepres()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser03')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+web EXTENDED init xcHtml
+xcHtml := U_MontaPag('06-representantes.html', xcCodUser, xcNomUser)
+web EXTENDED end
+return xcHtml
+
+
+///*******************************
+//   Tela de acesso da Logistica nivel 03
+///*******************************
+Webuser function fxLogis()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser03')=='C'
+xcCodUser	:=	httpPost->xcCodUser03
+xcNomUser	:=	httpPost->xcNomUser03
+else
+xcCodUser	:=	httpPost->xcCodUser01
+xcNomUser	:=	httpPost->xcNomUser01
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+web EXTENDED init xcHtml
+xcHtml := U_MontaPag('04-logistica.html', xcCodUser, xcNomUser)
+web EXTENDED end
+return xcHtml
+
+///*******************************
+//   Tela do cadastro de rotas nivel 04
+///*******************************
+Webuser function fxRotas()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+xcHtml := U_MontaPag('04-cadRotas.html', xcCodUser, xcNomUser)
+web EXTENDED end
+return xcHtml
+
+///*******************************
+//   Tela do cadastro de rotas nivel 04
+///*******************************
+Webuser function fxRotPed()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+xcHtml := U_MontaPag('04-RotaPedidos.html', xcCodUser, xcNomUser)
+web EXTENDED end
+return xcHtml
+
+
+
+///*******************************
+//   Tela dos pedidos em andamento nivel 04
+///*******************************
+Webuser function fxPedFlwp()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('01-pedidosAlteracao.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+///*******************************
+//   Tela das cargas, nivel 04
+///*******************************
+Webuser function fxMntCarg()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if httpPost->xcPasUser=='02'
+	xcCodUser	:=	httpPost->xcCodUser02
+	xcNomUser	:=	httpPost->xcNomUser02
+elseif httpPost->xcPasUser == '03'
+	xcCodUser	:=	httpPost->xcCodUser03
+	xcNomUser	:=	httpPost->xcNomUser03
+elseif httpPost->xcPasUser == '04'
+	xcCodUser	:=	httpPost->xcCodUser04
+	xcNomUser	:=	httpPost->xcNomUser04
+endif
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('01-cargas.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela dos pedidos em andamento nivel 04
+///*******************************
+Webuser function fxPedRep()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('06-repres_pedidos.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela dos pedidos em andamento nivel 04
+///*******************************
+Webuser function fxPedObj()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('06-repres_Objetivos.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+
+
+///*******************************
+//   Tela de analise de pedidos
+//   para os representantes
+///*******************************
+Webuser function fxRAnali()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+	xcCodUser	:=	httpPost->xcCodUser04
+	xcNomUser	:=	httpPost->xcNomUser04
+else
+	xcCodUser	:=	httpPost->xcCodUser02
+	xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('06-repres_analise_pedido.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela dos pedidos em andamento nivel 04
+///*******************************
+Webuser function fxFolha()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('07-inicial_folha.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//   Tela dos pedidos em andamento nivel 04
+///*******************************
+Webuser function fxFolCad()
+local xcHtml	:=	''
+local xcCodUser	:=	''
+local xcNomUser	:=	''
+
+if type('httpPost->xcCodUser04')=='C'
+xcCodUser	:=	httpPost->xcCodUser04
+xcNomUser	:=	httpPost->xcNomUser04
+else
+xcCodUser	:=	httpPost->xcCodUser02
+xcNomUser	:=	httpPost->xcNomUser02
+endif
+
+HttpSession->xcCodUser	:=	xcCodUser
+
+PrepEnvPor()
+
+
+web EXTENDED init xcHtml
+
+xcHtml := U_MontaPag('07-cadastro_funcionario.html', xcCodUser, xcNomUser)
+
+web EXTENDED end
+
+return xcHtml
+
+

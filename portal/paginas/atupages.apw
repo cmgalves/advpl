@@ -1,0 +1,304 @@
+#Include "Protheus.ch"
+#Include "Apwebex.ch"
+#Include "Topconn.ch"
+#Include "Tbiconn.ch"
+#include "msobjects.ch"
+#include "rwmake.ch"
+#INCLUDE "OLECONT.CH"
+#Include "Fileio.ch"
+#INCLUDE "COLORS.CH"
+
+
+
+///*******************************
+//	Geração do Pdf por representante
+///*******************************
+Webuser function faGeraPdf()
+	local xcHtml		:=	''
+	
+	PrepEnvPor()
+	
+	U_fxEspComis(httpPost->xcCodRc)
+	
+
+	web EXTENDED init xcHtml
+	
+		xcHtml := U_MontaPag('01-cadastro_representante.html', xcCodUser, xcNomUser)
+	
+	web EXTENDED end
+
+return xcHtml
+
+///*******************************
+//	ws para inclusão de equipamentos
+///*******************************
+Webuser function faAtuCom()
+	local xcHtml		:=	''
+	local xaRet 		:=	{}
+	local xcPedido		:=	httpPost->cPedido
+	local xcOut			:=	'OK'	//@Out Varchar(002) OutPut)
+	local xc01 := xc02 := xc03 := xc04 := ''
+	
+	PrepEnvPor()
+	
+	xc01 := httpPost->xcCodUser03
+	xc02 := httpPost->xcNomUser03
+	xc03 := httpPost->cVendCod
+	xc04 := httpPost->cMesCom
+	
+	xaRet := TCSPEXEC("sp_Fin_Ajusta_Comissao", xcPedido, xcOut)
+	
+	web EXTENDED init xcHtml
+	
+		xcHtml := U_MontaPag('11-fin_comissoes.html', xc01, xc02, xc03, xc04)
+	
+	web EXTENDED end
+
+return xcHtml
+
+
+///*******************************
+//	ws para inclusão de equipamentos
+///*******************************
+Webuser function faTicInc()
+local xcHtml		:=	''
+local xaRet 		:=	{}
+local xcTipo		:=	httpPost->cTipo	 
+local xcTodigo		:=	httpPost->cProd
+local xcDecric		:=	httpPost->cDesc
+local xcPreco		:=	Val(httpPost->cPrec)
+local xcSerie		:=	httpPost->cSeri
+local xcData		:=	httpPost->cData
+local xcPatrimonio	:=	httpPost->cPatr
+local xcDetalhes	:=	httpPost->cDeta
+local xcOut			:=	'OK'	//@Out Varchar(002) OutPut)
+
+PrepEnvPor()
+
+xcData := StrTran(xcData,'-','')
+
+
+xaRet := TCSPEXEC("sp_Tic_Inclui_Equipamentos", xcTipo, xcTodigo, xcDecric, xcPreco, xcSerie, xcData, xcPatrimonio, xcDetalhes, xcOut)
+
+TCRefresh( 'PA8' )
+
+
+web EXTENDED init xcHtml
+xcHtml := RedirPage('b_fxUsoCad.apw')
+web EXTENDED end
+
+return xcHtml
+
+
+
+
+
+///*******************************
+//	ws para bloqueio do Cadastro de Clientes Inativos
+///*******************************
+Webuser function faBlqInt()
+local xcHtml	:=	''
+local xaRet 	:=	{}
+local xcCod		:=	httpPost->xcCodCli	 
+local xcLoja	:=	httpPost->xcLojCli
+local xcDdd		:=	httpPost->xDdd
+local xcTel1	:=	httpPost->xTel1
+local xcTel2	:=	httpPost->xTel2
+local xcTel3	:=	httpPost->xTel3
+local xcEmail	:=	httpPost->xEmail
+local xcVend	:=	httpPost->xVend
+local xcUsr		:=	httpPost->xcIntUser03
+local xcPar		:=	httpPost->xcIntUser03+httpPost->xcIntNome03
+local xcObs		:=	httpPost->xObs
+local xcMot		:=	httpPost->xMot
+local xdRet		:=	dTos(cTod(httpPost->xDtRet))
+local xcTip		:=	'B'
+local xcOut		:=	'OK'	//@Out Varchar(002) OutPut)
+
+PrepEnvPor()
+
+xaRet := TCSPEXEC("sp_Cliente_Inativo_Bloq_Atu", xcTip, xcCod, xcLoja, xcDdd, xcTel1, xcTel2, xcTel3, xcEmail, xcVend, xcMot, xcUsr, xcObs, xdRet, xcOut)
+
+TCRefresh( 'AOB' )
+
+
+web EXTENDED init xcHtml
+xcHtml := RedirPage('b_fxInativ.apw?xcPar=' + xcPar)
+web EXTENDED end
+
+return xcHtml
+
+
+///*******************************
+//	ws para Alteração do Cadastro de Clientes Inativos
+///*******************************
+Webuser function faAltInt()
+local xcHtml	:=	''
+local xaRet 	:=	{}
+local xcCod		:=	httpPost->xcCodCli	 
+local xcLoja	:=	httpPost->xcLojCli
+local xcDdd		:=	httpPost->xDdd
+local xcTel1	:=	httpPost->xTel1
+local xcTel2	:=	httpPost->xTel2
+local xcTel3	:=	httpPost->xTel3
+local xcEmail	:=	httpPost->xEmail
+local xcVend	:=	httpPost->xVend
+local xcUsr		:=	httpPost->xcIntUser03
+local xcPar		:=	httpPost->xcIntUser03+httpPost->xcIntNome03
+local xcObs		:=	httpPost->xObs
+local xcMot		:=	httpPost->xMot
+local xdRet		:=	dTos(cTod(httpPost->xDtRet))
+local xcTip		:=	'A'
+local xcOut		:=	'OK'	//@Out Varchar(002) OutPut)
+
+PrepEnvPor()
+
+
+
+xaRet := TCSPEXEC("sp_Cliente_Inativo_Bloq_Atu", xcTip, xcCod, xcLoja, xcDdd, xcTel1, xcTel2, xcTel3, xcEmail, xcVend, xcMot, xcUsr, xcObs, xdRet, xcOut)
+
+TCRefresh( 'AOB' )
+
+
+web EXTENDED init xcHtml
+xcHtml := RedirPage('b_fxInativ.apw?xcPar=' + xcPar)
+web EXTENDED end
+
+return xcHtml
+
+
+
+
+
+///*******************************
+//	ws para Alteração do Cadastro de Clientes
+//	1 - Só Inscrição
+//	2 - Só CNPJ
+//	3 - Só Tipo Pessoa
+///*******************************
+Webuser function faPedCli()
+local xcHtml	:=	''
+local xaRet 	:=	{}
+local xcCtrl	:=	httpPost->codCtrl
+local xcClie	:=	httpPost->codClie 
+local xcCnpj	:=	httpPost->cCnpj
+local xcInsc	:=	httpPost->cInsc
+local xcTipo	:=	httpPost->cTipo
+local xcMuni	:=	httpPost->cMuni
+local xcOut		:=	'OK'	//@Out Varchar(002) OutPut)
+
+
+
+xaRet := TCSPEXEC("sp_Altera_Cad_Cli_Guarani", xcCtrl, xcClie, xcCnpj, xcInsc, xcTipo, xcMuni, xcOut)
+
+
+web EXTENDED init xcHtml
+xcHtml := RedirPage('b_fxPedCli.apw')
+web EXTENDED end
+
+return xcHtml
+
+
+
+
+///*******************************
+//	ws para Alteração do Painel
+//	de Resultados nas vendas
+///*******************************
+Webuser function fxAdmVer()
+local xcHtml	:=	''
+local xaRet 	:=	{}
+local xnDpf		:=	val(httpPost->_nDepsFixa)
+local xnIrc		:=	val(httpPost->_nIrCsll) 
+local xnMng		:=	val(httpPost->_nManga)
+local xnMge		:=	val(httpPost->_nMargemErro)
+local xnMkt		:=	val(httpPost->_nMarket)
+local xnLbr		:=	val(httpPost->_nLucroBruto)
+local xcOut		:=	'OK'	//@Out Varchar(002) OutPut)
+
+
+xaRet := TCSPEXEC("sp_Adm_Altera_Painel", xnDpf, xnIrc, xnMng, xnMge, xnMkt, xnLbr, xcOut)
+
+
+web EXTENDED init xcHtml
+xcHtml := RedirPage('b_fxMargens.apw')
+web EXTENDED end
+
+return xcHtml
+
+
+///*******************************
+//	ws para inclusão de 
+//	status do pedido
+///*******************************
+Webuser function fxStsPed()
+local xcHtml	:=	''
+local xaRet 	:=	{}
+local xcPed		:=	''		//@Ped Varchar(006)
+local xcSts		:=	''		//@Sts Varchar(001)
+local xcUsr		:=	''		//@Usr Varchar(006)
+local xcObs		:=	''		//@Obs Varchar(100)
+local xcOut		:=	'OK'	//@Out Varchar(002) OutPut)
+local xnTot		:=	0
+local xcBloq	:=	''
+
+xcPed	:=	httpPost->cPed
+xcSts	:=	httpPost->cStatus
+xcUsr	:=	'000' + httpPost->xcCodUser04
+xcObs	:=	httpPost->cObs
+xcBloq	:=	httpPost->cBloq
+xnTot	:=	httpPost->nTotItens
+
+
+xaRet := TCSPEXEC("sp_Inclui_Status_Pedido", xcPed, xcSts, xcUsr, xcObs, xcOut)
+
+if xcSts == '3'
+	xsfEnvCad(xcPed, xnTot, xcBloq)
+endif
+
+
+web EXTENDED init xcHtml
+xcHtml := RedirPage('b_fxPedFlwp.apw')
+web EXTENDED end
+
+return xcHtml
+
+
+
+Static Function xsfEnvCad(_cPed, _nTotal, _cBloq)
+	local xcPed		:=	_cPed
+	local xcBloq	:=	_cBloq
+	local xaRet		:=	{}
+	local xcOut		:=	'OK'	//@Out Varchar(002) OutPut)
+
+	xaRet := TCSPEXEC("sp_Envia_Pedido", xcPed, xcBloq, xcOut)
+	//sp_Envia_Pedido '098902', 'L', 100.5, 'OK'
+Return
+
+
+///*******************************
+//	ws para inclusão de 
+//	status do pedido
+///*******************************
+Webuser function fxConfRot()
+local xcHtml	:=	''
+local xaRet 	:=	{}
+local xcEst		:=	''		
+local xcCod		:=	''		
+local xcRot		:=	''		
+local xcOut		:=	'OK'	
+
+xcEst	:=	httpPost->xcEstRotas
+xcCod	:=	httpPost->xcCodMunic
+xcRot	:=	subs(httpPost->cListRota, 3, 3)
+
+xaRet := TCSPEXEC("sp_Inclui_Rota_Cidade", xcEst, xcCod, xcRot, xcOut)
+
+
+
+web EXTENDED init xcHtml
+xcHtml := RedirPage('b_fxRotas.apw')
+web EXTENDED end
+
+return xcHtml
+
