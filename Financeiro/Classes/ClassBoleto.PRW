@@ -2,32 +2,32 @@
 #INCLUDE "protheus.ch"
 #INCLUDE "topconn.ch"
 
-&& Nome       : Classe de Boleto Bancário do Banco do Brasil para Impressora Laser
-&& Descrição  : Esta Classe Permite a Impressão do Boleto Bancário em Relatório Gráfico TMSPrinter()
+&& Nome       : Classe de Boleto Bancï¿½rio do Banco do Brasil para Impressora Laser
+&& Descriï¿½ï¿½o  : Esta Classe Permite a Impressï¿½o do Boleto Bancï¿½rio em Relatï¿½rio Grï¿½fico TMSPrinter()
 && Nota       : Esta classe ira imprimir o boleto mesmo que o mesmo nao tenha sido enviado ao banco atraves do CNAB          
-&& 			    Baseado na Especificação Técnica de Cobrança BB Versão 1 de 30/05/2007
-&& 			    Baseado na Especificação Técnica de Cobrança Bradesco de 10/2002
-&& 			    Baseado na Especificação Técnica de Cobrança Itaú de Setembro/2007
-&& 			    %E1_PORJUR%, %E1_VALJUR% e %E!_DESCFIN% são indicadores que podem ser usados nas mensagens do Boleto, que serão convertidos automaticamente pelos valores
-&& 			    Criado Funções de Modulo10, Modulo11, Nosso Número, Cód. de Barra e Linha Digitável Genéricas para os Principais Bancos
-&& 			    Site para Validação de Código de Barras: http:&& evandro.net/codigo_barras.htm
+&& 			    Baseado na Especificaï¿½ï¿½o Tï¿½cnica de Cobranï¿½a BB Versï¿½o 1 de 30/05/2007
+&& 			    Baseado na Especificaï¿½ï¿½o Tï¿½cnica de Cobranï¿½a Bradesco de 10/2002
+&& 			    Baseado na Especificaï¿½ï¿½o Tï¿½cnica de Cobranï¿½a Itaï¿½ de Setembro/2007
+&& 			    %E1_PORJUR%, %E1_VALJUR% e %E!_DESCFIN% sï¿½o indicadores que podem ser usados nas mensagens do Boleto, que serï¿½o convertidos automaticamente pelos valores
+&& 			    Criado Funï¿½ï¿½es de Modulo10, Modulo11, Nosso Nï¿½mero, Cï¿½d. de Barra e Linha Digitï¿½vel Genï¿½ricas para os Principais Bancos
+&& 			    Site para Validaï¿½ï¿½o de Cï¿½digo de Barras: http:&& evandro.net/codigo_barras.htm
 && 			    Site do FEBRABAN: http:&& www.febraban.org.br/
-&& 			    Site de Conversão de Medidas: http:&& www.translatorscafe.com/cafe/units-converter/typography/calculator/pixel-(X)-to-centimeter-%5Bcm%5D/
-&& 			    Pontos Específicos de Cada Banco no Código: 	Method NossoNro(), Method RetNossoNro() e Method CodBarra()    					 
+&& 			    Site de Conversï¿½o de Medidas: http:&& www.translatorscafe.com/cafe/units-converter/typography/calculator/pixel-(X)-to-centimeter-%5Bcm%5D/
+&& 			    Pontos Especï¿½ficos de Cada Banco no Cï¿½digo: 	Method NossoNro(), Method RetNossoNro() e Method CodBarra()    					 
 
 && Campos Pers: - E1_ZZBLT  (LOGICO)   - Boleto Impresso? - SE1 - Para determinar se vai ou nao ao CNAB apos a impressao
-&& 			   	- EE_ZZCART (CARAC. 3) - Carteira junto com os parâmetros do CNAB - SEE
+&& 			   	- EE_ZZCART (CARAC. 3) - Carteira junto com os parï¿½metros do CNAB - SEE
 
-&& Cons.Pers  : - SA61 (Específico do BB - Filtro do Banco, tal como "001" ou "237", etc) 
-&& 			    - ZZBL (Consulta Esp da Tabela Z1 do SX5 - Mensagens para o Boleto) - Usar Função SX5DESF3("Z1",.T.,.T.)
+&& Cons.Pers  : - SA61 (Especï¿½fico do BB - Filtro do Banco, tal como "001" ou "237", etc) 
+&& 			    - ZZBL (Consulta Esp da Tabela Z1 do SX5 - Mensagens para o Boleto) - Usar Funï¿½ï¿½o SX5DESF3("Z1",.T.,.T.)
 
 && Ambiente   : Financeiro
 
-&& Autor      : Winston Dellano de Castro - Totvs IP Ribeirão
+&& Autor      : Winston Dellano de Castro - Totvs IP Ribeirï¿½o
 && Alteracoes : Mary Hergert - Totvs IP Campinas (alteracoes especificas Plasticos MB
-&& Dt Criação : 19/01/2010
+&& Dt Criaï¿½ï¿½o : 19/01/2010
 
-&& Constantes de Margem das Páginas
+&& Constantes de Margem das Pï¿½ginas
 #DEFINE HMARGEM   050
 #DEFINE VMARGEM   050
 
@@ -37,10 +37,10 @@
 #define PAD_CENTER	2
 
 && ###############################
-&& UTILIZAÇÃO DA CLASSE DO BOLETO
+&& UTILIZAï¿½ï¿½O DA CLASSE DO BOLETO
 && ###############################
 
-&& Função de Exemplo para Uso da Classe do Boleto para o Banco do Brasil
+&& Funï¿½ï¿½o de Exemplo para Uso da Classe do Boleto para o Banco do Brasil
 User Function BolBB()
 
 	local oBoleto := nil
@@ -50,77 +50,77 @@ User Function BolBB()
 	&& USAR FILTRO NA ORDEM 1 DO SE1: E1_FILIAL+E1_PREFIXO+E1_NUM+E1_PARCELA+E1_TIPO
 	&& local cFiltro:="E1_FILIAL=='" + xFilial("SE1") + "' .AND. E1_PREFIXO == 'UNI' .AND. E1_NUM == '044722' .AND. E1_PARCELA == '  ' .AND. E1_TIPO == 'NF' "
 
-	&& Imprime Boleto do Banco do Brasil e Não Apresenta Perguntas na Inicialização
-	&& Para Configurar o Convênio que será utilizado, alimente o campo EE_CODEMP com o Convenio com o Nº de Dígitos Corretos
-	&& e Também o Campo EE_FAXATU com o nº de dígitos do nº sequencial utilizado pela empresa de acordo com o Convenio utilizado
+	&& Imprime Boleto do Banco do Brasil e Nï¿½o Apresenta Perguntas na Inicializaï¿½ï¿½o
+	&& Para Configurar o Convï¿½nio que serï¿½ utilizado, alimente o campo EE_CODEMP com o Convenio com o Nï¿½ de Dï¿½gitos Corretos
+	&& e Tambï¿½m o Campo EE_FAXATU com o nï¿½ de dï¿½gitos do nï¿½ sequencial utilizado pela empresa de acordo com o Convenio utilizado
 	&& Adicione o campo personalizado EE_ZZCART e adicione a carteira utilizada pelo Banco ("18")
 	oBoleto := Boleto():new("001",.T.,cFiltro,1)
 
 return
 
-&& Função de Exemplo para Uso da Classe do Boleto para o Banco Bradesco
+&& Funï¿½ï¿½o de Exemplo para Uso da Classe do Boleto para o Banco Bradesco
 User Function BolBRA()
 
 	local oBoleto := nil
 	local cFiltro := ""
 
-	&& Imprime Boleto do Banco Bradesco, Apresenta Perguntas na Inicialização e Usa o Modelo de Layout 2
-	&& Para Configurar o Convênio que será utilizado, alimente o campo EE_CODEMP com o Convenio com o Nº de Dígitos Corretos
-	&& e Também o Campo EE_FAXATU com o nº de dígitos do nº sequencial utilizado pela empresa de acordo com o Convenio utilizado
+	&& Imprime Boleto do Banco Bradesco, Apresenta Perguntas na Inicializaï¿½ï¿½o e Usa o Modelo de Layout 2
+	&& Para Configurar o Convï¿½nio que serï¿½ utilizado, alimente o campo EE_CODEMP com o Convenio com o Nï¿½ de Dï¿½gitos Corretos
+	&& e Tambï¿½m o Campo EE_FAXATU com o nï¿½ de dï¿½gitos do nï¿½ sequencial utilizado pela empresa de acordo com o Convenio utilizado
 	&& Adicione o campo personalizado EE_ZZCART e adicione a carteira utilizada pelo Banco ("19")
 	oBoleto := Boleto():new("237",.T.,cFiltro,2)
 
 return
 
-&& Função de Exemplo para Uso da Classe do Boleto para o Banco Safra (Banco Correspondente = Bradesco)
+&& Funï¿½ï¿½o de Exemplo para Uso da Classe do Boleto para o Banco Safra (Banco Correspondente = Bradesco)
 User Function bltSafra()
 
 	local oBoleto := nil
 	local cFiltro := ""
 
-	&& Imprime Boleto do Banco Safra, Apresenta Perguntas na Inicialização e Usa o Modelo de Layout 2
-	&& Para Configurar o Convênio que será utilizado, alimente o campo EE_CODEMP com o Convenio com o Nº de Dígitos Corretos
-	&& e Também o Campo EE_FAXATU com o nº de dígitos do nº sequencial utilizado pela empresa de acordo com o Convenio utilizado
+	&& Imprime Boleto do Banco Safra, Apresenta Perguntas na Inicializaï¿½ï¿½o e Usa o Modelo de Layout 2
+	&& Para Configurar o Convï¿½nio que serï¿½ utilizado, alimente o campo EE_CODEMP com o Convenio com o Nï¿½ de Dï¿½gitos Corretos
+	&& e Tambï¿½m o Campo EE_FAXATU com o nï¿½ de dï¿½gitos do nï¿½ sequencial utilizado pela empresa de acordo com o Convenio utilizado
 	&& Adicione o campo personalizado EE_ZZCART e adicione a carteira utilizada pelo Banco ("09")
 	oBoleto := Boleto():new("422",.T.,cFiltro,1)
 
 return
 
-&& Função de Exemplo para Uso da Classe do Boleto para o Banco Itaú
+&& Funï¿½ï¿½o de Exemplo para Uso da Classe do Boleto para o Banco Itaï¿½
 User Function BolITA()
 
 	local oBoleto := nil
 	local cFiltro := ""
 
-	&& Imprime Boleto do Banco Itaú, Não Apresenta Perguntas na Inicialização e Usa o Modelo de Layout 2
-	&& Para Configurar o Convênio que será utilizado, alimente o campo EE_CODEMP com o Convenio com o Nº de Dígitos Corretos
-	&& e Também o Campo EE_FAXATU com o nº de dígitos do nº sequencial utilizado pela empresa de acordo com o Convenio utilizado
+	&& Imprime Boleto do Banco Itaï¿½, Nï¿½o Apresenta Perguntas na Inicializaï¿½ï¿½o e Usa o Modelo de Layout 2
+	&& Para Configurar o Convï¿½nio que serï¿½ utilizado, alimente o campo EE_CODEMP com o Convenio com o Nï¿½ de Dï¿½gitos Corretos
+	&& e Tambï¿½m o Campo EE_FAXATU com o nï¿½ de dï¿½gitos do nï¿½ sequencial utilizado pela empresa de acordo com o Convenio utilizado
 	&& Adicione o campo personalizado EE_ZZCART e adicione a carteira utilizada pelo Banco ("110")
 	oBoleto := Boleto():new("341",.F.,cFiltro,2)
 
 return
 
-&& Função de Exemplo para Uso da Classe do Boleto para o Banco Votorantim (Banco Correspondente = Itau)
+&& Funï¿½ï¿½o de Exemplo para Uso da Classe do Boleto para o Banco Votorantim (Banco Correspondente = Itau)
 User Function bltVtm()
 
 	local oBoleto := nil
 	local cFiltro := ""
 
-	&& Imprime Boleto do Banco Votorantim, Apresenta Perguntas na Inicialização e Usa o Modelo de Layout 1
-	&& Para Configurar o Convênio que será utilizado, alimente o campo EE_CODEMP com o Convenio com o Nº de Dígitos Corretos
-	&& e Também o Campo EE_FAXATU com o nº de dígitos do nº sequencial utilizado pela empresa de acordo com o Convenio utilizado
+	&& Imprime Boleto do Banco Votorantim, Apresenta Perguntas na Inicializaï¿½ï¿½o e Usa o Modelo de Layout 1
+	&& Para Configurar o Convï¿½nio que serï¿½ utilizado, alimente o campo EE_CODEMP com o Convenio com o Nï¿½ de Dï¿½gitos Corretos
+	&& e Tambï¿½m o Campo EE_FAXATU com o nï¿½ de dï¿½gitos do nï¿½ sequencial utilizado pela empresa de acordo com o Convenio utilizado
 	&& Adicione o campo personalizado EE_ZZCART e adicione a carteira utilizada pelo Banco ("109")
 	oBoleto := Boleto():new("655",.T.,cFiltro,1)
 
 return
 
 && ###############################
-&& DEFINIÇÃO DA CLASSE DO BOLETO
+&& DEFINIï¿½ï¿½O DA CLASSE DO BOLETO
 && ###############################
 
 Class Boleto
 
-	&& Atributos para Seleção dos Dados a Imprimir
+	&& Atributos para Seleï¿½ï¿½o dos Dados a Imprimir
 	Data cAlias
 	Data cCpoMark
 	Data cIndexName
@@ -128,7 +128,7 @@ Class Boleto
 	Data cFilter
 	Data lFiltrado
     
-    && Atributos dos Dados para o Relatório
+    && Atributos dos Dados para o Relatï¿½rio
 	Data cBanco
 	Data aCampos
 	Data aDadosEmp
@@ -142,7 +142,7 @@ Class Boleto
 	Data aFrases  
 	Data cProtesto
 	                  
-	&& Atributos para Geração do Relatório 
+	&& Atributos para Geraï¿½ï¿½o do Relatï¿½rio 
 	Data oReport
 	Data aLogoBco
 	Data lMostraPrg
@@ -158,28 +158,28 @@ Class Boleto
 	Data nLastKey
 	Data nModelo
 	
-	&& Métodos
+	&& Mï¿½todos
 	Method new(cCodBanco,lPrgOnInit,cFiltro) Constructor	&& Inicializa os Atributos da Classe
-	Method openReport()										&& Executa o Assistente e Dispara os outros métodos
+	Method openReport()										&& Executa o Assistente e Dispara os outros mï¿½todos
 	Method loadPergs()										&& Carrega as Peguntas
-	Method montaRel()										&& Carrega os Dados e Dispara a Impressão
-	Method nossoNro(cNossNroOld)							&& Define o Nosso Número
-	Method retNossoNro()									&& Retorna o Nosso Número Formatado
-	Method codBarra()										&& Define o Código de Barras e a Linha Digitável
-	Method printRel()								  		&& Executa a Impressão do Boleto
-	Method grvNossNum()										&& Grava o Nosso Número no SE1
+	Method montaRel()										&& Carrega os Dados e Dispara a Impressï¿½o
+	Method nossoNro(cNossNroOld)							&& Define o Nosso Nï¿½mero
+	Method retNossoNro()									&& Retorna o Nosso Nï¿½mero Formatado
+	Method codBarra()										&& Define o Cï¿½digo de Barras e a Linha Digitï¿½vel
+	Method printRel()								  		&& Executa a Impressï¿½o do Boleto
+	Method grvNossNum()										&& Grava o Nosso Nï¿½mero no SE1
 	Method somaUtil()										&& Soma determinada quantidade de dias uteis a uma data
 				
 End Class  
 
-&& Inicializa o Objeto Boleto e Abre o Assistente de Impressão do Relatório
-/*cCodBanco disponíveis:
-- 001 (BB) - Cart. 18 Convênio de 4, 6 e 7 Dígitos e Cart. 11
+&& Inicializa o Objeto Boleto e Abre o Assistente de Impressï¿½o do Relatï¿½rio
+/*cCodBanco disponï¿½veis:
+- 001 (BB) - Cart. 18 Convï¿½nio de 4, 6 e 7 Dï¿½gitos e Cart. 11
 - 033 (SANTANDER)
 - 104 (CEF)
 - 237 (BRADESCO) - Carteira 19
 - 422 (SAFRA) - Banco Correspondente
-- 341 (ITAÚ)
+- 341 (ITAï¿½)
 - 655 (VOTORANTIM) - Banco Correspondente
 - 409 (UNIBANCO)
  */
@@ -188,17 +188,17 @@ Method new(cCodBanco,lPrgOnInit,cFiltro,nModelo) Class Boleto
 	default lPrgOnInit :=.F.
 	default cCodBanco  :="001" && Banco do Brasil
 	default cFiltro    :=""
-	default nModelo    :=1 && Modelos Disponíveis: 1 e 2
+	default nModelo    :=1 && Modelos Disponï¿½veis: 1 e 2
 
 	&& Inicializa Propriedades do Objeto
-	::lMostraPrg  := lPrgOnInit && Indica se irá abrir as Perguntas na Inicialização
-	::cBanco	  := cCodBanco && Informa o Código do Banco a ser gerado o Boleto
+	::lMostraPrg  := lPrgOnInit && Indica se irï¿½ abrir as Perguntas na Inicializaï¿½ï¿½o
+	::cBanco	  := cCodBanco && Informa o Cï¿½digo do Banco a ser gerado o Boleto
 	::cNossoNum	  := ""
 	::cCodBarra   := ""
 	::cLinhaDig	  := ""
 
 	if !Empty(cFiltro)
-		::cFilter  :=cFiltro && Filtro Passado pelo Usuário para Impressão Direta
+		::cFilter  :=cFiltro && Filtro Passado pelo Usuï¿½rio para Impressï¿½o Direta
 		::lFiltrado:=.T.
 	else 
 		::cFilter  :=""
@@ -224,14 +224,14 @@ Method new(cCodBanco,lPrgOnInit,cFiltro,nModelo) Class Boleto
 	::cTamanho 	  :="M"
 	::ctitulo  	  :="Impressao de Boleto com Codigo de Barras"
 	::cDesc1   	  :="Este programa destina-se a impressao do Boleto Bancario com Codigo de Barras."
-	::cDesc2   	  :="Será impresso somente os títulos transferidos para Cobrança Simples."
+	::cDesc2   	  :="Serï¿½ impresso somente os tï¿½tulos transferidos para Cobranï¿½a Simples."
 	::cDesc3   	  :=""
 	::cAlias  	  :="SE1"
 	::cCpoMark	  :="E1_OK"
-	::wnrel    	  :="BOLETO" && Nome do Arquivo do Relatório
+	::wnrel    	  :="BOLETO" && Nome do Arquivo do Relatï¿½rio
 	::nModelo	  :=nModelo && Modelo de Layout do Boleto
 	
-	&& Tipo do Formulário, Margem, Destinatário, Formato de Impressão, Dispositivo, Driver, Filtro Usuário,    
+	&& Tipo do Formulï¿½rio, Margem, Destinatï¿½rio, Formato de Impressï¿½o, Dispositivo, Driver, Filtro Usuï¿½rio,    
 	::areturn  	  :={"Zebrado", 1,"Administracao", 2, 2, 1, "",1 } 
 	::nLastKey 	  :=0
 	
@@ -252,7 +252,7 @@ Method new(cCodBanco,lPrgOnInit,cFiltro,nModelo) Class Boleto
 		Case ::cBanco == "422" && (Safra)
 			::aLogoBco	  := {"System\Bitmaps\LOGOBRA.BMP"}
 			::cDesc3	  := "Especifico para o Banco Bradesco."
-		Case ::cBanco == "341" && (Itaú)
+		Case ::cBanco == "341" && (Itaï¿½)
 			::aLogoBco	  := {"System\Bitmaps\LOGOITAU.BMP"}
 			::cDesc3	  := "Especifico para o Banco Itau."
 		Case ::cBanco == "655" && (Votorantim)
@@ -263,19 +263,19 @@ Method new(cCodBanco,lPrgOnInit,cFiltro,nModelo) Class Boleto
 			::cDesc3	  := "Especifico para o Banco Unibanco."										
 	EndCase
 
-	&& Inicializa a Classe TMSPrinter (Relatório Gráfico) e Define Propriedades Gerais
+	&& Inicializa a Classe TMSPrinter (Relatï¿½rio Grï¿½fico) e Define Propriedades Gerais
 	::oReport:=TMSPrinter():new("Boleto Laser")
-	::oReport:StartPage()     && Inicia uma nova página
+	::oReport:StartPage()     && Inicia uma nova pï¿½gina
 	::oReport:SetPage(9) 	  && Define como Tamanho A4
 	::oReport:SetPortrait()   && ou SetLandscape()
 	::oReport:SetLoMetricMode() && Each logical unit is converted to 0.1 millimeter. Positive x is to the right; positive y is up.
 		
-	&& Abre a Tela do Assistente de Impressão, juntamente com a opção para seleção dos títulos
+	&& Abre a Tela do Assistente de Impressï¿½o, juntamente com a opï¿½ï¿½o para seleï¿½ï¿½o dos tï¿½tulos
 	::openReport()
 return Self                                          
 
-&& Abre o Assistente do Relatório, Executa o Seletor para Definir os Registros a Imprimir, 
-&& Carrega os Dados para a Memória e Executa a Impressão
+&& Abre o Assistente do Relatï¿½rio, Executa o Seletor para Definir os Registros a Imprimir, 
+&& Carrega os Dados para a Memï¿½ria e Executa a Impressï¿½o
 Method openReport() Class Boleto
 
 	local lExec		 := .F.
@@ -288,41 +288,41 @@ Method openReport() Class Boleto
 	&& Carrega as Perguntas
 	::loadPergs()
 
-	&& Cria a interface para impressão do relatório
-	&& Desabilita os parâmetros se tiver sido passado um filtro específico do Título a ser impresso
+	&& Cria a interface para impressï¿½o do relatï¿½rio
+	&& Desabilita os parï¿½metros se tiver sido passado um filtro especï¿½fico do Tï¿½tulo a ser impresso
 	&& Sintaxe: SetPrint(<cAlias>,<cProgram>,[cPergunte],[cTitle],[cDesc1],[cDesc2],[cDesc3],[lDic],[aOrd],[lCompres],[cSize],[uParm12],[lFilter],[lCrystal],[cNameDr],[uParm16],[lServer],[cPortPrint])-->creturn
 	&& dellano ::Wnrel := SetPrint(::cAlias,::Wnrel,Iif(::lFiltrado,"",::cGrpPerg),@::cTitulo,::cDesc1,::cDesc2,::cDesc3,.F.,,,::cTamanho,,)
 	
-	&& Se o usuário pressionar ESC ou Cancelar o Assistente de Impressão
+	&& Se o usuï¿½rio pressionar ESC ou Cancelar o Assistente de Impressï¿½o
 	if nLastKey == 27
 		Set Filter to && Limpa o Filtro
-		return .T.    && Finaliza o Método
+		return .T.    && Finaliza o Mï¿½todo
 	endif
 	
-	&& Prepara o Ambiente de Impressão conforme de acordo com o Array areturn
+	&& Prepara o Ambiente de Impressï¿½o conforme de acordo com o Array areturn
 	&& Sintaxe: Setdefault (<areturn>,<cAlias>,[uParm3],[uParm4],[cSize],[nFormat])
 	&& dellano Setdefault(areturn,::cAlias,,,::cTamanho)
 	
-	&& Se o usuário pressionar ESC ou Cancelar o Assistente de Impressão
+	&& Se o usuï¿½rio pressionar ESC ou Cancelar o Assistente de Impressï¿½o
 	if nLastKey == 27
 		Set Filter to && Limpa o Filtro
-		return .T.    && Finaliza o Método
+		return .T.    && Finaliza o Mï¿½todo
 	endif
 	
-	if ::lFiltrado && Se foi filtrado pelo usuário não apresenta a seleção de títulos e Imprime Direto o Título
+	if ::lFiltrado && Se foi filtrado pelo usuï¿½rio nï¿½o apresenta a seleï¿½ï¿½o de tï¿½tulos e Imprime Direto o Tï¿½tulo
 		CursorWait() && Mostra Ampulheta
 		
-		&& Abre o Arquivo de Títulos a Receber e Filtra com utilizando o Filtro Passado na Instanciação do Objeto$		
+		&& Abre o Arquivo de Tï¿½tulos a Receber e Filtra com utilizando o Filtro Passado na Instanciaï¿½ï¿½o do Objeto$		
 		dbSelectArea(::cAlias) 
 		dbSetOrder(1) && Ordem do Filtro: E1_FILIAL+E1_PREFIXO+E1_NUM+E1_PARCELA+E1_TIPO
 		dbSetFilter({|| .T. },::cFilter) && Filtro Precisa seguir a ordem 1 do SE1
 		dbGoTop()		
 				
-		Processa({||::MontaRel()},"Imprimindo Boleto...") && Exibe a Régua de Processamento e Executa a Impresão do Relatório
+		Processa({||::MontaRel()},"Imprimindo Boleto...") && Exibe a Rï¿½gua de Processamento e Executa a Impresï¿½o do Relatï¿½rio
 		
 		CursorArrow() && Libera Ampulheta	
 	else	
-		&& Carrega Informações dos Campos para a Listagem de Seleção dos Títulos com MarkBrowse
+		&& Carrega Informaï¿½ï¿½es dos Campos para a Listagem de Seleï¿½ï¿½o dos Tï¿½tulos com MarkBrowse
 		aAdd(::aCampos,{"E1_OK      ",""})
 		aAdd(::aCampos,{"E1_TIPO    ","Tipo","@!"})
 		aAdd(::aCampos,{"E1_PREFIXO ","Prefixo","@!"})
@@ -341,10 +341,10 @@ Method openReport() Class Boleto
 		aAdd(::aCampos,{"E1_PEDIDO  ","Pedido","@!"})
 		aAdd(::aCampos,{"E1_NUMBCO  ","Nosso Nro","@!"})		
 		
-		&& Define os Detalhes do Índice e Filtro para Seleção dos Títulos
-		&& Filtra somente os Títulos Transferidos para o Banco, Agência e Conta Informado nos Parâmetros
-		::cIndexName	:= Criatrab(Nil,.F.) && Busca um arquivo válido para o índice temporário e retorna o nome do índice
-		::cIndexKey	:= "E1_PREFIXO+E1_NUM+E1_PARCELA+DTOS(E1_EMISSAO)" && Define o Índice de Ordenação
+		&& Define os Detalhes do ï¿½ndice e Filtro para Seleï¿½ï¿½o dos Tï¿½tulos
+		&& Filtra somente os Tï¿½tulos Transferidos para o Banco, Agï¿½ncia e Conta Informado nos Parï¿½metros
+		::cIndexName	:= Criatrab(Nil,.F.) && Busca um arquivo vï¿½lido para o ï¿½ndice temporï¿½rio e retorna o nome do ï¿½ndice
+		::cIndexKey	:= "E1_PREFIXO+E1_NUM+E1_PARCELA+DTOS(E1_EMISSAO)" && Define o ï¿½ndice de Ordenaï¿½ï¿½o
 		::cFilter	:= "E1_FILIAL=='" + xFilial("SE1") + "' .And. E1_SALDO>0 .And. "
 		::cFilter	+= "E1_PREFIXO>='" + MV_PAR01 + "' .And. E1_PREFIXO<='" + MV_PAR02 + "' .And. " 
 		::cFilter	+= "E1_NUM>='" + MV_PAR03 + "' .And. E1_NUM<='" + MV_PAR04 + "' .And. "
@@ -360,23 +360,23 @@ Method openReport() Class Boleto
 		&&::cFilter	+= "E1_AGEDEP=='" + MV_PAR18 + "' .And. "
 		&&::cFilter	+= "E1_CONTA=='" + MV_PAR19 + "'"
 		
-		&& Alimenta um indice Temporário de acordo com os parâmetros passados e filtra os dados
+		&& Alimenta um indice Temporï¿½rio de acordo com os parï¿½metros passados e filtra os dados
 		MsgRun("Selecionando Registros. Por favor aguarde...",,{|| IndRegua("SE1", ::cIndexName, ::cIndexKey,, ::cFilter)})
 		
-		&& Abre o Arquivo de Títulos a Receber Filtrados
+		&& Abre o Arquivo de Tï¿½tulos a Receber Filtrados
 		dbSelectArea(::cAlias)
-		#IFNDEF TOP && Se não for Top
-			&& Agrega o índice ao Alias Ativo - OrdBagExt() - retorna a extensão do índice utilizado
+		#IFNDEF TOP && Se nï¿½o for Top
+			&& Agrega o ï¿½ndice ao Alias Ativo - OrdBagExt() - retorna a extensï¿½o do ï¿½ndice utilizado
 			dbSetIndex(::cIndexName + OrdBagExt()) 
 		#endif
 		dbGoTop()
 	
-		&& Abre Caixa de Diálogo no Formato MarkBrowse para Seleção dos Títulos a Imprimir
-		@ 001,001 TO 400,700 DIALOG oDlg TITLE "Seleção de Titulos"
+		&& Abre Caixa de Diï¿½logo no Formato MarkBrowse para Seleï¿½ï¿½o dos Tï¿½tulos a Imprimir
+		@ 001,001 TO 400,700 DIALOG oDlg TITLE "Seleï¿½ï¿½o de Titulos"
 		@ 001,001 TO 170,350 BROWSE ::cAlias FIELDS ::aCampos OBJECT oMark MARK ::cCpoMark
-		oMark:oBrowse:lCanAllMark:=.T. && Indica se habilita(.T.)/desabilita(.F.) a opção de marcar todos os registros do browse.
+		oMark:oBrowse:lCanAllMark:=.T. && Indica se habilita(.T.)/desabilita(.F.) a opï¿½ï¿½o de marcar todos os registros do browse.
 		
-		&& Define os Botões de Ação na Tela de Seleção dos Títulos
+		&& Define os Botï¿½es de Aï¿½ï¿½o na Tela de Seleï¿½ï¿½o dos Tï¿½tulos
 		TBUTTON():new(180,240,"Marcar/Desm.",oDlg,{|| oMark:oBrowse:AllMark()},35,11,,,,.T.) && Seleciona/Deseleciona Todos os Registros	
 		@ 180,280 BMPBUTTON TYPE 01 ACTION (lExec := .T.,Close(oDlg)) && Executar
 		@ 180,310 BMPBUTTON TYPE 02 ACTION (lExec := .F.,Close(oDlg)) && Cancelar
@@ -386,18 +386,18 @@ Method openReport() Class Boleto
 		CursorWait() && Mostra Ampulheta
 	
 		if lExec && Se marcado para executar
-			Processa({||::MontaRel()},"Imprimindo Boleto...") && Exibe a Régua de Processamento e Executa a Impresão do Relatório
+			Processa({||::MontaRel()},"Imprimindo Boleto...") && Exibe a Rï¿½gua de Processamento e Executa a Impresï¿½o do Relatï¿½rio
 		endif
 		
-		RetIndex(::cAlias) && Retorna a quantidade de índices ativos para um Alias aberto no sistema.
-		Ferase(::cIndexName+OrdBagExt())	&& Apaga o Arquivo do Índice Temporário
+		RetIndex(::cAlias) && Retorna a quantidade de ï¿½ndices ativos para um Alias aberto no sistema.
+		Ferase(::cIndexName+OrdBagExt())	&& Apaga o Arquivo do ï¿½ndice Temporï¿½rio
 		
 		CursorArrow() && Libera Ampulheta	
 	endif
 return .T.
 
-&& Cria ou Modifica o Grupo de Perguntas e o Carrega na Memória, tendo a opção de mostrar as perguntas
-&& antes de abrir o assistente de impressão
+&& Cria ou Modifica o Grupo de Perguntas e o Carrega na Memï¿½ria, tendo a opï¿½ï¿½o de mostrar as perguntas
+&& antes de abrir o assistente de impressï¿½o
 Method loadPergs() Class Boleto
 	
 	&& Carrega o Grupo de Perguntas a ser gravado no SX1
@@ -428,8 +428,8 @@ Method loadPergs() Class Boleto
 	&& Cria ou Modifica o Grupo de Perguntas
 	AjustaSx1(::cGrpPerg,::aPergs)
 	
-	&& Carrega o Grupo de Perguntas para as Variáveis de Memória e não apresenta em Tela
-	if ::lFiltrado && Se filtrado somente carrega as variáveis mas não apresenta em tela
+	&& Carrega o Grupo de Perguntas para as Variï¿½veis de Memï¿½ria e nï¿½o apresenta em Tela
+	if ::lFiltrado && Se filtrado somente carrega as variï¿½veis mas nï¿½o apresenta em tela
 		Pergunte (::cGrpPerg,.F.)
 	else
 		Pergunte (::cGrpPerg,::lMostraPrg)
@@ -437,7 +437,7 @@ Method loadPergs() Class Boleto
 	
 return
 
-&& Carrega os Dados a Imprimir para a Memória em Arrays e Executa a Impressão o Relatório
+&& Carrega os Dados a Imprimir para a Memï¿½ria em Arrays e Executa a Impressï¿½o o Relatï¿½rio
 Method montaRel() Class Boleto
 
 	Local nTit	:= 0
@@ -449,7 +449,7 @@ Method montaRel() Class Boleto
          
 	&& Carrega Dados da Empresa
 	aAdd(::aDadosEmp,SM0->M0_NOMECOM) 																&& [1]Nome da Empresa
-	aAdd(::aDadosEmp,SM0->M0_ENDCOB) 																&& [2]Endereço
+	aAdd(::aDadosEmp,SM0->M0_ENDCOB) 																&& [2]Endereï¿½o
 	aAdd(::aDadosEmp,alltrim(SM0->M0_BAIRCOB)+", "+alltrim(SM0->M0_CIDCOB)+", "+SM0->M0_ESTCOB) 	&& [3]Complemento
 	aAdd(::aDadosEmp,"CEP: "+Subs(SM0->M0_CEPCOB,1,5)+"-"+Subs(SM0->M0_CEPCOB,6,3)) 				&& [4]CEP
 	aAdd(::aDadosEmp,"PABX/FAX: "+SM0->M0_TEL) 													&& [5]Telefones
@@ -457,12 +457,12 @@ Method montaRel() Class Boleto
 	aAdd(::aDadosEmp,"I.E.: "+Transform(SM0->M0_INSC,"@R 999.999.999.999")) 						&& [7]I.E
 
 	dbGoTop()
-	ProcRegua(SE1->(RecCount())) && Define o Tamanho Máximo da Régua de Processamento	
+	ProcRegua(SE1->(RecCount())) && Define o Tamanho Mï¿½ximo da Rï¿½gua de Processamento	
 
-	Do While SE1->(!EOF()) && Percorre o Arquivo do SE1 Ativo que está filtrado	
+	Do While SE1->(!EOF()) && Percorre o Arquivo do SE1 Ativo que estï¿½ filtrado	
 	
 	
-		IncProc()  && Incrementa a Régua de Processamento
+		IncProc()  && Incrementa a Rï¿½gua de Processamento
 		nItens+= 1 && Contabiliza Itens a Percorrer
 		
 		if !Marked("E1_OK")
@@ -474,13 +474,13 @@ Method montaRel() Class Boleto
 		SA1->(dbSeek( xFilial("SA1") + SE1->E1_CLIENTE + SE1->E1_LOJA  ))	    
 		
 		If (SA1->A1_BCO1 $ "CXC CX1")
-			MsgInfo("Banco do Cliente é :" + SA1->A1_BCO1 + xcR + " O Boleto não será Impresso!!!!")
+			MsgInfo("Banco do Cliente ï¿½ :" + SA1->A1_BCO1 + xcR + " O Boleto nï¿½o serï¿½ Impresso!!!!")
 		   	SE1->(dbSkip())
 			Loop
 		Endif
        	
        	If !Empty(SE1->E1_NUMBCO)
-       		If MsgYesNo("Reimpressão do Título no. "+Alltrim(SE1->E1_NUM)+" Parc. "+Alltrim(SE1->E1_PARCELA)+"?")
+       		If MsgYesNo("Reimpressï¿½o do Tï¿½tulo no. "+Alltrim(SE1->E1_NUM)+" Parc. "+Alltrim(SE1->E1_PARCELA)+"?")
 
        			If !(Upper(Alltrim(cUsername)) $ Upper(Alltrim(GetMv("ZZ_USERBOL"))))
 		
@@ -494,20 +494,20 @@ Method montaRel() Class Boleto
        		Endif
        	Endif
         
-        &&&&&&& 1a. Regra: FOB com Redespacho é sempre boleto impresso pelo Banco:    
+        &&&&&&& 1a. Regra: FOB com Redespacho ï¿½ sempre boleto impresso pelo Banco:    
 		SD2->(dbSetOrder(3))
 		If SD2->(dbSeek( xFilial("SD2") + SE1->E1_NUM + SE1->E1_PREFIXO + SE1->E1_CLIENTE + SE1->E1_LOJA ))
 			SC5->(dbSetOrder(1))
 			If SC5->(dbSeek( xFilial("SC5") + SD2->D2_PEDIDO ))				
 				If SC5->C5_TPFRETE == "F" .and. !Empty(SC5->C5_REDESP) .AND. !(SC5->C5_ZZTPOPE $ GETMV('MB_TPOPERA'))
-		    		Alert('1a. Regra: FOB com Redespacho é sempre boleto impresso pelo Banco' + Char(13) + Char(10) + 'Pedido: ' + SD2->D2_PEDIDO + Char(13) + Char(10) + 'Tipo de Frete: ' + SC5->C5_TPFRETE + Char(13) + Char(10) + 'Redespacho: ' + SC5->C5_REDESP ,'ALERTA MB')
+		    		Alert('1a. Regra: FOB com Redespacho ï¿½ sempre boleto impresso pelo Banco' + Char(13) + Char(10) + 'Pedido: ' + SD2->D2_PEDIDO + Char(13) + Char(10) + 'Tipo de Frete: ' + SC5->C5_TPFRETE + Char(13) + Char(10) + 'Redespacho: ' + SC5->C5_REDESP ,'ALERTA MB')
 		    		SE1->(dbSkip())
 					Loop				
 				Endif
 			Endif
 		Endif
 
-		&&&&&&& 2a. Regra: Verifica se cobra taxa do cliente, se cobrar busca valor no parâmetro ZZ_TXBOL:    
+		&&&&&&& 2a. Regra: Verifica se cobra taxa do cliente, se cobrar busca valor no parï¿½metro ZZ_TXBOL:    
 		nTaxa := 0		
 	    SA1->(dbSetOrder(1))
 	    If SA1->(dbSeek( xFilial("SA1") + SE1->E1_CLIENTE + SE1->E1_LOJA  ))	    
@@ -536,7 +536,7 @@ Method montaRel() Class Boleto
 			&&dbSeek(xFilial("SA6")+SE1->E1_PORTADO+SE1->E1_AGEDEP+SE1->E1_CONTA,.T.)
 			dbSeek(xFilial("SA6")+mv_par17+mv_par18+mv_par19,.T.)
 
-			&& Posiciona na Arq de Parâmetros do Banco / CNAB
+			&& Posiciona na Arq de Parï¿½metros do Banco / CNAB
 			dbSelectArea("SEE")
 			dbSetOrder(1)
 			&&dbSeek(xFilial("SEE")+SE1->(E1_PORTADO+E1_AGEDEP+E1_CONTA)+M->MV_PAR20,.T.)
@@ -551,31 +551,31 @@ Method montaRel() Class Boleto
 			::aDadosBanco := {}
 			aAdd(::aDadosBanco,SA6->A6_COD)													&& [1]Numero do Banco
 			aAdd(::aDadosBanco,SA6->A6_NREDUZ)												&& [2]Nome do Banco
-			aAdd(::aDadosBanco,subStr(SA6->A6_AGENCIA, 1, 5))								&& [3]Agência
+			aAdd(::aDadosBanco,subStr(SA6->A6_AGENCIA, 1, 5))								&& [3]Agï¿½ncia
 			aAdd(::aDadosBanco,subStr(SA6->A6_NUMCON,1,Len(alltrim(SA6->A6_NUMCON))-2)) 	&& [4]Conta Corrente
-			aAdd(::aDadosBanco,subStr(SA6->A6_NUMCON,Len(alltrim(SA6->A6_NUMCON)),1))		&& [5]Dígito da conta corrente
+			aAdd(::aDadosBanco,subStr(SA6->A6_NUMCON,Len(alltrim(SA6->A6_NUMCON)),1))		&& [5]Dï¿½gito da conta corrente
 			aAdd(::aDadosBanco,"17-019") 													&& [6]Codigo da Carteira Completo
 			aAdd(::aDadosBanco,alltrim(SEE->EE_ZZCART))										&& [7]Carteira - Campo Pers. no SEE
-			aAdd(::aDadosBanco,alltrim(SEE->EE_CODEMP)) 									&& [8]Convênio do Banco
-			aAdd(::aDadosBanco,Len(alltrim(SEE->EE_CODEMP))) 								&& [9]Nº de Dígitos do Convênio do Banco
-			aAdd(::aDadosBanco,SEE->EE_FAXATU) 												&& [10]Nº Seq. Interno para Uso com o Boleto
+			aAdd(::aDadosBanco,alltrim(SEE->EE_CODEMP)) 									&& [8]Convï¿½nio do Banco
+			aAdd(::aDadosBanco,Len(alltrim(SEE->EE_CODEMP))) 								&& [9]Nï¿½ de Dï¿½gitos do Convï¿½nio do Banco
+			aAdd(::aDadosBanco,SEE->EE_FAXATU) 												&& [10]Nï¿½ Seq. Interno para Uso com o Boleto
 			aAdd(::aDadosBanco,"")
 			
 			&& Carrega os Dados do Cliente
 			::aDadosSac:={}
 			if Empty(SA1->A1_ENDCOB)
-				aAdd(::aDadosSac,alltrim(SA1->A1_NOME))   		    		            && [1]Razão Social
-				aAdd(::aDadosSac,alltrim(SA1->A1_COD)+"-"+SA1->A1_LOJA)		    		&& [2]Código
-				aAdd(::aDadosSac,alltrim(SA1->A1_END)+"-"+alltrim(SA1->A1_BAIRRO)) 		&& [3]Endereço
+				aAdd(::aDadosSac,alltrim(SA1->A1_NOME))   		    		            && [1]Razï¿½o Social
+				aAdd(::aDadosSac,alltrim(SA1->A1_COD)+"-"+SA1->A1_LOJA)		    		&& [2]Cï¿½digo
+				aAdd(::aDadosSac,alltrim(SA1->A1_END)+"-"+alltrim(SA1->A1_BAIRRO)) 		&& [3]Endereï¿½o
 				aAdd(::aDadosSac,alltrim(SA1->A1_MUN))							    	&& [4]Cidade
 				aAdd(::aDadosSac,SA1->A1_EST)											&& [5]Estado
 				aAdd(::aDadosSac,SA1->A1_CEP) 											&& [6]CEP
 				aAdd(::aDadosSac,SA1->A1_CGC) 									    	&& [7]CNPJ
 				aAdd(::aDadosSac,SA1->A1_PESSOA)								    	&& [8]PESSOA	
 			else
-				aAdd(::aDadosSac,alltrim(SA1->A1_NOME))		    		                && [1]Razão Social
-				aAdd(::aDadosSac,alltrim(SA1->A1_COD)+"-"+SA1->A1_LOJA)		    		&& [2]Código
-				aAdd(::aDadosSac,alltrim(SA1->A1_ENDCOB)+"-"+alltrim(SA1->A1_BAIRROC)) 	&& [3]Endereço
+				aAdd(::aDadosSac,alltrim(SA1->A1_NOME))		    		                && [1]Razï¿½o Social
+				aAdd(::aDadosSac,alltrim(SA1->A1_COD)+"-"+SA1->A1_LOJA)		    		&& [2]Cï¿½digo
+				aAdd(::aDadosSac,alltrim(SA1->A1_ENDCOB)+"-"+alltrim(SA1->A1_BAIRROC)) 	&& [3]Endereï¿½o
 				aAdd(::aDadosSac,alltrim(SA1->A1_MUNC))							    	&& [4]Cidade
 				aAdd(::aDadosSac,SA1->A1_ESTC)											&& [5]Estado
 				aAdd(::aDadosSac,SA1->A1_CEPC) 											&& [6]CEP
@@ -583,17 +583,17 @@ Method montaRel() Class Boleto
 				aAdd(::aDadosSac,SA1->A1_PESSOA)								    	&& [8]PESSOA	
 			endif
 			                  
-			&& Carrega os Dados do Título
+			&& Carrega os Dados do Tï¿½tulo
 			::aDadosTit:={}
-			aAdd(::aDadosTit,alltrim(SE1->E1_NUM)+alltrim(SE1->E1_PARCELA))				&& [1] Número do título
-			aAdd(::aDadosTit,SE1->E1_EMISSAO)											&& [2] Data da emissão do título
-			aAdd(::aDadosTit,dDataBase)													&& [3] Data da emissão do boleto
+			aAdd(::aDadosTit,alltrim(SE1->E1_NUM)+alltrim(SE1->E1_PARCELA))				&& [1] Nï¿½mero do tï¿½tulo
+			aAdd(::aDadosTit,SE1->E1_EMISSAO)											&& [2] Data da emissï¿½o do tï¿½tulo
+			aAdd(::aDadosTit,dDataBase)													&& [3] Data da emissï¿½o do boleto
 			aAdd(::aDadosTit,SE1->E1_VENCTO)                 							&& [4] Data do vencimento
-			aAdd(::aDadosTit,((SE1->E1_SALDO + nTaxa) - SomaAbat(SE1->E1_PREFIXO,SE1->E1_NUM,SE1->E1_PARCELA,"R",1,,SE1->E1_CLIENTE,SE1->E1_LOJA)))&& [5] Valor do título
-			aAdd(::aDadosTit,SE1->E1_PREFIXO )     										&& [6] Prefixo do Título
-			aAdd(::aDadosTit,"DM")	      												&& [7] Tipo do Titulo Espécie de Docto Padrao (DM=DUPLICATA MERCANTIL, DS=DUPLICATA DE SERVIÇO, RC=RECIBO)
+			aAdd(::aDadosTit,((SE1->E1_SALDO + nTaxa) - SomaAbat(SE1->E1_PREFIXO,SE1->E1_NUM,SE1->E1_PARCELA,"R",1,,SE1->E1_CLIENTE,SE1->E1_LOJA)))&& [5] Valor do tï¿½tulo
+			aAdd(::aDadosTit,SE1->E1_PREFIXO )     										&& [6] Prefixo do Tï¿½tulo
+			aAdd(::aDadosTit,"DM")	      												&& [7] Tipo do Titulo Espï¿½cie de Docto Padrao (DM=DUPLICATA MERCANTIL, DS=DUPLICATA DE SERVIï¿½O, RC=RECIBO)
             
-		 	&& Carrega as Frases Padrões
+		 	&& Carrega as Frases Padrï¿½es
 		 	::aFrases := {}       
 /*
 	 		aAdd(::aFrases,MV_PAR21)
@@ -602,18 +602,18 @@ Method montaRel() Class Boleto
 */
 
 	 		aAdd(::aFrases,'Juros de R$ '+AllTrim(Transform(Round(((SE1->E1_SALDO + nTaxa) - SomaAbat(SE1->E1_PREFIXO,SE1->E1_NUM,SE1->E1_PARCELA,"R",1,,SE1->E1_CLIENTE,SE1->E1_LOJA)) * GetMV('MB_TXJUROS'),2),"999,999,999.99")) + ' ao dia')
-	 		aAdd(::aFrases,'Multa de R$ '+AllTrim(Transform(Round(((SE1->E1_SALDO + nTaxa) - SomaAbat(SE1->E1_PREFIXO,SE1->E1_NUM,SE1->E1_PARCELA,"R",1,,SE1->E1_CLIENTE,SE1->E1_LOJA)) * GetMV('MB_TXMULTA'),2),"999,999,999.99")) + ' após vencimento')
-	 		aAdd(::aFrases,'Protesto após (05 DIAS) do vencimento')		 	
+	 		aAdd(::aFrases,'Multa de R$ '+AllTrim(Transform(Round(((SE1->E1_SALDO + nTaxa) - SomaAbat(SE1->E1_PREFIXO,SE1->E1_NUM,SE1->E1_PARCELA,"R",1,,SE1->E1_CLIENTE,SE1->E1_LOJA)) * GetMV('MB_TXMULTA'),2),"999,999,999.99")) + ' apï¿½s vencimento')
+	 		aAdd(::aFrases,'Protesto apï¿½s (05 DIAS) do vencimento')		 	
 
-	 		aAdd(::aFrases,"PARCELA Nº " + SE1->E1_PARCELA )		 	
+	 		aAdd(::aFrases,"PARCELA Nï¿½ " + SE1->E1_PARCELA )		 	
 		 	/*
 		 	if ::cBanco == "001"
-		 		aAdd(::aFrases,"Juros de Mora de 4,00% ao mês")
+		 		aAdd(::aFrases,"Juros de Mora de 4,00% ao mï¿½s")
 		 		aAdd(::aFrases,"")
 		 		aAdd(::aFrases,"")
 		 	elseif ::cBanco == "655"
-		 		aAdd(::aFrases,"Titulo entregue em cessão fiduciária em favor do cedente acima") && MV_PAR23)
-				aAdd(::aFrases,"Juros de Mora de 3,00% ao mês") && MV_PAR22)
+		 		aAdd(::aFrases,"Titulo entregue em cessï¿½o fiduciï¿½ria em favor do cedente acima") && MV_PAR23)
+				aAdd(::aFrases,"Juros de Mora de 3,00% ao mï¿½s") && MV_PAR22)
 				aAdd(::aFrases,"") && MV_PAR23)
 			elseif ::cBanco == "422"
 		 		aAdd(::aFrases,"")
@@ -621,7 +621,7 @@ Method montaRel() Class Boleto
 		 		aAdd(::aFrases,"")
 			endif*/
  
-			&& Substitui o conteúdo de %E1_PORCJUR% nas Frases com Valores do Título
+			&& Substitui o conteï¿½do de %E1_PORCJUR% nas Frases com Valores do Tï¿½tulo
 			if SE1->E1_PORCJUR > 0
 				::aFrases[1]:= STRTRAN(::aFrases[1],"%E1_PORCJUR%",alltrim(Transform((::aDadosTit[5]*SE1->E1_PORCJUR/100),"@E 99,999.9999"))+" ( "+cValToChar(SE1->E1_PORCJUR)+"% )")
 				::aFrases[2]:= STRTRAN(::aFrases[2],"%E1_PORCJUR%",alltrim(Transform((::aDadosTit[5]*SE1->E1_PORCJUR/100),"@E 99,999.9999"))+" ( "+cValToChar(SE1->E1_PORCJUR)+"% )")
@@ -630,12 +630,12 @@ Method montaRel() Class Boleto
 				For nCont:=1 to 3 && Para as 3 mensagens
 					nPos:= aScan(::aFrases,{|cTexto| "%E1_PORCJUR%" $ cTexto })
 					if nPos>0
-						::aFrases[nPos]:="" && Limpa a Frase Inteira caso o conteúdo do campo seja vazio
+						::aFrases[nPos]:="" && Limpa a Frase Inteira caso o conteï¿½do do campo seja vazio
 					endif
 				Next nCont
 			endif
 				
-			&& Substitui o conteúdo de %E1_VALJUR% nas Frases com Valores do Título
+			&& Substitui o conteï¿½do de %E1_VALJUR% nas Frases com Valores do Tï¿½tulo
 			if SE1->E1_VALJUR > 0
 				::aFrases[1]:= STRTRAN(::aFrases[1],"%E1_VALJUR%",alltrim(Transform(SE1->E1_VALJUR,"@E 99,999.99")))
 				::aFrases[2]:= STRTRAN(::aFrases[2],"%E1_VALJUR%",alltrim(Transform(SE1->E1_VALJUR,"@E 99,999.99")))
@@ -644,12 +644,12 @@ Method montaRel() Class Boleto
 				For nCont:=1 to 3 && Para as 3 mensagens
 					nPos:= aScan(::aFrases,{|cTexto| "%E1_VALJUR%" $ cTexto })
 					if nPos>0
-						::aFrases[nPos]:="" && Limpa a Frase Inteira caso o conteúdo do campo seja vazio
+						::aFrases[nPos]:="" && Limpa a Frase Inteira caso o conteï¿½do do campo seja vazio
 					endif
 				Next nCont
 			endif
 	
-			&& Substitui o conteúdo de %E1_DESCFIN% nas Frases com Valores do Título
+			&& Substitui o conteï¿½do de %E1_DESCFIN% nas Frases com Valores do Tï¿½tulo
 			if SE1->E1_DESCFIN > 0
 				::aFrases[1]:= STRTRAN(::aFrases[1],"%E1_DESCFIN%",alltrim(Transform(SE1->E1_DESCFIN,"@E 99,999.99")))
 				::aFrases[2]:= STRTRAN(::aFrases[2],"%E1_DESCFIN%",alltrim(Transform(SE1->E1_DESCFIN,"@E 99,999.99")))
@@ -658,12 +658,12 @@ Method montaRel() Class Boleto
 				For nCont:=1 to 3 && Para as 3 mensagens
 					nPos:= aScan(::aFrases,{|cTexto| cTexto $ "%E1_DESCFIN%"})
 					if nPos>0
-						::aFrases[nPos]:="" && Limpa a Frase Inteira caso o conteúdo do campo seja vazio
+						::aFrases[nPos]:="" && Limpa a Frase Inteira caso o conteï¿½do do campo seja vazio
 					endif
 				Next nCont
 			endif
 	  
-			&& Calcula a data limite para protesto e substitui a clausula %cDt% nas mensagens do título
+			&& Calcula a data limite para protesto e substitui a clausula %cDt% nas mensagens do tï¿½tulo
 			::SomaUtil(SE1->E1_VENCREA,3)
 			If !Empty(::aFrases)
 				::aFrases[1]:= STRTRAN(::aFrases[1],"%cDt%",dToc(::cProtesto))
@@ -671,32 +671,32 @@ Method montaRel() Class Boleto
 				::aFrases[3]:= STRTRAN(::aFrases[3],"%cDt%",dToc(::cProtesto))
 			EndIf
 
-			&& Define o Código do Nosso Número
+			&& Define o Cï¿½digo do Nosso Nï¿½mero
 			::NossoNro(SE1->E1_NUMBCO) 
 			
-			&& Define o Código de Barras e a Linha Digitável
+			&& Define o Cï¿½digo de Barras e a Linha Digitï¿½vel
 			::CodBarra()
 			
-			&& Imprime o Relatório para os Dados Atualmente Selecionados
+			&& Imprime o Relatï¿½rio para os Dados Atualmente Selecionados
 			::PrintRel() 
 			
-			nTit+= 1 && Contabiliza títulos impressos
+			nTit+= 1 && Contabiliza tï¿½tulos impressos
 		&& dellano endif
 		SE1->(dbSkip()) && Pula o Registro SE1 Filtrado
 	EndDo
 	
 	if nTit>0  && Apresenta apenas se houver registros a serem impressos
-		::oReport:EndPage()     && Finaliza a página
-		::oReport:Setup()       && Apresenta o Seletor para Escolha da Impressora a Utilizar na Impressão
+		::oReport:EndPage()     && Finaliza a pï¿½gina
+		::oReport:Setup()       && Apresenta o Seletor para Escolha da Impressora a Utilizar na Impressï¿½o
 		::oReport:Preview()     && Visualiza antes de imprimir	
 	endif
 return
 
 && #########################################################################
-&& MÉTODOS PARA CÁLCULO DO NOSSO NÚMERO, DO CÓDIGO DE BARRA E LINHA DIGITÁVEL 
+&& Mï¿½TODOS PARA Cï¿½LCULO DO NOSSO Nï¿½MERO, DO Cï¿½DIGO DE BARRA E LINHA DIGITï¿½VEL 
 && #########################################################################
 
-&& Define o Nosso Número de Acordo com o Banco, Carteira e Convênio, utilizando o Código Seq. como parte do Nosso Número
+&& Define o Nosso Nï¿½mero de Acordo com o Banco, Carteira e Convï¿½nio, utilizando o Cï¿½digo Seq. como parte do Nosso Nï¿½mero
 && Alimenta o Atributo NossoNum e Retorna o valor do Atributo
 Method nossoNro(cNossNroOld) Class Boleto
 
@@ -706,87 +706,87 @@ Method nossoNro(cNossNroOld) Class Boleto
 	
 	local cBanco	:= alltrim(::aDadosBanco[1])
 	local cAgencia	:= alltrim(::aDadosBanco[3])
-	local cConta	:= alltrim(::aDadosBanco[4]) && Sem Dígito Verificador (DAC)
+	local cConta	:= alltrim(::aDadosBanco[4]) && Sem Dï¿½gito Verificador (DAC)
 	local cCarteira := alltrim(::aDadosBanco[7])
 	local cConvenio	:= alltrim(::aDadosBanco[8])
 	local nDigConv	:= ::aDadosBanco[9]
 	local cCodSeq	:= alltrim(::aDadosBanco[10])
 	
-	&& cNossNroOld := "" && Dellano - Força o calculo
+	&& cNossNroOld := "" && Dellano - Forï¿½a o calculo
 	
 	if !Empty(cNossNroOld)
 		cNossoNro:= cNossNroOld
 	else		
 		&& Banco do Brasil
 		if cBanco == "001" 
-			if cCarteira == "18" && Cobrança Simples - Boleto Impresso na Empresa
+			if cCarteira == "18" && Cobranï¿½a Simples - Boleto Impresso na Empresa
 			
-				cBase	   := alltrim(cConvenio)+alltrim(cCodSeq) && Convênio + Nº Seq.
+				cBase	   := alltrim(cConvenio)+alltrim(cCodSeq) && Convï¿½nio + Nï¿½ Seq.
 				
-				if nDigConv == 4 && Dígitos do Convênio de 4 Dígitos
-					&& Convenio deve ter 4 Dígitos e Nº Seq. 7 Dígitos = 11 Dígitos
-					cDV	   := U_Modulo11(cBase,9,2,cBanco) && 12 Dígitos no Total com Dígito Verif.					
-				elseif nDigConv == 6 && Dígitos do Convênio de 6 Dígitos
-					&& Convenio deve ter 6 Dígitos e Nº Seq. 5 Dígitos = 11 Dígitos
-					cDV	   := U_Modulo11(cBase,9,2,cBanco) && 12 Dígitos no Total com Dígito Verif.
-				elseif nDigConv == 7 && Convênio de 7 Dígitos
-					&& Convenio deve ter 7 Dígitos e Nº Seq. 10 Dígitos  = 17 Dígitos
-					cDV	   := "" && 17 Dígitos no Total Sem DV
+				if nDigConv == 4 && Dï¿½gitos do Convï¿½nio de 4 Dï¿½gitos
+					&& Convenio deve ter 4 Dï¿½gitos e Nï¿½ Seq. 7 Dï¿½gitos = 11 Dï¿½gitos
+					cDV	   := U_Modulo11(cBase,9,2,cBanco) && 12 Dï¿½gitos no Total com Dï¿½gito Verif.					
+				elseif nDigConv == 6 && Dï¿½gitos do Convï¿½nio de 6 Dï¿½gitos
+					&& Convenio deve ter 6 Dï¿½gitos e Nï¿½ Seq. 5 Dï¿½gitos = 11 Dï¿½gitos
+					cDV	   := U_Modulo11(cBase,9,2,cBanco) && 12 Dï¿½gitos no Total com Dï¿½gito Verif.
+				elseif nDigConv == 7 && Convï¿½nio de 7 Dï¿½gitos
+					&& Convenio deve ter 7 Dï¿½gitos e Nï¿½ Seq. 10 Dï¿½gitos  = 17 Dï¿½gitos
+					cDV	   := "" && 17 Dï¿½gitos no Total Sem DV
 				else
 					cDV	   := "" && Sem DV
 				endif
 
-				cNossoNro  := cBase + cDV && Grava o Nosso Número Completo
+				cNossoNro  := cBase + cDV && Grava o Nosso Nï¿½mero Completo
 					
-				&& Atualiza o Numero Sequencial do Cadastro de Parâmetros Banco
+				&& Atualiza o Numero Sequencial do Cadastro de Parï¿½metros Banco
 				GrvNumSeq(Soma1(alltrim(cCodSeq)))
 				
 			elseif cCarteira == "17"
 
 				if nDigConv == 7
-					cBase := alltrim(cConvenio)+right(alltrim(cCodSeq),10) && Convênio + Nº Seq.
+					cBase := alltrim(cConvenio)+right(alltrim(cCodSeq),10) && Convï¿½nio + Nï¿½ Seq.
 					cDV	  := ""
-				elseif nDigConv == 6 && Dígitos do Convênio de 6 Dígitos
-					&& Convenio deve ter 6 Dígitos e Nº Seq. 5 Dígitos = 11 Dígitos
-					cBase := alltrim(cConvenio)+right(alltrim(cCodSeq),5) && Convênio + Nº Seq.
-					cDV	  := U_Modulo11(cBase,9,2,cBanco) && 12 Dígitos no Total com Dígito Verif.
+				elseif nDigConv == 6 && Dï¿½gitos do Convï¿½nio de 6 Dï¿½gitos
+					&& Convenio deve ter 6 Dï¿½gitos e Nï¿½ Seq. 5 Dï¿½gitos = 11 Dï¿½gitos
+					cBase := alltrim(cConvenio)+right(alltrim(cCodSeq),5) && Convï¿½nio + Nï¿½ Seq.
+					cDV	  := U_Modulo11(cBase,9,2,cBanco) && 12 Dï¿½gitos no Total com Dï¿½gito Verif.
 				endif
 				
-				cNossoNro  := cBase + cDV && Grava o Nosso Número Completo
+				cNossoNro  := cBase + cDV && Grava o Nosso Nï¿½mero Completo
 
-				&& Atualiza o Numero Sequencial do Cadastro de Parâmetros Banco
+				&& Atualiza o Numero Sequencial do Cadastro de Parï¿½metros Banco
 				GrvNumSeq(Soma1(alltrim(cCodSeq)))
 				
-		    elseif cCarteira == "11" && Boleto Impresso no Banco, bem como geração do Nosso Número.
+		    elseif cCarteira == "11" && Boleto Impresso no Banco, bem como geraï¿½ï¿½o do Nosso Nï¿½mero.
 		    
 		    	cNossoNro := "00000000000000000"
 		    endif
 
-		&& Caixa Econômica Federal
+		&& Caixa Econï¿½mica Federal
 		elseif cBanco == "104"
-			if cCarteira == "12" && Cobrança Simples - Boleto Impresso na Empresa
+			if cCarteira == "12" && Cobranï¿½a Simples - Boleto Impresso na Empresa
 				cBase	  := "9"+subStr(cCodSeq,4,9)
 				cDV		  := U_Modulo11(cBase,7,2,cBanco)
 				cNossoNro := cBase + cDV
 				
-				&& Atualiza o Numero Sequencial do Cadastro de Parâmetros Banco
+				&& Atualiza o Numero Sequencial do Cadastro de Parï¿½metros Banco
 				GrvNumSeq(strZero(val(cCodSeq)+1,12))
 							
-			elseif cCarteira == "14" && Cobrança sem Registro - Boleto Impresso na Empresa
+			elseif cCarteira == "14" && Cobranï¿½a sem Registro - Boleto Impresso na Empresa
 				cBase	  := "82"+subStr(cCodSeq,5,8)
 				cDV		  := U_Modulo11(cBase,7,2,cBanco)
 				cNossoNro := cBase + cDV
 				
-				&& Atualiza o Numero Sequencial do Cadastro de Parâmetros Banco
+				&& Atualiza o Numero Sequencial do Cadastro de Parï¿½metros Banco
 				GrvNumSeq(strZero(val(cCodSeq)+1,12))
 		    endif
 		
 		&& Bradesco ou Safra
 		elseif cBanco == "237" .or. cBanco == "422"
-			if cCarteira == "19" && Cobrança sem Registro
-				cBase	  := alltrim(cCodSeq) && 11 Dígitos Sequenciais
-				cDV	   	  := U_Modulo11(cCarteira+cBase,2,7,cBanco) && 12 Dígitos no Total com Dígito Verif. - Modulo 11 sobre Carteira + Nosso Nro
-				cNossoNro := cBase + cDV && Grava o Nosso Número Completo				
+			if cCarteira == "19" && Cobranï¿½a sem Registro
+				cBase	  := alltrim(cCodSeq) && 11 Dï¿½gitos Sequenciais
+				cDV	   	  := U_Modulo11(cCarteira+cBase,2,7,cBanco) && 12 Dï¿½gitos no Total com Dï¿½gito Verif. - Modulo 11 sobre Carteira + Nosso Nro
+				cNossoNro := cBase + cDV && Grava o Nosso Nï¿½mero Completo				
 
 			elseif cCarteira == "09"
 				cBase	  := subStr(dtos(SE1->E1_EMISSAO),3,2) +alltrim(cCodSeq)
@@ -796,40 +796,40 @@ Method nossoNro(cNossNroOld) Class Boleto
 				cNossoNro := cNossoNro + cDV
 			endif
 			
-			&& Atualiza o Numero Sequencial do Cadastro de Parâmetros Banco
+			&& Atualiza o Numero Sequencial do Cadastro de Parï¿½metros Banco
 			GrvNumSeq(Soma1(alltrim(cCodSeq)))
 			
-		&& Banco Itaú ou Votorantim
+		&& Banco Itaï¿½ ou Votorantim
 		elseif cBanco == "341" .or. cBanco == "655"
-			cBase	  := cCarteira+alltrim(cCodSeq) && 3 Dígitos da Carteira + 8 Dígitos Sequenciais = 11 Dígitos
+			cBase	  := cCarteira+alltrim(cCodSeq) && 3 Dï¿½gitos da Carteira + 8 Dï¿½gitos Sequenciais = 11 Dï¿½gitos
 			
 			if cCarteira == "126" .Or. cCarteira == "131" .Or. cCarteira == "145" .Or. ;
 				cCarteira == "150" .Or. cCarteira == "168" && Carteiras Escriturais e na Modalidade Direta
 				
-				cDV:= U_Modulo10(cBase,2,1,"Divisor") && 12 Dígitos no Total com Dígito Verif. - Somente Carteira e Num. Seq.
+				cDV:= U_Modulo10(cBase,2,1,"Divisor") && 12 Dï¿½gitos no Total com Dï¿½gito Verif. - Somente Carteira e Num. Seq.
 			else				  
-				cDV:= U_Modulo10(cAgencia+cConta+cBase,2,1,"Divisor") && 12 Dígitos no Total com Dígito Verif. - Agencia+CC sem DAC+Carteira+Num. Seq
+				cDV:= U_Modulo10(cAgencia+cConta+cBase,2,1,"Divisor") && 12 Dï¿½gitos no Total com Dï¿½gito Verif. - Agencia+CC sem DAC+Carteira+Num. Seq
 			endif			
-			cNossoNro := cBase + cDV && Grava o Nosso Número Completo							
+			cNossoNro := cBase + cDV && Grava o Nosso Nï¿½mero Completo							
 			
-			&& Atualiza o Numero Sequencial do Cadastro de Parâmetros Banco			
+			&& Atualiza o Numero Sequencial do Cadastro de Parï¿½metros Banco			
 			GrvNumSeq(Soma1(alltrim(cCodSeq)))
 		endif		
 	endif
 	
-	&& Grava o Último Nº Gerado como Atributo para Uso Posterior
+	&& Grava o ï¿½ltimo Nï¿½ Gerado como Atributo para Uso Posterior
 	If !Empty(Alltrim(cNossoNro))
 		::cNossoNum:= Alltrim(cNossoNro)
 	Else
 		::cNossoNum:= ::RetNossoNro()		
 	Endif	
 	
-    && Armazena o Nosso Número no Arquivo
+    && Armazena o Nosso Nï¿½mero no Arquivo
     ::GrvNossNum()
           
 return (::cNossoNum)
 
-&& Grava o Número Sequencial no Arquivo de Configurações do Banco/CNAB
+&& Grava o Nï¿½mero Sequencial no Arquivo de Configuraï¿½ï¿½es do Banco/CNAB
 Static Function GrvNumSeq(cCodSeq)
 	dbSelectArea("SEE")
 	RecLock("SEE")
@@ -837,9 +837,9 @@ Static Function GrvNumSeq(cCodSeq)
 	MsUnLock()		
 return
 
-&& Grava o Nosso Número e que o Boleto foi impresso na Base no SE1 Posicionado
+&& Grava o Nosso Nï¿½mero e que o Boleto foi impresso na Base no SE1 Posicionado
 Method grvNossNum() Class Boleto
-	&& Armazena o nosso Número Gerado no SE1
+	&& Armazena o nosso Nï¿½mero Gerado no SE1
 	dbSelectArea("SE1")
 	RecLock("SE1",.f.)
 	SE1->E1_NUMBCO := ::cNossoNum
@@ -847,7 +847,7 @@ Method grvNossNum() Class Boleto
 	MsUnlock()
 return
 
-&& Retorna o Nosso Número Formatado, Conforme o Banco e Convênio
+&& Retorna o Nosso Nï¿½mero Formatado, Conforme o Banco e Convï¿½nio
 Method retNossoNro() Class Boleto
 
 	local cBanco	:= ::aDadosBanco[1]
@@ -856,9 +856,9 @@ Method retNossoNro() Class Boleto
   
 	 && Banco do Brasil
 	if cBanco == "001" .and. Empty(cNossoNro)
-		if nDigConv == 6 && Dígitos do Convênio de 6 Dígitos
+		if nDigConv == 6 && Dï¿½gitos do Convï¿½nio de 6 Dï¿½gitos
 			cNossoNro:= left(cNossoNro,Len(cNossoNro)-1) + "-" + Right(cNossoNro,1)
-		elseif nDigConv == 7 && Dígitos do Convênio de 7 Dígitos
+		elseif nDigConv == 7 && Dï¿½gitos do Convï¿½nio de 7 Dï¿½gitos
 			cNossoNro:= cNossoNro
 		else
 			cNossoNro:= cNossoNro
@@ -872,7 +872,7 @@ Method retNossoNro() Class Boleto
 	elseif cBanco == "422" .and. Empty(cNossoNro)
 		cNossoNro:= left(cNossoNro,4) + "/" + subStr(cNossoNro,5,Len(allTrim(cNossoNro))-5) + "-" + Right(cNossoNro,1)
 
-	&& Banco Itaú ou Votorantim
+	&& Banco Itaï¿½ ou Votorantim
 	elseif (cBanco == "341" .or. cBanco == "655") .and. Empty(cNossoNro)
 		cNossoNro:= left(cNossoNro,3) + "/" + subStr(cNossoNro,4,Len(cNossoNro)-4) + "-" + Right(cNossoNro,1)	
 		
@@ -882,7 +882,7 @@ Method retNossoNro() Class Boleto
 	
 return (cNossoNro)
 
-&& Define o Código de Barras e a Linha Digitável do Boleto
+&& Define o Cï¿½digo de Barras e a Linha Digitï¿½vel do Boleto
 Method CodBarra() Class Boleto   
 
 	local cBanco	  := ::aDadosBanco[1]
@@ -893,7 +893,7 @@ Method CodBarra() Class Boleto
 	local nDigConv	  := ::aDadosBanco[9]
 	local cCodSeq	  := ::aDadosBanco[10]
 	local cVencto	  := DTOS(::aDadosTit[4]) && Converte para AAAAMMDD
-	local cMoeda	  := "9" && Código da Moeda no Banco - 9 = Real
+	local cMoeda	  := "9" && Cï¿½digo da Moeda no Banco - 9 = Real
 	local cNNumSemDV  := "" 
 	local cCampoLivre := ""
 	local cFator	  := ""
@@ -907,21 +907,21 @@ Method CodBarra() Class Boleto
 	local cParte4	  := ""
 	local cParte5	  := ""
 	
-    && Ajusta a Agencia para 4 Dígitos
+    && Ajusta a Agencia para 4 Dï¿½gitos
 	cAgencia:=left(cAgencia,4)
 		
-	&& Define o Nosso Número sem DV e Parte do Campo Livre
-	&& Variável para Cada Banco e cada Tipo de Convênio
+	&& Define o Nosso Nï¿½mero sem DV e Parte do Campo Livre
+	&& Variï¿½vel para Cada Banco e cada Tipo de Convï¿½nio
 	if cBanco == "001" && Banco do Brasil
-		if nDigConv == 4 && Dígitos do Convênio de 4 Dígitos (Com DV)
+		if nDigConv == 4 && Dï¿½gitos do Convï¿½nio de 4 Dï¿½gitos (Com DV)
 			cNNumSemDV  := left(::cNossoNum,11)
 			cCampoLivre := cNNumSemDV+cAgencia+strZero(val(cConta),8)+cCarteira	&& 11 + 4 + 8 + 2 = 25
 			
-		elseif nDigConv == 6 && Dígitos do Convênio de 6 Dígitos (Com DV)
+		elseif nDigConv == 6 && Dï¿½gitos do Convï¿½nio de 6 Dï¿½gitos (Com DV)
 			cNNumSemDV  := left(::cNossoNum,11)
 			cCampoLivre := cNNumSemDV+cAgencia+strZero(val(cConta),8)+cCarteira && 11 + 4 + 8 + 2 = 25
 		
-		elseif nDigConv == 7 && Dígitos do Convênio de 7 Dígitos (Sem DV) - Faixa Acima de 1.000.000 - Somente para Carteiras 16 e 18
+		elseif nDigConv == 7 && Dï¿½gitos do Convï¿½nio de 7 Dï¿½gitos (Sem DV) - Faixa Acima de 1.000.000 - Somente para Carteiras 16 e 18
 			cNNumSemDV  := ::cNossoNum
 			cCampoLivre := "000000"+cNNumSemDV+"21" && 6 + 17 + 2 = 25 
 		
@@ -940,35 +940,35 @@ Method CodBarra() Class Boleto
 		cNNumSemDV  := left(::cNossoNum,13)
 		cCampoLivre := cAgencia+cNNumSemDV+strZero(val(cConta),7) +"0" && 4 + 2 + 11 + 7 + 1 = 25		
 		
-	&& Banco Itaú ou Votorantim
+	&& Banco Itaï¿½ ou Votorantim
 	elseif cBanco == "341" .or. cBanco == "655"
 		cNNumSemDV  := left(::cNossoNum,11)
 		cCampoLivre := cNNumSemDV+Right(::cNossoNum,1)+cAgencia+strZero(val(cConta),5)+U_Modulo10(cAgencia+cConta,2,1,"Divisor")+"000"	&& 11 + 1 + 4 + 5 + 1 + 3 = 25	
 	
-	else && Para outros Bancos - Estudar as Especificações de Outros Bancos
+	else && Para outros Bancos - Estudar as Especificaï¿½ï¿½es de Outros Bancos
 		cNNumSemDV:= ::cNossoNum
 		cCampoLivre := cNNumSemDV+cAgencia+strZero(val(cConta),8)+cCarteira && 11 + 4 + 8 + 2 = 25 
 	endif
 	
-	&& Define o Fator de Vencimento com o Valor do Título
+	&& Define o Fator de Vencimento com o Valor do Tï¿½tulo
 	
 	&& Banco do Brasil
 	if cBanco == "001"
 		&& Regra: Deduzir do Vencto a Data Base de 03/07/2000 e Acrescer a 1000
-		cFator := Str(1000+(STOD(cVencto)-STOD("20000703")),4) && Fator = 4 Dígitos
-		cFator += strZero(::aDadosTit[5]*100,10) && Valor = 10 Dígitos
+		cFator := Str(1000+(STOD(cVencto)-STOD("20000703")),4) && Fator = 4 Dï¿½gitos
+		cFator += strZero(::aDadosTit[5]*100,10) && Valor = 10 Dï¿½gitos
 	
 	&& Bradesco ou Safra
 	elseif cBanco == "237" .or. cBanco == "422"
 		&& Regra: Deduzir do Vencto a Data Base de 07/10/1997 e Acrescer a 1000
-		cFator := strZero(STOD(cVencto)-STOD("19971007"),4) && Fator = 4 Dígitos
-		cFator += strZero(::aDadosTit[5]*100,10) && Valor = 10 Dígitos		
+		cFator := strZero(STOD(cVencto)-STOD("19971007"),4) && Fator = 4 Dï¿½gitos
+		cFator += strZero(::aDadosTit[5]*100,10) && Valor = 10 Dï¿½gitos		
 	
 	&& Outros Bancos
 	else
 		&& Regra: Deduzir do Vencto a Data Base de 03/07/2000 e Acrescer a 1000
-		cFator := Str(1000+(STOD(cVencto)-STOD("20000703")),4) && Fator = 4 Dígitos
-		cFator += strZero(::aDadosTit[5]*100,10) && Valor = 10 Dígitos	
+		cFator := Str(1000+(STOD(cVencto)-STOD("20000703")),4) && Fator = 4 Dï¿½gitos
+		cFator += strZero(::aDadosTit[5]*100,10) && Valor = 10 Dï¿½gitos	
 	endif
 		
 	&& Define o Campo Livre
@@ -980,13 +980,13 @@ Method CodBarra() Class Boleto
 		cCampoLivre := cBanco+cMoeda+cFator+cCampoLivre
 	endif
 	
- 	&& Dígito Verificador do Campo Livre
+ 	&& Dï¿½gito Verificador do Campo Livre
 	cDigBarra   := U_Modulo11(cCampoLivre,2,9,cBanco,2)
 
-	&& Composição Final do Código de Barra
+	&& Composiï¿½ï¿½o Final do Cï¿½digo de Barra
 	::cCodBarra := subStr(cCampoLivre,1,4)+cDigBarra+subStr(cCampoLivre,5,Len(cCampoLivre))		                                      
 
-	&& Composição da Linha Digitável
+	&& Composiï¿½ï¿½o da Linha Digitï¿½vel
 	if cBanco == "655"
 		cParte1 := "341"
 	elseif cBanco == "422"
@@ -996,16 +996,16 @@ Method CodBarra() Class Boleto
 	endif
 	
 	cParte1  := cParte1 + cMoeda
-	cParte1  := cParte1 + subStr(::cCodBarra,20,5) && Posição 20 a 24 do Cód. de Barras
+	cParte1  := cParte1 + subStr(::cCodBarra,20,5) && Posiï¿½ï¿½o 20 a 24 do Cï¿½d. de Barras
 	cDig1    := U_Modulo10(cParte1,2,1) && Modulo10, alternando com bases de 2 e 1 - DAC
-	cParte2  := subStr(::cCodBarra,25,10) && Posição 25 a 34 do Cód. de Barras
+	cParte2  := subStr(::cCodBarra,25,10) && Posiï¿½ï¿½o 25 a 34 do Cï¿½d. de Barras
 	cDig2    := U_Modulo10(cParte2,2,1) && Modulo10, alternando com bases de 2 e 1 - DAC
-	cParte3  := subStr(::cCodBarra,35,10) && Posição 35 a 44 do Cód. de Barras
+	cParte3  := subStr(::cCodBarra,35,10) && Posiï¿½ï¿½o 35 a 44 do Cï¿½d. de Barras
 	cDig3    := U_Modulo10(cParte3,2,1) && Modulo10, alternando com bases de 2 e 1 - DAC
-	cParte4  := cDigBarra && DV do Cód. de Barra Em Modulo11 Calculado Previamente
+	cParte4  := cDigBarra && DV do Cï¿½d. de Barra Em Modulo11 Calculado Previamente
 	cParte5  := cFator && Fator de Vencto + Valor
 	
-	&& Montagem Final da Linha Digitável
+	&& Montagem Final da Linha Digitï¿½vel
 	::cLinhaDig := 	subStr(cParte1,1,5)+"."+subStr(cparte1,6,4)+cDig1+" "+;
 					subStr(cParte2,1,5)+"."+subStr(cparte2,6,5)+cDig2+" "+;
 					subStr(cParte3,1,5)+"."+subStr(cparte3,6,5)+cDig3+" "+;
@@ -1014,10 +1014,10 @@ Method CodBarra() Class Boleto
 	
 return
 
-&& Executa a Impressão do Relatório Gráfico
+&& Executa a Impressï¿½o do Relatï¿½rio Grï¿½fico
 Method printRel() Class Boleto
 
-	&& DEFINE OS ESTILOS DE FONTES A SEREM UTILIZADOS - O Nº NA VARIÁVEL IDENTIFICA O TAMANHO DA FONTE
+	&& DEFINE OS ESTILOS DE FONTES A SEREM UTILIZADOS - O Nï¿½ NA VARIï¿½VEL IDENTIFICA O TAMANHO DA FONTE
 	&& Parametros de TFont.New(): 1.Nome da Fonte (Windows), 3.Tamanho em Pixels, 5.Bold (T/F)
 	local oFont8   :=TFont():new("Arial",9,8,.T.,.F.,5,.T.,5,.T.,.F.)
 	local oFont10  :=TFont():new("Arial",9,10,.T.,.T.,5,.T.,5,.T.,.F.)
@@ -1040,7 +1040,7 @@ Method printRel() Class Boleto
 	local nHPage   :=0
 	local nVPage   :=0
 	
-	&& Configuração de Posicionamento da Página	
+	&& Configuraï¿½ï¿½o de Posicionamento da Pï¿½gina	
 	nHPage := ::oReport:nHorzRes()
 	nHPage *= (300/::oReport:nLogPixelX())
 	nHPage -= HMARGEM  
@@ -1083,7 +1083,7 @@ Method printRel() Class Boleto
 			::oReport:say(nRow1+0200,100 ,::aDadosEmp[1],oFont10)				&& Nome + CNPJ da Empresa
 		endif
 		
-		::oReport:say(nRow1+0150,1060,"Agência/Código Cedente",oFont8)
+		::oReport:say(nRow1+0150,1060,"Agï¿½ncia/Cï¿½digo Cedente",oFont8)
 		::oReport:say(nRow1+0200,1060,::aDadosBanco[3]+"/"+::aDadosBanco[4]+"-"+::aDadosBanco[5],oFont10)
 		
 		::oReport:say(nRow1+0150,1510,"Nro.Documento",oFont8)
@@ -1098,8 +1098,8 @@ Method printRel() Class Boleto
 		::oReport:say(nRow1+0250,1510,"Valor do Documento",oFont8)
 		::oReport:say(nRow1+0300,1550,Transform(::aDadosTit[5],"@E 99,999,999.99"),oFont10)
 		
-		::oReport:say(nRow1+0400,0100,"Recebi(emos) o bloqueto/título",oFont10)
-		::oReport:say(nRow1+0450,0100,"com as características acima.",oFont10)
+		::oReport:say(nRow1+0400,0100,"Recebi(emos) o bloqueto/tï¿½tulo",oFont10)
+		::oReport:say(nRow1+0450,0100,"com as caracterï¿½sticas acima.",oFont10)
 		::oReport:say(nRow1+0350,1060,"Data",oFont8)
 		::oReport:say(nRow1+0350,1410,"Assinatura",oFont8)
 		::oReport:say(nRow1+0450,1060,"Data",oFont8)
@@ -1117,10 +1117,10 @@ Method printRel() Class Boleto
 		
 		::oReport:say(nRow1+0165,1910,"(  )Mudou-se"                                	,oFont8)
 		::oReport:say(nRow1+0205,1910,"(  )Ausente"                                   ,oFont8)
-		::oReport:say(nRow1+0245,1910,"(  )Não existe nº indicado"                  	,oFont8)
+		::oReport:say(nRow1+0245,1910,"(  )Nï¿½o existe nï¿½ indicado"                  	,oFont8)
 		::oReport:say(nRow1+0285,1910,"(  )Recusado"                                	,oFont8)
-		::oReport:say(nRow1+0325,1910,"(  )Não procurado"                             ,oFont8)
-		::oReport:say(nRow1+0365,1910,"(  )Endereço insuficiente"                  	,oFont8)
+		::oReport:say(nRow1+0325,1910,"(  )Nï¿½o procurado"                             ,oFont8)
+		::oReport:say(nRow1+0365,1910,"(  )Endereï¿½o insuficiente"                  	,oFont8)
 		::oReport:say(nRow1+0405,1910,"(  )Desconhecido"                            	,oFont8)
 		::oReport:say(nRow1+0445,1910,"(  )Falecido"                                  ,oFont8)
 		::oReport:say(nRow1+0485,1910,"(  )Outros(anotar no verso)"                  	,oFont8)	           
@@ -1151,7 +1151,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow2+0635,513,::aDadosBanco[1]+"-9",oFont21)	&& [1]Numero do Banco
 		endif
 		&& ::oReport:say(nRow2+0644,755,::cLinhaDig,oFont15n)			&& Linha Digitavel do Codigo de Barras
-		::oReport:say(nRow2+0644,1755,"RECIBO DO SACADO",oFont10)		&& Descrição da Seção
+		::oReport:say(nRow2+0644,1755,"RECIBO DO SACADO",oFont10)		&& Descriï¿½ï¿½o da Seï¿½ï¿½o
 		
 		::oReport:line(nRow2+0810,100,nRow2+0810,2300 ) && Linha Horizontal
 		::oReport:line(nRow2+0910,100,nRow2+0910,2300 ) && Linha Horizontal
@@ -1181,7 +1181,7 @@ Method printRel() Class Boleto
 			::oReport:say(nRow2+0850,100 ,::aDadosEmp[1],oFont10)				&& Nome da Empresa
 		endif
 		
-		::oReport:say(nRow2+0810,1810,"Agência/Código Cedente",oFont8)
+		::oReport:say(nRow2+0810,1810,"Agï¿½ncia/Cï¿½digo Cedente",oFont8)
 		cString := alltrim(Subs(::aDadosBanco[3],1,4))
 		cString += if(empty(Subs(::aDadosBanco[3],5,1)),"","-"+Subs(::aDadosBanco[3],5,1))+"/"+::aDadosBanco[4]+"-"+::aDadosBanco[5]
 		nCol := 1810+(374-(len(cString)*22))+40
@@ -1193,7 +1193,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow2+0910,505 ,"Nro.Documento",oFont8)
 		::oReport:say(nRow2+0940,605 ,::aDadosTit[6]+::aDadosTit[1],oFont10) && Prefixo+Numero+Parcela
 		
-		::oReport:say(nRow2+0910,1005,"Espécie Doc.",oFont8)
+		::oReport:say(nRow2+0910,1005,"Espï¿½cie Doc.",oFont8)
 		::oReport:say(nRow2+0940,1050,::aDadosTit[7],oFont10) && Tipo do Titulo
 		
 		::oReport:say(nRow2+0910,1305,"Aceite",oFont8)
@@ -1202,8 +1202,8 @@ Method printRel() Class Boleto
 		::oReport:say(nRow2+0910,1485,"Data do Processamento",oFont8)
 		::oReport:say(nRow2+0940,1550,strZero(Day(::aDadosTit[3]),2) +"/"+ strZero(Month(::aDadosTit[3]),2) +"/"+ Right(Str(Year(::aDadosTit[3])),4),oFont10) && Data de impressao
 		
-		::oReport:say(nRow2+0910,1810,"Nosso Número",oFont8)
-		cString:= ::RetNossoNro() && Retorna o Nosso Número Formatado
+		::oReport:say(nRow2+0910,1810,"Nosso Nï¿½mero",oFont8)
+		cString:= ::RetNossoNro() && Retorna o Nosso Nï¿½mero Formatado
 		nCol := 1850+(374-(len(cString)*22))
 		::oReport:say(nRow2+0940,nCol,cString,oFont11c)
 		
@@ -1215,7 +1215,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow2+0980,505 ,"Carteira",oFont8)
 		::oReport:say(nRow2+1010,555 ,::aDadosBanco[7],oFont10)
 		
-		::oReport:say(nRow2+0980,755 ,"Espécie",oFont8)
+		::oReport:say(nRow2+0980,755 ,"Espï¿½cie",oFont8)
 		::oReport:say(nRow2+1010,805 ,"R$",oFont10)
 		
 		::oReport:say(nRow2+0980,1005,"Quantidade",oFont8)
@@ -1226,7 +1226,7 @@ Method printRel() Class Boleto
 		nCol := 1810+(374-(len(cString)*22))
 		::oReport:say(nRow2+1010,nCol,cString,oFont11c)
 		
-		::oReport:say(nRow2+1050, 100,"Instruções (Todas informações deste bloqueto são de exclusiva responsabilidade do cedente)",oFont8)
+		::oReport:say(nRow2+1050, 100,"Instruï¿½ï¿½es (Todas informaï¿½ï¿½es deste bloqueto sï¿½o de exclusiva responsabilidade do cedente)",oFont8)
 		If !Empty(::aFrases)
 			::oReport:say(nRow2+1150, 100,::aFrases[1],oFont10)
 			::oReport:say(nRow2+1200, 100,::aFrases[2],oFont10)
@@ -1234,9 +1234,9 @@ Method printRel() Class Boleto
 			::oReport:say(nRow2+1300, 100,::aFrases[4],oFont10)
 		EndIf		
 		::oReport:say(nRow2+1050,1810,"(-)Desconto/Abatimento",oFont8)
-		::oReport:say(nRow2+1120,1810,"(-)Outras Deduções",oFont8)
+		::oReport:say(nRow2+1120,1810,"(-)Outras Deduï¿½ï¿½es",oFont8)
 		::oReport:say(nRow2+1190,1810,"(+)Mora/Multa",oFont8)
-		::oReport:say(nRow2+1260,1810,"(+)Outros Acréscimos",oFont8)
+		::oReport:say(nRow2+1260,1810,"(+)Outros Acrï¿½scimos",oFont8)
 		::oReport:say(nRow2+1330,1810,"(=)Valor Cobrado",oFont8)
 		
 		::oReport:say(nRow2+1400,100 ,"Sacado",oFont8)
@@ -1251,7 +1251,7 @@ Method printRel() Class Boleto
 		endif*/
 			
 		::oReport:say(nRow2+1605, 100,"Sacador/Avalista " + ::aDadosBanco[11],oFont8)
-		::oReport:say(nRow2+1645,1810,"Autenticação Mecânica",oFont8)
+		::oReport:say(nRow2+1645,1810,"Autenticaï¿½ï¿½o Mecï¿½nica",oFont8)
 		
 		::oReport:line(nRow2+0710,1800,nRow2+1400,1800) 
 		::oReport:line(nRow2+1120,1800,nRow2+1120,2300)
@@ -1314,7 +1314,7 @@ Method printRel() Class Boleto
 			::oReport:say(nRow3+2140,100 ,::aDadosEmp[1],oFont10)				&& Nome da Empresa
 		endif
 		
-		::oReport:say(nRow3+2100,1810,"Agência/Código Cedente",oFont8)
+		::oReport:say(nRow3+2100,1810,"Agï¿½ncia/Cï¿½digo Cedente",oFont8)
 		cString  := alltrim(Subs(::aDadosBanco[3],1,4))
 		cString  += if(empty(Subs(::aDadosBanco[3],5,1)),"","-"+Subs(::aDadosBanco[3],5,1))+"/"+::aDadosBanco[4]+"-"+::aDadosBanco[5]
 		nCol 	 := 1810+(374-(len(cString)*22))+40
@@ -1326,7 +1326,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow3+2200, 505,"Nro.Documento",oFont8)
 		::oReport:say(nRow3+2230, 605,::aDadosTit[6]+::aDadosTit[1],oFont10) && Prefixo+Numero+Parcela
 		
-		::oReport:say(nRow3+2200,1005,"Espécie Doc.",oFont8)
+		::oReport:say(nRow3+2200,1005,"Espï¿½cie Doc.",oFont8)
 		::oReport:say(nRow3+2230,1050,::aDadosTit[7],oFont10) && Tipo do Titulo
 		
 		::oReport:say(nRow3+2200,1305,"Aceite",oFont8)
@@ -1335,8 +1335,8 @@ Method printRel() Class Boleto
 		::oReport:say(nRow3+2200,1485,"Data do Processamento",oFont8)
 		::oReport:say(nRow3+2230,1550,strZero(Day(::aDadosTit[3]),2) +"/"+ strZero(Month(::aDadosTit[3]),2) +"/"+ Right(Str(Year(::aDadosTit[3])),4),oFont10) && Data impressao
 			
-		::oReport:say(nRow3+2200,1810,"Nosso Número",oFont8)
-		cString  := ::RetNossoNro() && Retorna o Nosso Número Formatado
+		::oReport:say(nRow3+2200,1810,"Nosso Nï¿½mero",oFont8)
+		cString  := ::RetNossoNro() && Retorna o Nosso Nï¿½mero Formatado
 		nCol 	 := 1850+(374-(len(cString)*22))
 		::oReport:say(nRow3+2230,nCol,cString,oFont11c)	
 		
@@ -1348,7 +1348,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow3+2270, 505,"Carteira",oFont8)
 		::oReport:say(nRow3+2300, 555,::aDadosBanco[7],oFont10)
 		
-		::oReport:say(nRow3+2270, 755,"Espécie",oFont8)
+		::oReport:say(nRow3+2270, 755,"Espï¿½cie",oFont8)
 		::oReport:say(nRow3+2300, 805,"R$",oFont10)
 		
 		::oReport:say(nRow3+2270,1005,"Quantidade",oFont8)
@@ -1359,7 +1359,7 @@ Method printRel() Class Boleto
 		nCol 	 := 1810+(374-(len(cString)*22))
 		::oReport:say(nRow3+2300,nCol,cString,oFont11c)
 		
-		::oReport:say(nRow3+2340, 100,"Instruções (Todas informações deste bloqueto são de exclusiva responsabilidade do cedente)",oFont8)
+		::oReport:say(nRow3+2340, 100,"Instruï¿½ï¿½es (Todas informaï¿½ï¿½es deste bloqueto sï¿½o de exclusiva responsabilidade do cedente)",oFont8)
 		If !Empty(::aFrases)
 			::oReport:say(nRow2+2440, 100,::aFrases[1],oFont10)
 			::oReport:say(nRow2+2490, 100,::aFrases[2],oFont10)
@@ -1367,9 +1367,9 @@ Method printRel() Class Boleto
 			::oReport:say(nRow2+2590, 100,::aFrases[4],oFont10)
 		EndIf
 		::oReport:say(nRow3+2340,1810,"(-)Desconto/Abatimento",oFont8)
-		::oReport:say(nRow3+2410,1810,"(-)Outras Deduções",oFont8)
+		::oReport:say(nRow3+2410,1810,"(-)Outras Deduï¿½ï¿½es",oFont8)
 		::oReport:say(nRow3+2480,1810,"(+)Mora/Multa",oFont8)
-		::oReport:say(nRow3+2550,1810,"(+)Outros Acréscimos",oFont8)
+		::oReport:say(nRow3+2550,1810,"(+)Outros Acrï¿½scimos",oFont8)
 		::oReport:say(nRow3+2620,1810,"(=)Valor Cobrado",oFont8)
 		
 		::oReport:say(nRow3+2690, 100,"Sacado",oFont8)
@@ -1385,7 +1385,7 @@ Method printRel() Class Boleto
 		endif*/
 		
 		::oReport:say(nRow3+2868, 100,"Sacador/Avalista " + ::aDadosBanco[11],oFont8)
-		::oReport:say(nRow3+2908,1810,"Autenticação Mecânica",oFont8)
+		::oReport:say(nRow3+2908,1810,"Autenticaï¿½ï¿½o Mecï¿½nica",oFont8)
 		
 		::oReport:line(nRow3+2000,1800,nRow3+2690,1800) && Linha Vertical
 		::oReport:line(nRow3+2410,1800,nRow3+2410,2300) && Linha Horizontal
@@ -1396,7 +1396,7 @@ Method printRel() Class Boleto
 		
 		::oReport:line(nRow3+2905, 100,nRow3+2905,2300) && Linha Horizontal
 		    
-		::oReport:say(nRow3+3060,1800,"FICHA DE COMPENSAÇÃO",oFont10)
+		::oReport:say(nRow3+3060,1800,"FICHA DE COMPENSAï¿½ï¿½O",oFont10)
 	
 		/*	
 		| Parametros do MSBAR                                              |
@@ -1418,13 +1418,13 @@ Method printRel() Class Boleto
 		| 13 cMode          String com o modo do codigo de barras CODE128  |
 		*/
 		
-		&& Conversão de Pixels para CM
+		&& Conversï¿½o de Pixels para CM
 		&& Fator = 0,0084682	cm/pixel
 		&& Exemplo => 75 pixel = 0.63 cm; 2905 pixel = 24.60 cm; 3035 pixel = 25.70cm
 	
-		&& Imprime o Código de Barra - ATENÇÃO! Dimensões podem variar dependendo da Impressora Selecionada
+		&& Imprime o Cï¿½digo de Barra - ATENï¿½ï¿½O! Dimensï¿½es podem variar dependendo da Impressora Selecionada
 		&& Sintaxe: MSBAR3(cTypeBar,nRow,nCol,cCode,::oReport,lCheck,Color,lHorz,nWidth,nHeigth,lBanner,cFont,cMode)
-		&& Padrão FEBRABAN => 2 de 5 Intercalado -> INT25
+		&& Padrï¿½o FEBRABAN => 2 de 5 Intercalado -> INT25
 		&& MSBAR3("INT25",25.3,1.4,::cCodBarra,::oReport,.F.,Nil,Nil,0.0308,1.3,Nil,Nil,"A",.F.)
 		MSBAR3("INT25",24.7,1.1,::cCodBarra,::oReport,.F.,Nil,Nil,0.0308,1.3,Nil,Nil,"A",.F.)
 		
@@ -1456,7 +1456,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow1+0150,100 ,"Cedente",oFont8)
 		::oReport:say(nRow1+0200,100 ,::aDadosEmp[1],oFont10)	&& Nome + CNPJ da Empresa
 		
-		::oReport:say(nRow1+0150,1060,"Agência/Código Cedente",oFont8)
+		::oReport:say(nRow1+0150,1060,"Agï¿½ncia/Cï¿½digo Cedente",oFont8)
 		::oReport:say(nRow1+0200,1060,::aDadosBanco[3]+"/"+::aDadosBanco[4]+"-"+::aDadosBanco[5],oFont10)
 		
 		::oReport:say(nRow1+0150,1510,"Nro.Documento",oFont8)
@@ -1471,8 +1471,8 @@ Method printRel() Class Boleto
 		::oReport:say(nRow1+0250,1510,"Valor do Documento",oFont8)
 		::oReport:say(nRow1+0300,1550,Transform(::aDadosTit[5],"@E 99,999,999.99"),oFont10)
 		
-		::oReport:say(nRow1+0400,0100,"Recebi(emos) o bloqueto/título",oFont10)
-		::oReport:say(nRow1+0450,0100,"com as características acima.",oFont10)
+		::oReport:say(nRow1+0400,0100,"Recebi(emos) o bloqueto/tï¿½tulo",oFont10)
+		::oReport:say(nRow1+0450,0100,"com as caracterï¿½sticas acima.",oFont10)
 		::oReport:say(nRow1+0350,1060,"Data",oFont8)
 		::oReport:say(nRow1+0350,1410,"Assinatura",oFont8)
 		::oReport:say(nRow1+0450,1060,"Data",oFont8)
@@ -1490,10 +1490,10 @@ Method printRel() Class Boleto
 		
 		::oReport:say(nRow1+0165,1910,"(  )Mudou-se"                                	,oFont8)
 		::oReport:say(nRow1+0205,1910,"(  )Ausente"                                   ,oFont8)
-		::oReport:say(nRow1+0245,1910,"(  )Não existe nº indicado"                  	,oFont8)
+		::oReport:say(nRow1+0245,1910,"(  )Nï¿½o existe nï¿½ indicado"                  	,oFont8)
 		::oReport:say(nRow1+0285,1910,"(  )Recusado"                                	,oFont8)
-		::oReport:say(nRow1+0325,1910,"(  )Não procurado"                             ,oFont8)
-		::oReport:say(nRow1+0365,1910,"(  )Endereço insuficiente"                  	,oFont8)
+		::oReport:say(nRow1+0325,1910,"(  )Nï¿½o procurado"                             ,oFont8)
+		::oReport:say(nRow1+0365,1910,"(  )Endereï¿½o insuficiente"                  	,oFont8)
 		::oReport:say(nRow1+0405,1910,"(  )Desconhecido"                            	,oFont8)
 		::oReport:say(nRow1+0445,1910,"(  )Falecido"                                  ,oFont8)
 		::oReport:say(nRow1+0485,1910,"(  )Outros(anotar no verso)"                  	,oFont8)	           
@@ -1548,7 +1548,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow2+0810,100 ,"Cedente",oFont8)
 		::oReport:say(nRow2+0850,100 ,::aDadosEmp[1],oFont10) && Nome da Empresa
 		
-		::oReport:say(nRow2+0810,1810,"Agência/Código Cedente",oFont8)
+		::oReport:say(nRow2+0810,1810,"Agï¿½ncia/Cï¿½digo Cedente",oFont8)
 		cString := alltrim(Subs(::aDadosBanco[3],1,4)+"-"+Subs(::aDadosBanco[3],5,1)+"/"+::aDadosBanco[4]+"-"+::aDadosBanco[5])
 		nCol := 1810+(374-(len(cString)*22))+40
 		::oReport:say(nRow2+0850,nCol,cString,oFont11c)
@@ -1559,7 +1559,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow2+0910,505 ,"Nro.Documento",oFont8)
 		::oReport:say(nRow2+0940,605 ,::aDadosTit[6]+::aDadosTit[1],oFont10) && Prefixo+Numero+Parcela
 		
-		::oReport:say(nRow2+0910,1005,"Espécie Doc.",oFont8)
+		::oReport:say(nRow2+0910,1005,"Espï¿½cie Doc.",oFont8)
 		::oReport:say(nRow2+0940,1050,::aDadosTit[7],oFont10) && Tipo do Titulo
 		
 		::oReport:say(nRow2+0910,1305,"Aceite",oFont8)
@@ -1568,8 +1568,8 @@ Method printRel() Class Boleto
 		::oReport:say(nRow2+0910,1485,"Data do Processamento",oFont8)
 		::oReport:say(nRow2+0940,1550,strZero(Day(::aDadosTit[3]),2) +"/"+ strZero(Month(::aDadosTit[3]),2) +"/"+ Right(Str(Year(::aDadosTit[3])),4),oFont10) && Data de impressao
 		
-		::oReport:say(nRow2+0910,1810,"Nosso Número",oFont8)
-		cString:= ::RetNossoNro() && Retorna o Nosso Número Formatado
+		::oReport:say(nRow2+0910,1810,"Nosso Nï¿½mero",oFont8)
+		cString:= ::RetNossoNro() && Retorna o Nosso Nï¿½mero Formatado
 		nCol := 1850+(374-(len(cString)*22))
 		::oReport:say(nRow2+0940,nCol,cString,oFont11c)
 		
@@ -1581,7 +1581,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow2+0980,505 ,"Carteira",oFont8)
 		::oReport:say(nRow2+1010,555 ,::aDadosBanco[7],oFont10)
 		
-		::oReport:say(nRow2+0980,755 ,"Espécie",oFont8)
+		::oReport:say(nRow2+0980,755 ,"Espï¿½cie",oFont8)
 		::oReport:say(nRow2+1010,805 ,"R$",oFont10)
 		
 		::oReport:say(nRow2+0980,1005,"Quantidade",oFont8)
@@ -1592,7 +1592,7 @@ Method printRel() Class Boleto
 		nCol := 1810+(374-(len(cString)*22))
 		::oReport:say(nRow2+1010,nCol,cString,oFont11c)
 		
-		::oReport:say(nRow2+1050, 100,"Instruções (Todas informações deste bloqueto são de exclusiva responsabilidade do cedente)",oFont8)
+		::oReport:say(nRow2+1050, 100,"Instruï¿½ï¿½es (Todas informaï¿½ï¿½es deste bloqueto sï¿½o de exclusiva responsabilidade do cedente)",oFont8)
 		If !Empty(::aFrases)
 			::oReport:say(nRow2+1150, 100,::aFrases[1],oFont10)
 			::oReport:say(nRow2+1200, 100,::aFrases[2],oFont10)
@@ -1600,9 +1600,9 @@ Method printRel() Class Boleto
 			::oReport:say(nRow2+1300, 100,::aFrases[4],oFont10)
 		EndIF
 		::oReport:say(nRow2+1050,1810,"(-)Desconto/Abatimento",oFont8)
-		::oReport:say(nRow2+1120,1810,"(-)Outras Deduções",oFont8)
+		::oReport:say(nRow2+1120,1810,"(-)Outras Deduï¿½ï¿½es",oFont8)
 		::oReport:say(nRow2+1190,1810,"(+)Mora/Multa",oFont8)
-		::oReport:say(nRow2+1260,1810,"(+)Outros Acréscimos",oFont8)
+		::oReport:say(nRow2+1260,1810,"(+)Outros Acrï¿½scimos",oFont8)
 		::oReport:say(nRow2+1330,1810,"(=)Valor Cobrado",oFont8)
 		
 		::oReport:say(nRow2+1400,100 ,"Sacado",oFont8)
@@ -1617,7 +1617,7 @@ Method printRel() Class Boleto
 		endif*/
 			
 		::oReport:say(nRow2+1605, 100,"Sacador/Avalista " + ::aDadosBanco[11],oFont8)
-		::oReport:say(nRow2+1645,1810,"Autenticação Mecânica",oFont8)
+		::oReport:say(nRow2+1645,1810,"Autenticaï¿½ï¿½o Mecï¿½nica",oFont8)
 		
 		::oReport:line(nRow2+0710,1800,nRow2+1400,1800) 
 		::oReport:line(nRow2+1120,1800,nRow2+1120,2300)
@@ -1627,13 +1627,13 @@ Method printRel() Class Boleto
 		::oReport:line(nRow2+1400, 100,nRow2+1400,2300)
 		::oReport:line(nRow2+1640, 100,nRow2+1640,2300)
 		
-		&& Conversão de Pixels para CM
+		&& Conversï¿½o de Pixels para CM
 		&& Fator = 0,0084682	cm/pixel
 		&& Exemplo => 75 pixel = 0.63 cm; 1645 pixel = 24.60 cm
 	
-		&& Imprime o Código de Barra - ATENÇÃO! Dimensões podem variar dependendo da Impressora Selecionada
+		&& Imprime o Cï¿½digo de Barra - ATENï¿½ï¿½O! Dimensï¿½es podem variar dependendo da Impressora Selecionada
 		&& Sintaxe: MSBAR3(cTypeBar,nRow,nCol,cCode,::oReport,lCheck,Color,lHorz,nWidth,nHeigth,lBanner,cFont,cMode)
-		&& Padrão FEBRABAN => 2 de 5 Intercalado -> INT25		
+		&& Padrï¿½o FEBRABAN => 2 de 5 Intercalado -> INT25		
 		MSBAR3("INT25",14,1.1,::cCodBarra,::oReport,.F.,Nil,Nil,0.0308,1.3,Nil,Nil,"A",.F.)
 		
 		/******************/
@@ -1684,7 +1684,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow3+2100, 100,"Cedente",oFont8)
 		::oReport:say(nRow3+2140, 100,::aDadosEmp[1],oFont10) && Nome da Empresa
 		
-		::oReport:say(nRow3+2100,1810,"Agência/Código Cedente",oFont8)
+		::oReport:say(nRow3+2100,1810,"Agï¿½ncia/Cï¿½digo Cedente",oFont8)
 		cString  := alltrim(Subs(::aDadosBanco[3],1,4)+"-"+Subs(::aDadosBanco[3],5,1)+"/"+::aDadosBanco[4]+"-"+::aDadosBanco[5])
 		nCol 	 := 1810+(374-(len(cString)*22))+40
 		::oReport:say(nRow3+2140,nCol,cString ,oFont11c)
@@ -1695,7 +1695,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow3+2200, 505,"Nro.Documento",oFont8)
 		::oReport:say(nRow3+2230, 605,::aDadosTit[6]+::aDadosTit[1],oFont10) && Prefixo+Numero+Parcela
 		
-		::oReport:say(nRow3+2200,1005,"Espécie Doc.",oFont8)
+		::oReport:say(nRow3+2200,1005,"Espï¿½cie Doc.",oFont8)
 		::oReport:say(nRow3+2230,1050,::aDadosTit[7],oFont10) && Tipo do Titulo
 		
 		::oReport:say(nRow3+2200,1305,"Aceite",oFont8)
@@ -1704,8 +1704,8 @@ Method printRel() Class Boleto
 		::oReport:say(nRow3+2200,1485,"Data do Processamento",oFont8)
 		::oReport:say(nRow3+2230,1550,strZero(Day(::aDadosTit[3]),2) +"/"+ strZero(Month(::aDadosTit[3]),2) +"/"+ Right(Str(Year(::aDadosTit[3])),4),oFont10) && Data impressao
 			
-		::oReport:say(nRow3+2200,1810,"Nosso Número",oFont8)
-		cString  := ::RetNossoNro() && Retorna o Nosso Número Formatado
+		::oReport:say(nRow3+2200,1810,"Nosso Nï¿½mero",oFont8)
+		cString  := ::RetNossoNro() && Retorna o Nosso Nï¿½mero Formatado
 		nCol 	 := 1850+(374-(len(cString)*22))
 		::oReport:say(nRow3+2230,nCol,cString,oFont11c)	
 		
@@ -1717,7 +1717,7 @@ Method printRel() Class Boleto
 		::oReport:say(nRow3+2270, 505,"Carteira",oFont8)
 		::oReport:say(nRow3+2300, 555,::aDadosBanco[7],oFont10)
 		
-		::oReport:say(nRow3+2270, 755,"Espécie",oFont8)
+		::oReport:say(nRow3+2270, 755,"Espï¿½cie",oFont8)
 		::oReport:say(nRow3+2300, 805,"R$",oFont10)
 		
 		::oReport:say(nRow3+2270,1005,"Quantidade",oFont8)
@@ -1728,7 +1728,7 @@ Method printRel() Class Boleto
 		nCol 	 := 1810+(374-(len(cString)*22))
 		::oReport:say(nRow3+2300,nCol,cString,oFont11c)
 		
-		::oReport:say(nRow3+2340, 100,"Instruções (Todas informações deste bloqueto são de exclusiva responsabilidade do cedente)",oFont8)
+		::oReport:say(nRow3+2340, 100,"Instruï¿½ï¿½es (Todas informaï¿½ï¿½es deste bloqueto sï¿½o de exclusiva responsabilidade do cedente)",oFont8)
 		If !Empty(::aFrases)
 			::oReport:say(nRow2+2440, 100,::aFrases[1],oFont10)
 			::oReport:say(nRow2+2490, 100,::aFrases[2],oFont10)
@@ -1736,9 +1736,9 @@ Method printRel() Class Boleto
 			::oReport:say(nRow2+2590, 100,::aFrases[4],oFont10)
 		EndIf
 		::oReport:say(nRow3+2340,1810,"(-)Desconto/Abatimento",oFont8)
-		::oReport:say(nRow3+2410,1810,"(-)Outras Deduções",oFont8)
+		::oReport:say(nRow3+2410,1810,"(-)Outras Deduï¿½ï¿½es",oFont8)
 		::oReport:say(nRow3+2480,1810,"(+)Mora/Multa",oFont8)
-		::oReport:say(nRow3+2550,1810,"(+)Outros Acréscimos",oFont8)
+		::oReport:say(nRow3+2550,1810,"(+)Outros Acrï¿½scimos",oFont8)
 		::oReport:say(nRow3+2620,1810,"(=)Valor Cobrado",oFont8)
 		
 		::oReport:say(nRow3+2690, 100,"Sacado",oFont8)
@@ -1754,7 +1754,7 @@ Method printRel() Class Boleto
 		endif*/
 		
 		::oReport:say(nRow3+2868, 100,"Sacador/Avalista " + ::aDadosBanco[11],oFont8)
-		::oReport:say(nRow3+2908,1810,"Autenticação Mecânica",oFont8)
+		::oReport:say(nRow3+2908,1810,"Autenticaï¿½ï¿½o Mecï¿½nica",oFont8)
 		
 		::oReport:line(nRow3+2000,1800,nRow3+2690,1800) && Linha Vertical
 		::oReport:line(nRow3+2410,1800,nRow3+2410,2300) && Linha Horizontal
@@ -1765,7 +1765,7 @@ Method printRel() Class Boleto
 		
 		::oReport:line(nRow3+2905, 100,nRow3+2905,2300) && Linha Horizontal
 		    
-		::oReport:say(nRow3+3060,1800,"FICHA DE COMPENSAÇÃO",oFont10)
+		::oReport:say(nRow3+3060,1800,"FICHA DE COMPENSAï¿½ï¿½O",oFont10)
 	
 		/*	
 		| Parametros do MSBAR                                              |
@@ -1787,29 +1787,29 @@ Method printRel() Class Boleto
 		| 13 cMode          String com o modo do codigo de barras CODE128  |
 		*/
 		
-		&& Conversão de Pixels para CM
+		&& Conversï¿½o de Pixels para CM
 		&& Fator = 0,0084682	cm/pixel
 		&& Exemplo => 75 pixel = 0.63 cm; 2905 pixel = 24.60 cm; 3035 pixel = 25.70cm
 	
-		&& Imprime o Código de Barra - ATENÇÃO! Dimensões podem variar dependendo da Impressora Selecionada
+		&& Imprime o Cï¿½digo de Barra - ATENï¿½ï¿½O! Dimensï¿½es podem variar dependendo da Impressora Selecionada
 		&& Sintaxe: MSBAR3(cTypeBar,nRow,nCol,cCode,::oReport,lCheck,Color,lHorz,nWidth,nHeigth,lBanner,cFont,cMode)
-		&& Padrão FEBRABAN => 2 de 5 Intercalado -> INT25
+		&& Padrï¿½o FEBRABAN => 2 de 5 Intercalado -> INT25
 		&& MSBAR3("INT25",25.3,1.4,::cCodBarra,::oReport,.F.,Nil,Nil,0.0308,1.3,Nil,Nil,"A",.F.)
 		MSBAR3("INT25",24.7,1.1,::cCodBarra,::oReport,.F.,Nil,Nil,0.0308,1.3,Nil,Nil,"A",.F.)		
 	endif
 				
-	&& Finaliza a página
+	&& Finaliza a pï¿½gina
 	::oReport:EndPage()
-//	::oReport:Setup()       && Apresenta o Seletor para Escolha da Impressora a Utilizar na Impressão
+//	::oReport:Setup()       && Apresenta o Seletor para Escolha da Impressora a Utilizar na Impressï¿½o
 //	::oReport:Preview()     && Visualiza antes de imprimir	
 return
 
 && #########################################################################
-&& FUNÇÕES AUXILIARES
+&& FUNï¿½ï¿½ES AUXILIARES
 && #########################################################################
 
-&& Função de Modulo10 para retorno do dígito verificador de Partes da Linha Digitável
-&& Baseada no Cálculo do Banco do Brasil e na Função Modulo11
+&& Funï¿½ï¿½o de Modulo10 para retorno do dï¿½gito verificador de Partes da Linha Digitï¿½vel
+&& Baseada no Cï¿½lculo do Banco do Brasil e na Funï¿½ï¿½o Modulo11
 User Function Modulo10(cStr,nMultIni,nMultFim,cTipo)
 
 	local nCont	  := 0 
@@ -1821,27 +1821,27 @@ User Function Modulo10(cStr,nMultIni,nMultFim,cTipo)
 	
 	default nMultIni:= 2
 	default nMultFim:= 1
-	default cTipo   := "Dezena" && Tipo de Subtração Final "Dezena" ou "Divisor"
+	default cTipo   := "Dezena" && Tipo de Subtraï¿½ï¿½o Final "Dezena" ou "Divisor"
 	
 	&& Prepara a String
 	cStr := alltrim(cStr)
 	
 	&& Percorre da Direita para a Esquerda
 	For nCont := Len(cStr) to 1 Step -1
-		&& Avalia se o Item é um número
+		&& Avalia se o Item ï¿½ um nï¿½mero
 		cChar := subStr(cStr,nCont,1)
 		if isAlpha( cChar )
 			Help(" ", 1, "ONLYNUM")
 			return .f.
 		End
 		
-		&& Calcula a multiplicação e se for maior que 9 soma os 2 algarismos para sempre retornar 1 dígito 
+		&& Calcula a multiplicaï¿½ï¿½o e se for maior que 9 soma os 2 algarismos para sempre retornar 1 dï¿½gito 
 		nRes:= val(cChar) * nMult
 		if nRes > 9
 			nRes:= val(left(Str(nRes,2),1)) + val(Right(Str(nRes,2),1))
 		endif
 		
-		&& Acumula a Soma da Multiplicação dos Elementos pelo Multiplicador
+		&& Acumula a Soma da Multiplicaï¿½ï¿½o dos Elementos pelo Multiplicador
 		nSoma += nRes 
 		
 		&& Redefine o Novo Multiplicador
@@ -1852,7 +1852,7 @@ User Function Modulo10(cStr,nMultIni,nMultFim,cTipo)
 	nDezena := alltrim(Str(nSoma,12))
 	nDezena := val(alltrim(Str(val(subStr(nDezena,1,1))+1,12))+"0")	
 	
-	&& Calcula o Resto da Divisão
+	&& Calcula o Resto da Divisï¿½o
 	nRest := Mod(nSoma,10)
 	
 	&& Calcula o DV Final
@@ -1868,7 +1868,7 @@ User Function Modulo10(cStr,nMultIni,nMultFim,cTipo)
 	
 return (cRet)
 
-&& Função de Modulo11 do Padrão do Sistema (Fonte SM1M150) modificada para retorno do dígito verificador de diversos bancos	
+&& Funï¿½ï¿½o de Modulo11 do Padrï¿½o do Sistema (Fonte SM1M150) modificada para retorno do dï¿½gito verificador de diversos bancos	
 && Uso de Exemplo:  Alert(U_Modulo11("28398200001",9,2,"001"))
 User Function Modulo11(cStr,nMultIni,nMultFim,cBanco,nTipo)
 
@@ -1880,42 +1880,42 @@ User Function Modulo11(cStr,nMultIni,nMultFim,cBanco,nTipo)
 	
 	default nMultIni:= 9
 	default nMultFim:= 2
-	default nTipo   := 1 && 1=Nosso Número / 2=Codigo de Barras
+	default nTipo   := 1 && 1=Nosso Nï¿½mero / 2=Codigo de Barras
 	
 	&& Prepara a String
 	cStr := alltrim(cStr)
 	
 	&& Percorre da Direita para a Esquerda
 	For nCont := Len(cStr) to 1 Step -1
-		&& Avalia se o Item é um número
+		&& Avalia se o Item ï¿½ um nï¿½mero
 		cChar := subStr(cStr,nCont,1)
 		if isAlpha( cChar )
 			Help(" ", 1, "ONLYNUM")
 			return .f.
 		End
 		
-		&& Acumula a Soma da Multiplicação dos Elementos pelo Multiplicador
+		&& Acumula a Soma da Multiplicaï¿½ï¿½o dos Elementos pelo Multiplicador
 		nSoma += val(cChar) * nMult
 		
 		&& Redefine o Novo Multiplicador
 		nMult:= IIf(nMult==nMultfim,nMultIni,If(nMultIni>nMultfim,--nMult,++nMult))
 	Next
 	
-	&& Calcula o Resto da Divisão
+	&& Calcula o Resto da Divisï¿½o
 	nRest := Mod(nSoma,11)
 	
-	&& Define Como será o Resultado do Dígito Verificador
+	&& Define Como serï¿½ o Resultado do Dï¿½gito Verificador
 
 	&& Se for Banco do Brasil
 	if cBanco == "001"
-		if nTipo == 1 && Para Nosso Número
+		if nTipo == 1 && Para Nosso Nï¿½mero
 			if nRest < 10
 				cRet:= Str(nRest,1)
 			elseif nRest == 10
 				cRet:= "X"
 			endif 
 		
-		elseif nTipo == 2 && Para Código de Barras
+		elseif nTipo == 2 && Para Cï¿½digo de Barras
 			nRest:= 11 - nRest
 			if nRest == 0 .Or. nRest == 10 .Or. nRest == 11
 				cRet:= "1"
@@ -1952,13 +1952,13 @@ User Function Modulo11(cStr,nMultIni,nMultFim,cBanco,nTipo)
 		nRest := Iif (nRest == 0 .Or. nRest == 1 .Or. nRest == 10 .Or. nRest == 11, 1 , nRest)
 		cRet  := Str(nRest,1)
 	
-	&& Se for Caixa Econômica Federal
+	&& Se for Caixa Econï¿½mica Federal
 	elseif cBanco == "104"
 		nRest := 11-nRest
 		nRest := Iif (nRest > 9, 0 , nRest)
 		cRet  := Str(nRest,1)
 
-	&& Se Banco não Especificado ou não constar tratamento para o banco - Considera o Cálculo Padrão
+	&& Se Banco nï¿½o Especificado ou nï¿½o constar tratamento para o banco - Considera o Cï¿½lculo Padrï¿½o
 	else
 		nRest := IIf(nRest==0 .or. nRest==1, 0 , 11-nRest)
 		cRet  := Str(nRest,1)					
@@ -1968,16 +1968,16 @@ User Function Modulo11(cStr,nMultIni,nMultFim,cBanco,nTipo)
 return cRet
   
 /*/
-±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
-±±³Funçã     ³ AjustaSx1    ³ Autor ³ Microsiga            	³ Data ³ 13/10/03 ³±±
-±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
-±±³Descri‡…o ³ Verifica/cria SX1 a partir de matriz para verificacao          ³±±
-±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
-±±³Uso       ³ Especifico para Clientes Microsiga                  	  		  ³±±
-±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
-±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½
+ï¿½ï¿½ï¿½Funï¿½ï¿½     ï¿½ AjustaSx1    ï¿½ Autor ï¿½ Microsiga            	ï¿½ Data ï¿½ 13/10/03 ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½
+ï¿½ï¿½ï¿½Descriï¿½ï¿½o ï¿½ Verifica/cria SX1 a partir de matriz para verificacao          ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½
+ï¿½ï¿½ï¿½Uso       ï¿½ Especifico para Clientes Microsiga                  	  		  ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù±ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 /*/
 Static Function AjustaSX1(cPerg, aPergs)
 

@@ -6,10 +6,8 @@
 #define CRLF	CHR(13)+CHR(10)
 
 User Function RGUAX001
-	Local _aIndex		:=	{}
 	Private aIndexADC	:=	{}
 	Private bFiltraBrw	:=	{|| FilBrowse("ZB5",@aIndexADC,@cCondicao) }
-	PRIVATE nOrdNFS		:=	1     // Ordem de Geracao da Nota Fiscal
 	PRIVATE _cMarca		:=	GetMark(,"ZB5","ZB5_OK")
 	PRIVATE aRotina		:=	{  { "Importar" ,"U_RGUAXI01" , 0 , 0},;//}//,; //"Ordem"
 	{ "Remover Pedido" ,"U_RGUAXX01"  , 0 , 4}} //"Prep. Doc's"
@@ -127,6 +125,7 @@ Static Function Sincronizar()
 		ZB5->ZB5_DTIMP	:= DATE()
 		ZB5->ZB5_HRIMP	:= TIME()
 		ZB5->ZB5_OBS	:= PEDIDO->OBSPED
+		ZB5->ZB5_PEDCLI	:= PEDIDO->ORDEMCLI
 		ZB5->(MsUnlock())
 
 		_cItem := "01"
@@ -226,6 +225,7 @@ Static Function Sincronizar()
 			aadd(aVetor,{"A1_CONTRIB"   ,CLIENTES->CONTNAC						,Nil})  // se � simples nacional ou contribuinte
 			aadd(aVetor,{"A1_SIMPNAC"   ,CLIENTES->CONTNAC						,Nil})  // se � simples nacional ou contribuinte
 			aadd(aVetor,{"A1_ZZSITLL"   ,'001'									,Nil})  // Estado       C 02
+			aadd(aVetor,{"A1_ZZOBS"		,CLIENTES->OBSGERAL						,Nil})  // Observações do guarany
 			aadd(aVetor,{"A1_CALCSUF"   ,'N'									,Nil})  // Estado       C 02
 			aadd(aVetor,{"A1_TPESSOA"   ,'CI'									,Nil})  // Estado       C 02
 			aadd(aVetor,{"A1_MSBLQL"	,'2'									,Nil})  // Estado       C 02
@@ -361,8 +361,8 @@ Return
 Static Function Importar()
 	local xcQuery		:=	""
 	local xcR			:=	Char(13) + Char(10)
-	local cMsgmm,_ctransp,_totliq
-	local codTabela	:=	''
+	local codTabela		:=	''
+	local ordemCli		:=	''
 
 	PRIVATE lMsErroAuto := .F.
 	BEGIN TRANSACTION
@@ -373,7 +373,7 @@ Static Function Importar()
 			DisarmTransaction()
 			Return
 		EndIf
-
+		ordemCli := ZB5I->ORDEMCLI
 
 		aCabecalho  := {{'C5_FILIAL',xFilial("SC5"),NIL},;
 			{'C5_TIPO',"N",NIL},;
@@ -390,9 +390,10 @@ Static Function Importar()
 			{'C5_EMISSAO',DDATABASE,NIL},;
 			{'C5_CONDPAG',ZB5I->ZB5_COND,NIL},;
 			{'C5_TPCARGA',"1",NIL},; // Indica que utiliza carga p/ OMS
-		{'C5_TABELA',ZB5I->ZB5_TABELA,NIL},;
+			{'C5_TABELA',ZB5I->ZB5_TABELA,NIL},;
 			{'C5_MOEDA',1,NIL},;
 			{'C5_ZZOBPED',ZB5I->ZB5_OBS,NIL},;
+			{'C5_MENNOTA','O.C. ' + ordemCli,NIL},;
 			{'C5_REDESP',ZB5I->ZB5_TRANSP,NIL},;
 			{'C5_XPEDEMP',ZB5I->ZB5_PEDEMP,NIL}}		// Linha (Tabela B ou R)
 
@@ -442,6 +443,10 @@ Static Function Importar()
 			AADD(aLinha,{'C6_DESCRI',SB1->B1_DESC,NIL})
 			AADD(aLinha,{'C6_QTDVEN',ZB6I->ZB6_QTDVEN,NIL})
 			AADD(aLinha,{'C6_ZPRCUNI',ZB6I->ZB6_PRCVEN,NIL})
+			AADD(aLinha,{'C6_ITEMPC',ZB6I->ZB6_ITEM,NIL})
+			AADD(aLinha,{'C6_NUMPCOM',ordemCli,NIL})
+
+			
 
 			AADD(aItens,aLinha)
 			ZB6I->(dbskip())
