@@ -4,14 +4,14 @@
 /*
 Rotina para calcula as rotinas do pedido corretamente
 
-Parâmetros:
-T = Tipo de Operação na C5
+Parï¿½metros:
+T = Tipo de Operaï¿½ï¿½o na C5
 P = Produto na C6
 Q = Quantidade na C6
-V = Valor Unitário C6
-TAB = Alteração de tabela na linha
+V = Valor Unitï¿½rio C6
+TAB = Alteraï¿½ï¿½o de tabela na linha
 CADTAB = Cadastro de tabelas
-OPER = Quando atualiza a operação na linha
+OPER = Quando atualiza a operaï¿½ï¿½o na linha
 
 
 */
@@ -98,7 +98,7 @@ static function xfCadTab()
 	next xi
 return
 
-//Validação na digitação de Tabelas
+//Validaï¿½ï¿½o na digitaï¿½ï¿½o de Tabelas
 static function xfTabela()
 	local xlMuda	:=	.T.
 	local xi 		:=	0
@@ -107,7 +107,7 @@ static function xfTabela()
 	DA0->(dbSeek(xFilial('DA0') + aCols[n,GDFieldPos("C6_ZTABELA")]))
 
 	if dataHoje < DTOS(DA0->DA0_DATDE) .OR. dataHoje > DTOS(DA0->DA0_DATATE) .OR. DA0->DA0_ATIVO != '1'
-		alert('Tabela: ' + alltrim(DA0->DA0_CODTAB) + ' não está disponível!!!')
+		alert('Tabela: ' + alltrim(DA0->DA0_CODTAB) + ' nï¿½o estï¿½ disponï¿½vel!!!')
 		xcConteudo := ''
 		GetDRefresh()
 		return
@@ -135,7 +135,7 @@ static function xfTabela()
 
 return
 
-//Alteração importantes no cabec
+//Alteraï¿½ï¿½o importantes no cabec
 static function xfTipo()
 	local xi := 0
 
@@ -149,7 +149,7 @@ return
 
 
 
-//verifica se há débitos
+//verifica se hï¿½ dï¿½bitos
 static function xfCred()
 
 	SA1->(dbSeek(xFilial('SA1') + M->C5_CLIENTE + M->C5_LOJACLI))
@@ -157,15 +157,15 @@ static function xfCred()
 	pricVari := __cUserId
 
 
-	if SA1->A1_ATR > 0 .AND. SA1->A1_RISCO != 'A' .AND. !(__cUserId $ '000098 | 000110')//Verifica o Crédito
-		alert('Cliente possui débitos')
+	if SA1->A1_ATR > 0 .AND. SA1->A1_RISCO != 'A' .AND. !(__cUserId $ '000098 | 000110')//Verifica o Crï¿½dito
+		alert('Cliente possui dï¿½bitos')
 		M->C5_CLIENTE	:=	''
 		M->C5_LOJACLI	:=	''
 	endif
 
 return
 
-//verifica se há débitos
+//verifica se hï¿½ dï¿½bitos
 static function valorVerba()
 	local retProced	:=	{}
 
@@ -180,7 +180,7 @@ static function valorVerba()
 
 return
 
-//Atualiza os campos do cabeçalho
+//Atualiza os campos do cabeï¿½alho
 static function xfAtuCabec()
 
 	M->C5_XCOMCLI	:=	''
@@ -234,6 +234,9 @@ static function xfPrzMed()
 	local xi		:=	1
 
 	//01654501
+	if 'CARTAO' $ UPPER(SE4->E4_DESCRI)
+		RETURN
+	endif
 
 	xaParc := Condicao(1000, M->C5_CONDPAG, 0, dDataBase)
 
@@ -281,7 +284,7 @@ static function xfPedido()
 	local xi			:=	0
 	local estadosIcm	:=	{'AC', 0.07, 'AL', 0.07, 'AM', 0.07, 'AP', 0.07, 'BA', 0.07, 'CE', 0.07, 'DF', 0.07, 'ES', 0.07, 'EX', 0.07, 'GO', 0.07, 'MA', 0.07, 'MG', 0.12, 'MS', 0.07, 'MT', 0.07, 'PA', 0.07, 'PB', 0.07, 'PE', 0.07, 'PI', 0.07, 'PR', 0.12, 'RJ', 0.12, 'RN', 0.07, 'RO', 0.07, 'RR', 0.07, 'RS', 0.12, 'SC', 0.12, 'SE', 0.07, 'SP', 0.18, 'TO', 0.07}
 
-	//verifincar se o cabeçalho está preenchido
+	//verifincar se o cabeï¿½alho estï¿½ preenchido
 	pricVari := M->C5_TPFRETE
 
 
@@ -294,7 +297,7 @@ static function xfPedido()
 	endif
 
 	/*
-	Atribuindo valores às Variáveis
+	Atribuindo valores ï¿½s Variï¿½veis
 	*/
 	codCliente	:=	M->C5_CLIENTE
 	lojaCliente	:=	M->C5_LOJACLI
@@ -325,9 +328,9 @@ static function xfPedido()
 	next
 
 	if xcPar == 'Q' .AND. M->C5_ZZMGDES == '1'
-		xfValid() //Verifica as validações do pedido
+		xfValid() //Verifica as validaï¿½ï¿½es do pedido
 	endif
-	//xfComis() //pega o percentual da comissão apenas na alteração do produdo
+	//xfComis() //pega o percentual da comissï¿½o apenas na alteraï¿½ï¿½o do produdo
 
 	if xcPar == 'P' .or. xcPar == 'OPER'
 		xfForaLin()
@@ -337,17 +340,17 @@ static function xfPedido()
 	if xcPar $ 'P|Q|V'
 		xfComis()
 
-		xfPreco() //calcula os preços iniciais
+		xfPreco() //calcula os preï¿½os iniciais
 
 		xfCustos() // Calcula os custos do pedido
 
-		//xfImpostos() // cálculo dos impostos
+		//xfImpostos() // cï¿½lculo dos impostos
 
-		xfResult() // cálculo dos resultados
+		xfResult() // cï¿½lculo dos resultados
 
 		GetDRefresh()
 
-		xfAtuVal()	//Atualização dos valores no cabec
+		xfAtuVal()	//Atualizaï¿½ï¿½o dos valores no cabec
 
 	endif
 
@@ -373,19 +376,19 @@ static function xfForaTab()
 	endif
 return
 
-//Validação dos itens do pedido
+//Validaï¿½ï¿½o dos itens do pedido
 static function xfValid()
 
 	DA0->(dbSeek(xFilial("DA0") + aCols[n,GDFieldPos("C6_ZTABELA")]))
 	if DA0->DA0_ZZMARG == '4'
 		DA1->(dbSeek(xFilial("DA1") + aCols[n,GDFieldPos("C6_ZTABELA")] + aCols[n,GDFieldPos("C6_PRODUTO")]))
 		if !(int(aCols[n,GDFieldPos("C6_QTDVEN")] / DA1->DA1_ZQTLOT)) == (aCols[n,GDFieldPos("C6_QTDVEN")] / DA1->DA1_ZQTLOT)
-			alert('Quantidade deve ser múltiplo de: ' + alltrim(str(DA1->DA1_ZQTLOT)))
+			alert('Quantidade deve ser mï¿½ltiplo de: ' + alltrim(str(DA1->DA1_ZQTLOT)))
 			aCols[n,GDFieldPos("C6_QTDVEN")] := 0
 		endif
 	else
 		if !(int(aCols[n,GDFieldPos("C6_QTDVEN")] / SB1->B1_CONV)) == (aCols[n,GDFieldPos("C6_QTDVEN")] / SB1->B1_CONV)
-			alert('Quantidade deve ser múltiplo de: ' + alltrim(str(SB1->B1_CONV)))
+			alert('Quantidade deve ser mï¿½ltiplo de: ' + alltrim(str(SB1->B1_CONV)))
 			aCols[n,GDFieldPos("C6_QTDVEN")] := 0
 		endif
 
@@ -473,7 +476,7 @@ static function xfAtuVal()
 
 				if aCols[xi,GDFieldPos("C6_ZZTPOPE")] == aCols[n,GDFieldPos("C6_ZZTPOPE")]
 
-					alert('Produto já informado')
+					alert('Produto jï¿½ informado')
 					aCols[n,GDFieldPos("C6_PRODUTO")]	:=	SPACE(15)
 					aCols[n,GDFieldPos("C6_QTDVEN")]	:=	0
 					aCols[n,GDFieldPos("C6_PRCVEN")]	:=	0
@@ -493,12 +496,12 @@ static function xfAtuVal()
 					if aCols[n,GDFieldPos("C6_QTDVEN")] != aCols[xi,GDFieldPos("C6_QTDVEN")] .AND. aCols[n,GDFieldPos("C6_QTDVEN")] > 0
 						if DA1->DA1_ZQTLOT == 0
 							if aCols[n,GDFieldPos("C6_QTDVEN")] < xnQtdFer * 1.5
-								alert('NÃO é permitido quantidades diferentes para Feirinha')
+								alert('Nï¿½O ï¿½ permitido quantidades diferentes para Feirinha')
 								aCols[n,GDFieldPos("C6_PRODUTO")]	:=	SPACE(15)
 								aCols[n,GDFieldPos("C6_QTDVEN")]	:=	0
 							endif
 						else
-							alert('NÃO é permitido quantidades diferentes para Feirinha')
+							alert('Nï¿½O ï¿½ permitido quantidades diferentes para Feirinha')
 							aCols[n,GDFieldPos("C6_PRODUTO")]	:=	SPACE(15)
 							aCols[n,GDFieldPos("C6_QTDVEN")]	:=	0
 						endif
@@ -555,7 +558,7 @@ static function xfAtuVal()
 
 return
 
-//calcula o percentual de comissão
+//calcula o percentual de comissï¿½o
 static function xfComis()
 
 	SA1->(dbSeek(xFilial('SA1') + codCliente + lojaCliente ))
@@ -576,12 +579,12 @@ static function xfComis()
 
 return
 
-//Calcula a comissão nos itens do pedidos
+//Calcula a comissï¿½o nos itens do pedidos
 //Regras e Excessoes das comissoes
 static function xfCalcCom()
 	local retDesc := .F.
 
-	//Verifica se tem exceções para Rep + Tabela + Produto
+	//Verifica se tem exceï¿½ï¿½es para Rep + Tabela + Produto
 	PAC->(dbSeek(xFilial('PAC') + '21'))
 
 	do while !PAC->(EOF()) .AND. alltrim(PAC->PAC_TABELA) == '21'
@@ -650,11 +653,11 @@ return
 
 
 /*/
-	retorna a comissão para produtos promocionais, 
-	caso o desconto esteja dentro do padrão, 
-	10% de comissão, caso contrário, segue a regra existente
+	retorna a comissï¿½o para produtos promocionais, 
+	caso o desconto esteja dentro do padrï¿½o, 
+	10% de comissï¿½o, caso contrï¿½rio, segue a regra existente
 
-	A tabela 16 retorna o máximo de desconto de acordo com o frete
+	A tabela 16 retorna o mï¿½ximo de desconto de acordo com o frete
 /*/
 static function refPromocao()
 	local retProced	:=	{}
@@ -710,9 +713,14 @@ static function xfPosic()
 	dbSelectArea('PAC')
 	PAC->(DbSetOrder(1)) //PAC_FILIAL, PAC_TABELA, PAC_CHAVE, R_E_C_N_O_, D_E_L_E_T_
 
+	dbSelectArea('SE4')
+	SE4->(DbSetOrder(1)) //E4_FILIAL, E4_CODIGO, R_E_C_N_O_, D_E_L_E_T_
+	SE4->(dbSeek(xFilial("DA1") + M->C5_CONDPAG))
+
+
 return
 
-//calculando os preços do item de pedido
+//calculando os preï¿½os do item de pedido
 static function xfPreco()
 	local xnDesc	:=	0
 	local xnDescVal	:=	0
@@ -750,14 +758,14 @@ static function xfPreco()
 
 	elseif xcPar $ 'V|Q'
 
-		//Cálculo do Frete para compor o valor dos descontos
+		//Cï¿½lculo do Frete para compor o valor dos descontos
 		xfFrete() //Aliquota do frete
 
 		//Preco de venda digitado no pedido
 		aCols[n,GDFieldPos("C6_PRCVEN")] := aCols[n,GDFieldPos("C6_ZPRCUNI")]
 		aCols[n,GDFieldPos("C6_PRUNIT")] := aCols[n,GDFieldPos("C6_ZPRCUNI")]
 
-		//Valor do pedido de acordo com a digitação
+		//Valor do pedido de acordo com a digitaï¿½ï¿½o
 		if M->C5_TIPO $ 'I | P '
 			aCols[n,GDFieldPos("C6_VALOR")]	:=	aCols[n,GDFieldPos("C6_PRCVEN")]
 		else
@@ -806,21 +814,21 @@ static function xfPreco()
 			do case
 			case DA0->DA0_ZZMARG == '4'
 				if aCols[n,GDFieldPos("C6_PRCVEN")] <>  DA1->DA1_PRCVEN
-					alert('Tabela tipo Feirinha, Não Pode alterar o preço')
+					alert('Tabela tipo Feirinha, Nï¿½o Pode alterar o preï¿½o')
 					aCols[n,GDFieldPos("C6_QTDVEN")] := 0
 					aCols[n,GDFieldPos("C6_PRCVEN")] :=  DA1->DA1_PRCVEN
 					aCols[n,GDFieldPos("C6_ZPRCUNI")]:=  DA1->DA1_PRCVEN
 				endif
 			case DA0->DA0_ZZMARG == '3'
 				if aCols[n,GDFieldPos("C6_PRCVEN")] <>  DA1->DA1_PRCVEN
-					alert('Tabela fixa, Não Pode alterar o preço')
+					alert('Tabela fixa, Nï¿½o Pode alterar o preï¿½o')
 					aCols[n,GDFieldPos("C6_QTDVEN")] := 0
 					aCols[n,GDFieldPos("C6_PRCVEN")] :=  DA1->DA1_PRCVEN
 					aCols[n,GDFieldPos("C6_ZPRCUNI")]:=  DA1->DA1_PRCVEN
 				endif
 			case DA0->DA0_ZZMARG == '2'
 				if aCols[n,GDFieldPos("C6_PRCVEN")] <  DA1->DA1_PRCVEN
-					alert('Tabela Promocional, O Preço deve ser igual ou maior')
+					alert('Tabela Promocional, O Preï¿½o deve ser igual ou maior')
 					aCols[n,GDFieldPos("C6_QTDVEN")] := 0
 					aCols[n,GDFieldPos("C6_PRCVEN")] :=  DA1->DA1_PRCVEN
 					aCols[n,GDFieldPos("C6_ZPRCUNI")]:=  DA1->DA1_PRCVEN
@@ -830,7 +838,7 @@ static function xfPreco()
 			aCols[n,GDFieldPos("C6_XPERDES")]	:=	round((aCols[n,GDFieldPos("C6_XVLDESC")]  / aCols[n,GDFieldPos("C6_XVLRBRU")]) * 100,2)
 		endif
 
-		//calculo do frete a partir da informação no cabec do pedido
+		//calculo do frete a partir da informaï¿½ï¿½o no cabec do pedido
 		if aCols[n,GDFieldPos("C6_ZPERFRT")] == 0
 			aCols[n,GDFieldPos("C6_ZFRETE")] 	:=	0
 		else
@@ -838,10 +846,10 @@ static function xfPreco()
 		endif
 		
 
-		//Calculando o percentual do desconto //Calculo da base de comissão
+		//Calculando o percentual do desconto //Calculo da base de comissï¿½o
 		aCols[n,GDFieldPos("C6_ZBASCOM")] := round(aCols[n,GDFieldPos("C6_VALOR")] - aCols[n,GDFieldPos("C6_ZFRETE")],2) - xnValJur
 
-		//Calculando o preço unitário
+		//Calculando o preï¿½o unitï¿½rio
 		aCols[n,GDFieldPos("C6_ZPRCUNI")] := round(aCols[n,GDFieldPos("C6_ZBASCOM")] / aCols[n,GDFieldPos("C6_QTDVEN")],2)
 
 		//	elseif xcPar == 'Q'
@@ -852,7 +860,7 @@ static function xfPreco()
 		aCols[n,GDFieldPos("C6_ZPRCUNI")] := 0
 	endif
 
-	//Calculo da comissão
+	//Calculo da comissï¿½o
 	xfCalcCom()
 
 	aCols[n,GDFieldPos("C6_ZVALCOM")] := round(aCols[n,GDFieldPos("C6_ZBASCOM")] * (aCols[n,GDFieldPos("C6_COMIS1")]) / 100,2)
@@ -869,9 +877,9 @@ static function xfResult()
 	aCols[n,GDFieldPos("C6_XRESULT")] := 	round(aCols[n,GDFieldPos("C6_VALOR")]   - ; //Total do Pedido
 	aCols[n,GDFieldPos("C6_XCUSTOS")] - ; //Custo de produtos
 	aCols[n,GDFieldPos("C6_ZFRETE")] -  ; //Valor do Frete
-	aCols[n,GDFieldPos("C6_ZVALCOM")] - ; //Valor da comissão
-	aCols[n,GDFieldPos("C6_XVLCOMG")] - ; //Valor da comissão Gerencia
-	aCols[n,GDFieldPos("C6_XVLCOMD")] - ; //Valor da comissão Diretoria
+	aCols[n,GDFieldPos("C6_ZVALCOM")] - ; //Valor da comissï¿½o
+	aCols[n,GDFieldPos("C6_XVLCOMG")] - ; //Valor da comissï¿½o Gerencia
+	aCols[n,GDFieldPos("C6_XVLCOMD")] - ; //Valor da comissï¿½o Diretoria
 	aCols[n,GDFieldPos("C6_XDESPFX")] - ; //Despesas Fixas
 	aCols[n,GDFieldPos("C6_XIRCSLL")] - ; //Ir e Csll sobre o total
 	aCols[n,GDFieldPos("C6_XMGERRO")] - ; //Marketing
@@ -891,11 +899,11 @@ static function xfResult()
 	endif
 return
 
-//função para calcular as margens obtidas pelo pedido.
+//funï¿½ï¿½o para calcular as margens obtidas pelo pedido.
 static function xfCustos()
 	if aCols[n,GDFieldPos("C6_QTDVEN")] > 0
 
-		//Calculo da comissão
+		//Calculo da comissï¿½o
 		aCols[n,GDFieldPos("C6_XCUSTOS")] := round(aCols[n,GDFieldPos("C6_QTDVEN")] * SB1->B1_ZZVLIND,2)
 
 		//Calculo da DEspesas fixas
@@ -925,7 +933,7 @@ static function xfCustos()
 		valorVerba()
 	endif
 
-	//Calculo da comissão
+	//Calculo da comissï¿½o
 	GetDRefresh()
 
 return()
