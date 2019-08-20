@@ -11,7 +11,7 @@ user function MT410TOK()
 	U_ufAmbiente(xaAlias, "S")
 
 
-	If codEmpresa == '01' .AND. !Exclui
+	If codEmpresa == '01' 
 
 		If aCols[n,GDFieldPos("C6_XCUSTOS")] == 0 .AND. M->C5_ZZTPOPE $ '01 04 09 12'
 			
