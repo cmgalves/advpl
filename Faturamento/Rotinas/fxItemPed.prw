@@ -3,7 +3,7 @@
 
 /*
 Rotina para calcula as rotinas do pedido corretamente
-
+pedido 110986
 Par�metros:
 T = Tipo de Opera��o na C5
 P = Produto na C6
@@ -39,12 +39,12 @@ user function xfItemPed(_cPar, _cCont)
 	private tabFora		:=	AllTrim(GetMv("MB_TABFORA"))
 	private pricVari
 
-	private xaAlias 	:= { {Alias()},{"DA0"},{"DA1"},{"PAC"},{"SA1"},{"SA2"},{"SA3"},{"SB1"},{"SB5"},{"SX5"},{"SZ1"},{"SZ3"},{"SZ3"}}
+	private xaAlias 	:= { {Alias()},{"DA0"},{"DA1"},{"PAC"},{"SA1"},{"SA2"},{"SA3"},{"SB1"},{"SB5"},{"SX5"},{"SZ1"},{"SZ3"}}
 
 	U_ufAmbiente(xaAlias, "S")
 
 
-	if M->C5_ZZTPOPE $ '||02||T3||'
+	if M->C5_ZZTPOPE == 'T3'
 		return
 	endif
 
@@ -257,7 +257,9 @@ static function xfPrzMed()
 		pricVari := M->C5_XPRZMED
 
 		M->C5_XPRZMED := xnPrzMed
-		if DTOS(SA1->A1_DTCAD) > '20181231' .AND. empty(alltrim(SA1->A1_GRPVEN))
+		if DTOS(SA1->A1_DTCAD) > '20181231';
+				.AND. SA1->A1_XCOBJUR != 'N';
+				.AND. empty(alltrim(SA1->A1_GRPVEN))
 			M->C5_XPERJUR := xnJuros
 		else
 			M->C5_XPERJUR := 0
