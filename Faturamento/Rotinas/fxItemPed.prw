@@ -19,6 +19,8 @@ OPER = Quando atualiza a opera��o na linha
 user function xfItemPed(_cPar, _cCont)
 	private xcPar		:=	_cPar
 	private xcConteudo	:=	_cCont
+	private codVend		:=	''
+	private codSuper	:=	''
 	private codCliente	:=	''
 	private lojaCliente	:=	''
 	private xcTabela	:=	''
@@ -33,7 +35,8 @@ user function xfItemPed(_cPar, _cCont)
 	private aliqPis		:=	0
 	private aliqCof		:=	0
 	private xcTpFrete	:=	''
-	private xnComis		:=	0
+	private xnComis1	:=	0
+	private xnComis2	:=	0
 	private xnPerFrete	:=	0
 	private xcTipoOper	:=	''
 	private tabFora		:=	AllTrim(GetMv("MB_TABFORA"))
@@ -303,6 +306,8 @@ static function xfPedido()
 	*/
 	codCliente	:=	M->C5_CLIENTE
 	lojaCliente	:=	M->C5_LOJACLI
+	codVend		:=	AllTrim(M->C5_VEND1)
+	codSuper	:=	AllTrim(M->C5_VEND2)
 	xcCondPag	:=	M->C5_CONDPAG
 	xcTipoOper	:=	M->C5_ZZTPOPE
 	xcRepres	:=	M->C5_VEND1
@@ -315,7 +320,7 @@ static function xfPedido()
 	xfPosic() //posicionando as tabelas
 
 	xcSitll 		:=	SA1->A1_ZZSITLL
-	xnComis			:=	SA1->A1_COMIS
+	xnComis1			:=	SA1->A1_COMIS
 	estadoUf		:=	SA1->A1_EST
 
 
@@ -562,19 +567,39 @@ return
 
 //calcula o percentual de comiss�o
 static function xfComis()
+	local xlEntrou	:=	.T.
+	local grpVar	:=	''
 
-	SA1->(dbSeek(xFilial('SA1') + codCliente + lojaCliente ))
-	xnComis := SA1->A1_COMIS
+	//INDICE DA PAC PAC_FILIAL, PAC_TABELA, PAC_CHAVE, R_E_C_N_O_, D_E_L_E_T_
+	if PAC->(dbSeek(xFilial('PAC') + '32' + codVend))
+		xnComis1 :=	PAC->PAC_VLR01
+		xlEntrou := .F.
+	endIf
+	if PAC->(dbSeek(xFilial('PAC') + '32' + codSuper))
+		xnComis2 :=	PAC->PAC_VLR01
+	endIf
 
-	if xnComis == 0
-		SA3->(dbSeek(xFilial('SA3') + xcRepres))
-		if SA3->A3_ZZPMIN == SA3->A3_ZZPMAX
-			xnComis := SA3->A3_ZZPMIN
+	SB1->(DbSeek(xFilial("SB1") + aCols[n,GDFieldPos("C6_PRODUTO")]))
+	grpVar := SB1->B1_XGRPVAR
+
+	if PAC->(dbSeek(xFilial('PAC') + '33' + grpVar))
+		xnComis1 += PAC->PAC_VLR01
+	endIf
+
+	if xlEntrou
+		SA1->(dbSeek(xFilial('SA1') + codCliente + lojaCliente ))
+		xnComis1 := SA1->A1_COMIS
+
+		if xnComis1 == 0
+			SA3->(dbSeek(xFilial('SA3') + xcRepres))
+			if SA3->A3_ZZPMIN == SA3->A3_ZZPMAX
+				xnComis1 := SA3->A3_ZZPMIN
+			endif
 		endif
-	endif
-	if xnComis == 0
-		DA0->(dbSeek(xFilial('DA0') + xcTabela))
-		xnComis := DA0->DA0_ZCOMIS
+		if xnComis1 == 0
+			DA0->(dbSeek(xFilial('DA0') + xcTabela))
+			xnComis1 := DA0->DA0_ZCOMIS
+		endif
 	endif
 
 	GetDRefresh()
@@ -611,13 +636,13 @@ static function xfCalcCom()
 			loop
 		endif
 
-		xnComis	:=	PAC->PAC_VLR01
+		xnComis1	:=	PAC->PAC_VLR01
 
 		PAC->(dbskip())
 	end do
 
 	//regras de comissao em relacao ao estado e
-	if xnComis == 0
+	if xnComis1 == 0
 		PAC->(dbSeek(xFilial('PAC') + '16' + SA1->A1_EST))
 		do while !PAC->(EOF()) ;
 				.AND. alltrim(PAC->PAC_CHAVE) == estadoUf ;
@@ -626,14 +651,14 @@ static function xfCalcCom()
 			if M->C5_FRETEMB $ alltrim(PAC->PAC_TXT02)
 				if PAC->PAC_VLR01 >= aCols[n,GDFieldPos("C6_XPERDES")]
 					retDesc := .T.
-					if xnComis < PAC->PAC_VLR02
+					if xnComis1 < PAC->PAC_VLR02
 						SA3->(dbSeek(xFilial('SA3') + M->C5_VEND1))
 						if SA3->A3_ZZPMIN > PAC->PAC_VLR02
-							xnComis := SA3->A3_ZZPMIN
+							xnComis1 := SA3->A3_ZZPMIN
 						elseif SA3->A3_ZZPMAX < PAC->PAC_VLR02
-							xnComis := SA3->A3_ZZPMAX
+							xnComis1 := SA3->A3_ZZPMAX
 						else
-							xnComis := PAC->PAC_VLR02
+							xnComis1 := PAC->PAC_VLR02
 						endif
 
 					endif
@@ -649,14 +674,15 @@ static function xfCalcCom()
 		refPromocao()
 	endif
 
-	aCols[n,GDFieldPos("C6_COMIS1")] := xnComis
+	aCols[n,GDFieldPos("C6_COMIS1")] := xnComis1
+	aCols[n,GDFieldPos("C6_COMIS2")] := xnComis2
 
 return
 
 
 /*/
-	retorna a comiss�o para produtos promocionais, 
-	caso o desconto esteja dentro do padr�o, 
+	retorna a comiss�o para produtos promocionais,
+	caso o desconto esteja dentro do padr�o,
 	10% de comiss�o, caso contr�rio, segue a regra existente
 
 	A tabela 16 retorna o m�ximo de desconto de acordo com o frete
@@ -667,13 +693,13 @@ static function refPromocao()
 	dbSelectArea('ZB1')
 	ZB1->(DbSetOrder(1))
 	ZB1->(DbSeek(xFilial("ZB1") + DA1->DA1_XREGRA))
-	
+
 	retProced := TCSPEXEC("comercialPedidoMaxDesc",  '16', estadoUf, xcFreteMB, 0)
 
 	if retProced[1] > aCols[n,GDFieldPos("C6_XPERDES")]
-		xnComis := ZB1->ZB1_COMIS
+		xnComis1 := ZB1->ZB1_COMIS
 	endif
-	
+
 return
 
 //posiciona as tabelas para iniciar os trabalhos
@@ -846,7 +872,7 @@ static function xfPreco()
 		else
 			aCols[n,GDFieldPos("C6_ZFRETE")] 	:=	round((aCols[n,GDFieldPos("C6_VALOR")] / (1-aCols[n,GDFieldPos("C6_ZPERFRT")]/100))-aCols[n,GDFieldPos("C6_VALOR")],2)
 		endif
-		
+
 
 		//Calculando o percentual do desconto //Calculo da base de comiss�o
 		aCols[n,GDFieldPos("C6_ZBASCOM")] := round(aCols[n,GDFieldPos("C6_VALOR")] - aCols[n,GDFieldPos("C6_ZFRETE")],2) - xnValJur
@@ -868,7 +894,7 @@ static function xfPreco()
 	aCols[n,GDFieldPos("C6_ZVALCOM")] := round(aCols[n,GDFieldPos("C6_ZBASCOM")] * (aCols[n,GDFieldPos("C6_COMIS1")]) / 100,2)
 	aCols[n,GDFieldPos("C6_XVLCOMG")] := round(aCols[n,GDFieldPos("C6_VALOR")] * 0.004,2)
 	aCols[n,GDFieldPos("C6_XVLCOMD")] := round(aCols[n,GDFieldPos("C6_VALOR")] * 0.006,2)
-	// aCols[n,GDFieldPos("C6_ZZTPOPE")]	:=	xcTipoOper
+	aCols[n,GDFieldPos("C6_XGRPVAR")]	:=	SB1->B1_XGRPVAR
 	GetDRefresh()
 
 return
