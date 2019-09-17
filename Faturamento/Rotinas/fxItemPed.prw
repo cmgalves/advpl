@@ -21,11 +21,11 @@ user function xfItemPed(_cPar, _cCont)
 	private xcConteudo	:=	_cCont
 	private codVend		:=	''
 	private codSuper	:=	''
+	private codGeren	:=	''
 	private codCliente	:=	''
 	private lojaCliente	:=	''
 	private xcTabela	:=	''
 	private xcProduto	:=	''
-	private xcRepres	:=	''
 	private xcFreteMB	:=	''
 	private xcFrtTab	:=	''
 	private xcCalcFrt	:=	''
@@ -37,6 +37,7 @@ user function xfItemPed(_cPar, _cCont)
 	private xcTpFrete	:=	''
 	private xnComis1	:=	0
 	private xnComis2	:=	0
+	private xnComis3	:=	0
 	private xnPerFrete	:=	0
 	private xcTipoOper	:=	''
 	private tabFora		:=	AllTrim(GetMv("MB_TABFORA"))
@@ -308,9 +309,9 @@ static function xfPedido()
 	lojaCliente	:=	M->C5_LOJACLI
 	codVend		:=	AllTrim(M->C5_VEND1)
 	codSuper	:=	AllTrim(M->C5_VEND2)
+	codGeren	:=	AllTrim(M->C5_VEND3)
 	xcCondPag	:=	M->C5_CONDPAG
 	xcTipoOper	:=	M->C5_ZZTPOPE
-	xcRepres	:=	M->C5_VEND1
 	xcFreteMB	:=	M->C5_FRETEMB
 	xcCalcFrt	:=	M->C5_ZCALFRT
 	xcTabela	:=	aCols[n,GDFieldPos("C6_ZTABELA")]
@@ -320,7 +321,7 @@ static function xfPedido()
 	xfPosic() //posicionando as tabelas
 
 	xcSitll 		:=	SA1->A1_ZZSITLL
-	xnComis1			:=	SA1->A1_COMIS
+	xnComis1		:=	SA1->A1_COMIS
 	estadoUf		:=	SA1->A1_EST
 
 
@@ -422,8 +423,8 @@ static function xfAtuVal()
 	M->C5_XVLCOMG	:=	0
 	M->C5_XVLCOMD	:=	0
 	M->C5_COMIS1	:=	0
-	M->C5_COMIS2	:=	0.4
-	M->C5_COMIS3	:=	0.6
+	M->C5_COMIS2	:=	0
+	M->C5_COMIS3	:=	0
 	M->C5_XVLDESC	:=	0
 	M->C5_XPERDES	:=	0
 	M->C5_XCUSTO	:=	0
@@ -569,7 +570,6 @@ return
 static function xfComis()
 	local xlEntrou	:=	.T.
 	local grpVar	:=	''
-
 	//INDICE DA PAC PAC_FILIAL, PAC_TABELA, PAC_CHAVE, R_E_C_N_O_, D_E_L_E_T_
 	if PAC->(dbSeek(xFilial('PAC') + '32' + codVend))
 		xnComis1 :=	PAC->PAC_VLR01
@@ -578,20 +578,19 @@ static function xfComis()
 	if PAC->(dbSeek(xFilial('PAC') + '32' + codSuper))
 		xnComis2 :=	PAC->PAC_VLR01
 	endIf
-
+	if PAC->(dbSeek(xFilial('PAC') + '32' + codGeren))
+		xnComis3 :=	PAC->PAC_VLR01
+	endIf
 	SB1->(DbSeek(xFilial("SB1") + aCols[n,GDFieldPos("C6_PRODUTO")]))
 	grpVar := SB1->B1_XGRPVAR
-
 	if PAC->(dbSeek(xFilial('PAC') + '33' + grpVar))
 		xnComis1 += PAC->PAC_VLR01
 	endIf
-
 	if xlEntrou
 		SA1->(dbSeek(xFilial('SA1') + codCliente + lojaCliente ))
 		xnComis1 := SA1->A1_COMIS
-
 		if xnComis1 == 0
-			SA3->(dbSeek(xFilial('SA3') + xcRepres))
+			SA3->(dbSeek(xFilial('SA3') + codVend))
 			if SA3->A3_ZZPMIN == SA3->A3_ZZPMAX
 				xnComis1 := SA3->A3_ZZPMIN
 			endif
@@ -601,9 +600,7 @@ static function xfComis()
 			xnComis1 := DA0->DA0_ZCOMIS
 		endif
 	endif
-
 	GetDRefresh()
-
 return
 
 //Calcula a comiss�o nos itens do pedidos
@@ -676,6 +673,7 @@ static function xfCalcCom()
 
 	aCols[n,GDFieldPos("C6_COMIS1")] := xnComis1
 	aCols[n,GDFieldPos("C6_COMIS2")] := xnComis2
+	aCols[n,GDFieldPos("C6_COMIS3")] := xnComis3
 
 return
 
@@ -813,9 +811,6 @@ static function xfPreco()
 		if DA1->DA1_PRCVEN > 0
 			xnFrtDesc	:=	iif((M->C5_FRETEMB $ '1|3' .or. SA1->A1_EST == 'SP'), aCols[n,GDFieldPos("C6_ZPERFRT")] - 4, aCols[n,GDFieldPos("C6_ZPERFRT")])
 
-			//Abate o frete do desconto do cliente caso esteja na tabela PAC 23
-			//xnFrtDesc	-=	iif(PAC->(dbSeek(xFilial("PAC")+"23" + xcRepres + DA0->DA0_CODTAB)) .AND. estadoUf $ DA0->DA0_XUFS, DA0->DA0_XFRETE, 0)
-
 			if DA0->DA0_XFRTIN == 'N' .AND. DA0->DA0_XFRETE > 0
 				xnFrtDesc	-= DA0->DA0_XFRETE
 			endif
@@ -892,8 +887,8 @@ static function xfPreco()
 	xfCalcCom()
 
 	aCols[n,GDFieldPos("C6_ZVALCOM")] := round(aCols[n,GDFieldPos("C6_ZBASCOM")] * (aCols[n,GDFieldPos("C6_COMIS1")]) / 100,2)
-	aCols[n,GDFieldPos("C6_XVLCOMG")] := round(aCols[n,GDFieldPos("C6_VALOR")] * 0.004,2)
-	aCols[n,GDFieldPos("C6_XVLCOMD")] := round(aCols[n,GDFieldPos("C6_VALOR")] * 0.006,2)
+	aCols[n,GDFieldPos("C6_XVLCOMG")] := round(aCols[n,GDFieldPos("C6_VALOR")] * (aCols[n,GDFieldPos("C6_COMIS2")]) / 100,2)
+	aCols[n,GDFieldPos("C6_XVLCOMD")] := round(aCols[n,GDFieldPos("C6_VALOR")] * (aCols[n,GDFieldPos("C6_COMIS3")]) / 100,2)
 	aCols[n,GDFieldPos("C6_XGRPVAR")]	:=	SB1->B1_XGRPVAR
 	GetDRefresh()
 
@@ -974,14 +969,6 @@ static function xfFrete()
 
 	xnPerFrete := 0
 
-	/*
-	if DA0->DA0_XFRTIN = 'S' .AND. ;
-	PAC->(dbSeek(xFilial("PAC")+"23" + xcRepres + DA0->DA0_CODTAB)) .AND.;
-	estadoUf $ DA0->DA0_XUFS
-	xnPerFrete := DA0->DA0_XFRETE
-	xlContinua := .F.
-		endif
-	*/
 	if DA0->DA0_XFRTIN == 'N' .AND. DA0->DA0_XFRETE > 0
 		xnPerFrete := DA0->DA0_XFRETE
 		xlContinua := .F.
@@ -1010,7 +997,7 @@ static function xfFrete()
 			PAC->(dbSkip())
 		end
 
-		if PAC->(dbSeek(xFilial("PAC")+"20" + xcRepres)) .AND. xnPerFrete == 0 .AND. xcFreteMB == '2'
+		if PAC->(dbSeek(xFilial("PAC")+"20" + codVend)) .AND. xnPerFrete == 0 .AND. xcFreteMB == '2'
 			if estadoUf $ PAC->PAC_TXT01
 				xnPerFrete := PAC->PAC_VLR01
 			endif
@@ -1018,7 +1005,7 @@ static function xfFrete()
 
 			xnPerFrete := PAC->PAC_VLR01
 
-			if PAC->(dbSeek(xFilial("PAC") + "18" + xcRepres)) .AND. xcFreteMB == '2'
+			if PAC->(dbSeek(xFilial("PAC") + "18" + codVend)) .AND. xcFreteMB == '2'
 
 				xnPerFrete := PAC->PAC_VLR01
 

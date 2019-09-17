@@ -229,10 +229,20 @@ Static Function Sincronizar()
 			aadd(aVetor,{"A1_CALCSUF"   ,'N'									,Nil})  // Estado       C 02
 			aadd(aVetor,{"A1_TPESSOA"   ,'CI'									,Nil})  // Estado       C 02
 			aadd(aVetor,{"A1_MSBLQL"	,'2'									,Nil})  // Estado       C 02
+			aadd(aVetor,{"A1_REGIAO"	,CLIENTES->REGIAO						,Nil})  // Região do cliente
+			aadd(aVetor,{"A1_ZZPERFI"	,CLIENTES->RAMO							,Nil})  // Ramo de atividades       C 02
+			aadd(aVetor,{"A1_XCODGUA"	,CLIENTES->CODGUARANI					,Nil})  // Ramo de atividades       C 02
+			aadd(aVetor,{"A1_XPREDIO"	,CLIENTES->PREDIO						,Nil})  // Ramo de atividades       C 02
+			aadd(aVetor,{"A1_XREDE"		,CLIENTES->REDE							,Nil})  // Ramo de atividades       C 02
+			aadd(aVetor,{"A1_XQTLOJA"	,CLIENTES->LOJAS						,Nil})  // Ramo de atividades       C 02
+			aadd(aVetor,{"A1_XCHOUTS"	,CLIENTES->XCOUTS						,Nil})  // Ramo de atividades       C 02
+			aadd(aVetor,{"A1_XQTFUNC"	,CLIENTES->FUNCS						,Nil})  // Ramo de atividades       C 02
 			MSExecAuto({|x,y| Mata030(x,y)},aVetor,3) //Inclusao
 
 			If lMsErroAuto
 				MostraErro()
+			else
+				TCSPEXEC("guaraniIncluiReferenciasClientes")
 			Endif
 
 			CLIENTES->(DbSkip())
@@ -390,7 +400,7 @@ Static Function Importar()
 			{'C5_EMISSAO',DDATABASE,NIL},;
 			{'C5_CONDPAG',ZB5I->ZB5_COND,NIL},;
 			{'C5_TPCARGA',"1",NIL},; // Indica que utiliza carga p/ OMS
-			{'C5_TABELA',ZB5I->ZB5_TABELA,NIL},;
+		{'C5_TABELA',ZB5I->ZB5_TABELA,NIL},;
 			{'C5_MOEDA',1,NIL},;
 			{'C5_ZZOBPED',ZB5I->ZB5_OBS,NIL},;
 			{'C5_MENNOTA','O.C. ' + ordemCli,NIL},;
@@ -446,7 +456,7 @@ Static Function Importar()
 			AADD(aLinha,{'C6_ITEMPC',ZB6I->ZB6_ITEM,NIL})
 			AADD(aLinha,{'C6_NUMPCOM',ordemCli,NIL})
 
-			
+
 
 			AADD(aItens,aLinha)
 			ZB6I->(dbskip())
