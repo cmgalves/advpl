@@ -2,7 +2,7 @@
 #include "topconn.ch"
 #INCLUDE "FileIO.ch"                
                       
-//Relatórios Faturamento:
+//Relatï¿½rios Faturamento:
 //1. Pedidos x Vendedor
 
 User Function MBRFAT09()
@@ -12,7 +12,7 @@ Local cDesc3         := "Relatorio de Vendas x Vendedor"
 Local cPict          := ""                                     
 
 private cVend1		 := ""
-Private cTipoPV		 := GetMv("MV_ZZTPPV") //TIPOS DE PEDIDO QUE DETALHAM COMISSÃO - FUNCIONALIDADE APOS ENTRADA EM PRODUÇÃO DA TES INTELEGINETE MB
+Private cTipoPV		 := GetMv("MV_ZZTPPV") //TIPOS DE PEDIDO QUE DETALHAM COMISSï¿½O - FUNCIONALIDADE APOS ENTRADA EM PRODUï¿½ï¿½O DA TES INTELEGINETE MB
 Private nLin           := 80
 private titulo         := "Fat x Vendedor"
 					   //000000000111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999000000000111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999
@@ -159,7 +159,7 @@ TCSETFIELD( "TRA","D2_EMISSAO","D")
 dbSelectArea("TRA")
 SetRegua(RecCount())
 TRA->(dbGoTop())
-If nLin > 65 // Salto de Página. Neste caso o formulario tem 55 linhas...
+If nLin > 65 // Salto de Pï¿½gina. Neste caso o formulario tem 55 linhas...
 	Cabec(Titulo,Cabec1,Cabec2,NomeProg,Tamanho,nTipo)
 	nLin := 9
 Endif
@@ -201,7 +201,7 @@ nTGFrt		:= 0
 nTGBsC		:= 0
 nTGCom		:= 0
 While !TRA->(EOF())
-	If lAbortPrint           é 
+	If lAbortPrint           ï¿½ 
 		@nLin,00 PSAY "*** CANCELADO PELO OPERADOR ***"
 		Exit
 	Endif
@@ -256,7 +256,7 @@ While !TRA->(EOF())
 		cVend1	:= TRA->C5_VEND1
 	Endif
              
-	If nLin > 65 // Salto de Página. Neste caso o formulario tem 55 linhas...
+	If nLin > 65 // Salto de Pï¿½gina. Neste caso o formulario tem 55 linhas...
 		Cabec(Titulo,Cabec1,Cabec2,NomeProg,Tamanho,nTipo)
 		nLin := 9
 	Endif
@@ -357,11 +357,11 @@ nLin ++
 nLin ++
 @nLin,000 Psay Replicate("_",220)
 nLin++
-@nLin,002 Psay "TOTAL DO RELATÓRIO VENDIDOS"
+@nLin,002 Psay "TOTAL DO RELATï¿½RIO VENDIDOS"
 @nLin,135 Psay PadR(Transform(nTotGer, "@E 999,999,999.99"),14)
 
 nLin++
-@nLin,002 Psay "TOTAL DO RELATÓRIO DEVOLVIDAS"
+@nLin,002 Psay "TOTAL DO RELATï¿½RIO DEVOLVIDAS"
 @nLin,135 Psay PadR(Transform(nTotDev, "@E 999,999,999.99"),14)
 IF MV_PAR09 = 1 .and. (alltrim(TRA->C5_ZZTPOPE) $ cTipoPV .or. empty(alltrim(TRA->C5_ZZTPOPE)))
 	nLin++
@@ -406,9 +406,9 @@ aAdd(aRegs,{cPerg,"05","Supervisor Reg. De ? ","mv_ch05","C",06,0,0,"G","","MV_P
 aAdd(aRegs,{cPerg,"06","Supervisor Reg. Ate ?","mv_ch06","C",06,0,0,"G","","MV_PAR06","","","","","","","","","","","","","","","SA3"})
 aAdd(aRegs,{cPerg,"07","Supervisor Nac. De ? ","mv_ch07","C",06,0,0,"G","","MV_PAR07","","","","","","","","","","","","","","","SA3"})
 aAdd(aRegs,{cPerg,"08","Supervisor Nac. Ate ?","mv_ch08","C",06,0,0,"G","","MV_PAR08","","","","","","","","","","","","","","","SA3"})
-aAdd(aRegs,{cPerg,"09","Detalha Comissão?"    ,"mv_ch09","N",01,0,0,"C","","MV_PAR09","Sim","","","Não","","","","","","","","","","",""})
-aAdd(aRegs,{cPerg,"10","Tes Gera Duplicata ? ","mv_ch10","N",01,0,0,"C","","MV_PAR10","Sim","","","Não","","","Ambas","","","","","","","",""})
-//aAdd(aRegs,{cPerg,"09","Gera Planilha?"       ,"mv_ch09","N",01,0,0,"C","","MV_PAR09","Sim","","","Não","","","","","","","","","","",""})
+aAdd(aRegs,{cPerg,"09","Detalha Comissï¿½o?"    ,"mv_ch09","N",01,0,0,"C","","MV_PAR09","Sim","","","Nï¿½o","","","","","","","","","","",""})
+aAdd(aRegs,{cPerg,"10","Tes Gera Duplicata ? ","mv_ch10","N",01,0,0,"C","","MV_PAR10","Sim","","","Nï¿½o","","","Ambas","","","","","","","",""})
+//aAdd(aRegs,{cPerg,"09","Gera Planilha?"       ,"mv_ch09","N",01,0,0,"C","","MV_PAR09","Sim","","","Nï¿½o","","","","","","","","","","",""})
 
 For i := 1 To Len(aRegs)
 	If !DbSeek(cPerg+aRegs[i,2])
@@ -524,7 +524,7 @@ nTPVDel	:= 0
 nLin++
 nLin++
 
-If nLin > 65 // Salto de Página. Neste caso o formulario tem 55 linhas...
+If nLin > 65 // Salto de Pï¿½gina. Neste caso o formulario tem 55 linhas...
 	Cabec(Titulo,Cabec1,Cabec2,NomeProg,Tamanho,nTipo)
 	nLin := 9
 Endif
@@ -532,7 +532,7 @@ Endif
 nLin ++
 TRC->(DBGOTOP())
 While !TRC->(EOF())
-	If nLin > 65 // Salto de Página. Neste caso o formulario tem 55 linhas...
+	If nLin > 65 // Salto de Pï¿½gina. Neste caso o formulario tem 55 linhas...
 		Cabec(Titulo,Cabec1,Cabec2,NomeProg,Tamanho,nTipo)
 		nLin := 9
 	Endif
@@ -558,18 +558,18 @@ RETURN (nTPVDel)
 
 
 /*
-ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
-±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
-±±ºPrograma  ³MBRFAT09  ºAutor  ³Microsiga           º Data ³  08/23/16   º±±
-±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
-±±ºDesc.     ³                                                            º±±
-±±º          ³                                                            º±±
-±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
-±±ºUso       ³ AP                                                        º±±
-±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
-±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
-ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½ï¿½
+ï¿½ï¿½ï¿½Programa  ï¿½MBRFAT09  ï¿½Autor  ï¿½Microsiga           ï¿½ Data ï¿½  08/23/16   ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¹ï¿½ï¿½
+ï¿½ï¿½ï¿½Desc.     ï¿½                                                            ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½          ï¿½                                                            ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¹ï¿½ï¿½
+ï¿½ï¿½ï¿½Uso       ï¿½ AP                                                        ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 
 STATIC FUNCTION MBPVDEV(cVend1)
@@ -591,7 +591,7 @@ nTPVDev	:= 0
 nLin++
 nLin++
 
-If nLin > 65 // Salto de Página. Neste caso o formulario tem 55 linhas...
+If nLin > 65 // Salto de Pï¿½gina. Neste caso o formulario tem 55 linhas...
 	Cabec(Titulo,Cabec1,Cabec2,NomeProg,Tamanho,nTipo)
 	nLin := 9
 Endif
@@ -599,7 +599,7 @@ Endif
 nLin ++
 TRD->(DBGOTOP())
 While !trd->(EOF())
-	If nLin > 65 // Salto de Página. Neste caso o formulario tem 55 linhas...
+	If nLin > 65 // Salto de Pï¿½gina. Neste caso o formulario tem 55 linhas...
 		Cabec(Titulo,Cabec1,Cabec2,NomeProg,Tamanho,nTipo)
 		nLin := 9
 	Endif
@@ -621,12 +621,12 @@ TRD->(DBCLOSEAREA())
 RETURN (nTPVDev)
 
 //ROTINA PARA RETORNAR O PERCENTUAL DE FRETE DO PEDIDO.
-//A FUNÇÃO FOI RETIRADA DO FONTE MSE3440.PRW
+//A FUNï¿½ï¿½O FOI RETIRADA DO FONTE MSE3440.PRW
 Static Function MBPerFrt()
 Local nPerFrete	:= 0
-//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-//³ Tipo de Frete = CIF                             ³
-//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿
+//ï¿½ Tipo de Frete = CIF                             ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 If TRA->C5_TPFRETE == 'C'
 			
 	&& Porcetagem de frete			            
@@ -643,9 +643,9 @@ If TRA->C5_TPFRETE == 'C'
 		EndIf				
 	EndIf
 	
-	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-	//³ Tipo de Frete MB = REDESPACHO                   ³
-	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿
+	//ï¿½ Tipo de Frete MB = REDESPACHO                   ï¿½
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	If TRA->C5_FRETEMB == '1'								
 		&& Porcetagem de frete							
  		SZ3->(DbSetOrder(1)) && Z3_FILIAL+Z3_TPFRETE+Z3_FRETEMB
@@ -654,14 +654,14 @@ If TRA->C5_TPFRETE == 'C'
 		 EndIf
 	EndIf 
 
-//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-//³ Tipo de Frete = FOB                             ³
-//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ			
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿
+//ï¿½ Tipo de Frete = FOB                             ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½			
 Else
 		
-	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-	//³ Tipo de Frete MB = REDESPACHO                   ³
-	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ			
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿
+	//ï¿½ Tipo de Frete MB = REDESPACHO                   ï¿½
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½			
 	If TRA->C5_FRETEMB == '3' .AND. AllTrim(GetMv("MV_ZZFRELL")) == 'S'
 					
 		&& Porcetagem de frete			            

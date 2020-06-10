@@ -1,5 +1,5 @@
 #include "protheus.ch"
-#include "topconn.ch"
+
 
 /*
 Rotina para calcula as rotinas do pedido corretamente
