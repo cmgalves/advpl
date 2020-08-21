@@ -43,7 +43,7 @@ if GetMV('MB_ALTPED') == 'N'
 	endif
 endif
 
-if __cUserId $ '000098 | 000110 | 000124 | '
+if __cUserId $ '000098 | 000110 | 000124 | 000011 | 000046 '
 	lContinua := .T.
 endif
 

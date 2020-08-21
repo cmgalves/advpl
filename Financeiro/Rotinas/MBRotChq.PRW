@@ -24,13 +24,13 @@ Private	nChqVlr	:=	0
 Private	nChqBxa	:=	0
 Private xaAlias := { {Alias()},{"SE1"},{"SE5"},{"SEF"}}
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 
 Processa({|| MBUltChq() },"Atualizando os registros","Selecionando Registros... ")
 
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 
 Return(cChqBco)
 

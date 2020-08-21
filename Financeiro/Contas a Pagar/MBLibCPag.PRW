@@ -38,7 +38,7 @@ Private xcR			:=	Char(13) + Char(10)
 Private aCores		:=	{}
 
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 
 
@@ -105,7 +105,7 @@ oMarkF:oBrowse:bAllMark   := {|| nRec := XTIT->(Recno()), XTIT->(DbEval( {|| (Re
 Activate MsDialog oDlg ON INIT EnchoiceBar(oDlg,{|| Processa( {||xsfLibPed(cMarca)})},{|| lOK := .F., oDlg:End()},.F.) Centered
 
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 Return()
 
 Static Function xsfLibPed(cMarca, cObserv)

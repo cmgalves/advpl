@@ -289,7 +289,7 @@ Local 	xlAcha		:=	.T.
 Local	xaPedi		:=	{}
 Private xaAlias 	:= 	{ {Alias()},{'SC9'}}
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 dbSelectArea('SC9')
 SC9->(dbSetOrder(1)) //C9_FILIAL, C9_PEDIDO, C9_ITEM, C9_SEQUEN, C9_PRODUTO, R_E_C_N_O_, D_E_L_E_T_
@@ -328,7 +328,7 @@ For  xi := 1 to Len(xaDados)
 	
 Next xi
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 
 /*
 Limpa os pedidos liberados originais, esses pedidos não serão

@@ -1,3 +1,5 @@
+
+
 #INCLUDE "rwmake.ch"
 #INCLUDE "protheus.ch"
 #INCLUDE "topconn.ch"
@@ -603,7 +605,8 @@ Method montaRel() Class Boleto
 
 	 		aAdd(::aFrases,'Juros de R$ '+AllTrim(Transform(Round(((SE1->E1_SALDO + nTaxa) - SomaAbat(SE1->E1_PREFIXO,SE1->E1_NUM,SE1->E1_PARCELA,"R",1,,SE1->E1_CLIENTE,SE1->E1_LOJA)) * GetMV('MB_TXJUROS'),2),"999,999,999.99")) + ' ao dia')
 	 		aAdd(::aFrases,'Multa de R$ '+AllTrim(Transform(Round(((SE1->E1_SALDO + nTaxa) - SomaAbat(SE1->E1_PREFIXO,SE1->E1_NUM,SE1->E1_PARCELA,"R",1,,SE1->E1_CLIENTE,SE1->E1_LOJA)) * GetMV('MB_TXMULTA'),2),"999,999,999.99")) + ' apï¿½s vencimento')
-	 		aAdd(::aFrases,'Protesto apï¿½s (05 DIAS) do vencimento')		 	
+	 		// aAdd(::aFrases,'Protesto apï¿½s (05 DIAS) do vencimento')		 	
+	 		aAdd(::aFrases,'Negativação após 07 dias do vencimento')		 	
 
 	 		aAdd(::aFrases,"PARCELA Nï¿½ " + SE1->E1_PARCELA )		 	
 		 	/*

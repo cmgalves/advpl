@@ -15,7 +15,7 @@ Private	xcMens		:=	""
 Private xcOri		:=	xcOrig
 Private xcMotCan	:=	Space(100)
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 
 xsfTitDeb()
@@ -23,7 +23,7 @@ xsfTitDeb()
 aCols[n,GDFieldPos("C6_ZTABELA")] := M->C5_TABELA
 
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 
 Return Iif(xcOri == "C",xcCliente,xcLoja)
 

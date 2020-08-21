@@ -18,7 +18,7 @@ Private xaAlias 	:= { {Alias()},{"SE1"},{"SA1"},{"SA3"},{"SC5"},{"SC6"},{"SC9"},
 Private xcQuery		:=	""
 Private xcR			:=	Char(13) + Char(10)
 Private aCores		:=	{}
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 
 
@@ -117,7 +117,7 @@ ACTIVATE MSDIALOG oDlg ON INIT (EnchoiceBar(oDlg,{||lOK:=.T., Alert('ESCOLHA SUA
 
 
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 
 Return()
 

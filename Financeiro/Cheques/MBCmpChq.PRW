@@ -18,7 +18,7 @@ Local aCampos  		:= 	{}
 Local cArqOP
 Private xaAlias 	:= { {Alias()},{"SE1"},{"SA1"},{"SA3"},{"SZ4"}}
 Private aCores		:=	{}
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 
 Aadd( aCampos , {"OK" ,"" ,"Ok"} )
@@ -114,7 +114,7 @@ ACTIVATE MSDIALOG oDlg ON INIT (EnchoiceBar(oDlg,{||lOK:=.T., Alert('ESCOLHA SUA
 
 
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 
 Return()
 

@@ -26,7 +26,7 @@ Private xcR			:=	Char(13) + Char(10)
 xcPed	:=	SC5->C5_NUM
 
 If GetMV('MB_LIBESTO') == 'S'
-	U_ufAmbiente(xaAlias, "S")
+	//U_ufAmbiente(xaAlias, "S")
 	
 	
 	xlRet	:=	xsfPedido(xcPed)
@@ -39,7 +39,7 @@ If GetMV('MB_LIBESTO') == 'S'
 	EndIf
 	
 	
-	U_ufAmbiente(xaAlias, "R")
+	//U_ufAmbiente(xaAlias, "R")
 EndIf
 
 Return(xlRet)

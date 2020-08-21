@@ -23,7 +23,7 @@ If Empty(aCols[n,xnpNfori]) .OR. aCols[n,xnpNfori] == '000000000' .OR. Empty(All
 	Return (xlExecuta)
 EndIf
 
-U_ufAmbiente(aAlias, "S")
+//U_ufAmbiente(aAlias, "S")
 
 dbSelectArea('SD2')
 dbSetOrder(3) //D2_FILIAL, D2_DOC, D2_SERIE, D2_CLIENTE, D2_LOJA, D2_COD, D2_ITEM, R_E_C_N_O_, D_E_L_E_T_
@@ -49,6 +49,6 @@ EndCase
 
 
 
-U_ufAmbiente(aAlias, "R")
+//U_ufAmbiente(aAlias, "R")
 
 Return (xlExecuta)

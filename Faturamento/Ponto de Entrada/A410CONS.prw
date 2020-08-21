@@ -18,6 +18,7 @@ User Function A410CONS()
 Local aBotoes:={}
 
 AAdd(aBotoes,{ "NOTE", {|| Processa({|| U_MBRFAT01("DIRETO")},"Dados do Pedido","Processando...") }, "Impressão Pedido" } )
+AAdd(aBotoes,{ "NOTE", {|| Processa({|| U_xfItemPed('REFAZ','')},"Dados do Pedido","Processando...") }, "Refaz Valores" } )
 //--AAdd(aBotoes,{ "NOTE", {|| Processa({|| U_MBRFAT01("DIRETO")},"Dados do Pedido","Processando...") }, "Impressão Pedido 2" } )
 
 Return(aBotoes)	

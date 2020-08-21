@@ -1,5 +1,5 @@
 #include "protheus.ch"
-#include "topconn.ch"
+
 
 /*
 Rotina para calcula as rotinas do pedido corretamente
@@ -17,6 +17,7 @@ OPER = Quando atualiza a operaï¿½ï¿½o na linha
 */
 
 user function xfItemPed(_cPar, _cCont)
+	Local 	aArea		:= 	 GetArea()
 	private xcPar		:=	_cPar
 	private xcConteudo	:=	_cCont
 	private codVend		:=	''
@@ -31,6 +32,7 @@ user function xfItemPed(_cPar, _cCont)
 	private xcCalcFrt	:=	''
 	private xcSitll		:=	''
 	private estadoUf	:=	''
+	private aliqFrete	:=	0
 	private aliqIcms	:=	0
 	private aliqPis		:=	0
 	private aliqCof		:=	0
@@ -38,15 +40,19 @@ user function xfItemPed(_cPar, _cCont)
 	private xnComis1	:=	0
 	private xnComis2	:=	0
 	private xnComis3	:=	0
-	private xnPerFrete	:=	0
 	private xcTipoOper	:=	''
 	private tabFora		:=	AllTrim(GetMv("MB_TABFORA"))
 	private pricVari
 
-	private xaAlias 	:= { {Alias()},{"DA0"},{"DA1"},{"PAC"},{"SA1"},{"SA2"},{"SA3"},{"SB1"},{"SB5"},{"SX5"},{"SZ1"},{"SZ3"}}
+	// private xaAlias 	:= { {Alias()},{"DA0"},{"DA1"},{"PAC"},{"SA1"},{"SA2"},{"SA3"},{"SB1"},,{"SB2"},{"SB5"},{"SX5"},{"SZ1"},{"SZ3"}}
 
-	U_ufAmbiente(xaAlias, "S")
+	//U_ufAmbiente(xaAlias, "S")
 
+//dbSelectArea('PA5')
+	If FunName() == "MATA410" .And. (!ALTERA .And. !INCLUI)
+		MsgInfo('Funcionalidade nao disponivel na visualizacao')
+		Return(.F.)
+	EndIf
 
 	if M->C5_ZZTPOPE == 'T3'
 		return
@@ -67,7 +73,7 @@ user function xfItemPed(_cPar, _cCont)
 	endif
 
 	if xcPar == 'CADTAB'
-		xfCadTab()
+				xfCadTab()
 		return xcConteudo
 	endif
 
@@ -85,8 +91,8 @@ user function xfItemPed(_cPar, _cCont)
 
 	xfPedido()
 
-	U_ufAmbiente(xaAlias, "R")
-
+	//U_ufAmbiente(xaAlias, "R")
+	RestArea(aArea)
 return xcTabela
 
 static function xfCadTab()
@@ -111,7 +117,7 @@ static function xfTabela()
 	DA0->(dbSeek(xFilial('DA0') + aCols[n,GDFieldPos("C6_ZTABELA")]))
 
 	if dataHoje < DTOS(DA0->DA0_DATDE) .OR. dataHoje > DTOS(DA0->DA0_DATATE) .OR. DA0->DA0_ATIVO != '1'
-		alert('Tabela: ' + alltrim(DA0->DA0_CODTAB) + ' nï¿½o estï¿½ disponï¿½vel!!!')
+		alert('Tabela: ' + alltrim(DA0->DA0_CODTAB) + ' nao esta disponivel!!!')
 		xcConteudo := ''
 		GetDRefresh()
 		return
@@ -162,11 +168,17 @@ static function xfCred()
 
 
 	if SA1->A1_ATR > 0 .AND. SA1->A1_RISCO != 'A' .AND. !(__cUserId $ '000098 | 000110')//Verifica o Crï¿½dito
-		alert('Cliente possui dï¿½bitos')
+		alert('Cliente possui debitos')
 		M->C5_CLIENTE	:=	''
 		M->C5_LOJACLI	:=	''
 	endif
 
+	if __cUserId $ '000098 - 000110' .AND. EMPTY(M->C5_CLIENTE)
+		M->C5_TABELA	:=	'001'
+		M->C5_CONDPAG	:=	'001'
+		M->C5_FRETEMB	:=	'1'
+		M->C5_TPFRETE	:=	'C'
+	endif
 return
 
 //verifica se hï¿½ dï¿½bitos
@@ -213,14 +225,27 @@ static function xfAtuCabec()
 
 	pricVari := M->C5_DESC1
 
+	if PAC->(dbSeek(xFilial('PAC') + '38' + ALLTRIM(SA3->A3_COD)))
+		M->C5_DESC1		:=	PAC->PAC_VLR01
+	else
+		M->C5_DESC1		:=	SA1->A1_DESC
+	endif
+
 	M->C5_XCOMCLI	:=	SA1->A1_COMIS
 	M->C5_ZZNOMFC	:=	xfNome()
 	M->C5_CONDPAG	:=	SA1->A1_COND
-	M->C5_DESC1		:=	SA1->A1_DESC
 	M->C5_XCIDADE	:=	ALLTRIM(SA1->A1_MUN) + ' - ' + SA1->A1_EST
+	M->C5_XEST		:=	SA1->A1_EST
 	M->C5_XCOMRPD	:=	SA3->A3_ZZPMIN
 	M->C5_XCOMRPA	:=	SA3->A3_ZZPMAX
+	M->C5_ZZDTENT	:=	dDataBase
 
+	if __cUserId $ '000098 - 000110' .AND. EMPTY(M->C5_CLIENTE)
+		M->C5_TABELA	:=	'001'
+		M->C5_CONDPAG	:=	'001'
+		M->C5_FRETEMB	:=	'1'
+		M->C5_TPFRETE	:=	'C'
+	endif
 
 	aCols[1,GDFieldPos("C6_ZTABELA")] := M->C5_TABELA
 	aCols[1,GDFieldPos("C6_ZZTPOPE")] := M->C5_ZZTPOPE
@@ -293,6 +318,16 @@ static function xfPedido()
 	//verifincar se o cabeï¿½alho estï¿½ preenchido
 	pricVari := M->C5_TPFRETE
 
+	if __cUserId $ '000098 - 000110' .AND. EMPTY(M->C5_CLIENTE)
+		M->C5_CLIENTE	:=	'000123'
+		M->C5_LOJACLI	:=	'01'
+		M->C5_TABELA	:=	'001'
+		M->C5_CONDPAG	:=	'001'
+		M->C5_FRETEMB	:=	'1'
+		M->C5_TPFRETE	:=	'C'
+		M->C5_VEND1		:=	'777'
+		M->C5_ZZOBPED	:=	'TESTE DE PEDIDO PARA DESENVOLVIMENTO'
+	endif
 
 	if !(xcPar $ 'C|T')
 		if empty(M->C5_CLIENTE) .OR. empty(M->C5_LOJACLI) .OR. empty(M->C5_FRETEMB) .OR. empty(M->C5_ZCALFRT) .OR. empty(M->C5_TABELA) .OR. empty(M->C5_TPFRETE)
@@ -343,10 +378,11 @@ static function xfPedido()
 	if xcPar == 'P' .or. xcPar == 'OPER'
 		xfForaLin()
 		xfForaTab()
+		xfPontaEst()
 	endif
 
 	if xcPar $ 'P|Q|V'
-		xfComis()
+		// xfComis()
 
 		xfPreco() //calcula os preï¿½os iniciais
 
@@ -361,6 +397,18 @@ static function xfPedido()
 		xfAtuVal()	//Atualizaï¿½ï¿½o dos valores no cabec
 
 	endif
+
+	If xcPar == "REFAZ"
+		ProcRegua(0)
+		For x = 1 To Len(aCols)
+			IncProc('Atualizando item '+ Str(x))
+			xfPreco() //calcula os preï¿½os iniciais
+			xfCustos() // Calcula os custos do pedido
+			xfResult() // cï¿½lculo dos resultados
+			GetDRefresh()
+		Next x
+			XfAtuVal()
+	EndIf
 
 Return
 
@@ -384,6 +432,24 @@ static function xfForaTab()
 	endif
 return
 
+//checa os produtos ponta de estoque
+static function xfPontaEst()
+
+	if SB1->B1_ZFORLIN == '4' .and. !(rtrim(xcTabela) $ tabFora)
+		if SB2->(B2_QATU-B2_RESERVA) < aCols[n,GDFieldPos("C6_QTDVEN")]
+
+			alert('Produto Ponta de Estoque sem Saldo')
+			aCols[n,GDFieldPos("C6_PRODUTO")] := SPACE(15)
+		endif
+	endif
+
+return
+
+
+
+
+
+
 //Validaï¿½ï¿½o dos itens do pedido
 static function xfValid()
 
@@ -391,12 +457,12 @@ static function xfValid()
 	if DA0->DA0_ZZMARG == '4'
 		DA1->(dbSeek(xFilial("DA1") + aCols[n,GDFieldPos("C6_ZTABELA")] + aCols[n,GDFieldPos("C6_PRODUTO")]))
 		if !(int(aCols[n,GDFieldPos("C6_QTDVEN")] / DA1->DA1_ZQTLOT)) == (aCols[n,GDFieldPos("C6_QTDVEN")] / DA1->DA1_ZQTLOT)
-			alert('Quantidade deve ser mï¿½ltiplo de: ' + alltrim(str(DA1->DA1_ZQTLOT)))
+			alert('Quantidade deve ser multiplo de: ' + alltrim(str(DA1->DA1_ZQTLOT)))
 			aCols[n,GDFieldPos("C6_QTDVEN")] := 0
 		endif
 	else
 		if !(int(aCols[n,GDFieldPos("C6_QTDVEN")] / SB1->B1_CONV)) == (aCols[n,GDFieldPos("C6_QTDVEN")] / SB1->B1_CONV)
-			alert('Quantidade deve ser mï¿½ltiplo de: ' + alltrim(str(SB1->B1_CONV)))
+			alert('Quantidade deve ser multiplo de: ' + alltrim(str(SB1->B1_CONV)))
 			aCols[n,GDFieldPos("C6_QTDVEN")] := 0
 		endif
 
@@ -445,6 +511,7 @@ static function xfAtuVal()
 	M->C5_XVLRBRU	:=	0
 	M->C5_XBASCOM	:=	0
 	M->C5_XCIDADE	:=	''
+	M->C5_XEST		:=	''
 	M->C5_XBONIFI	:=	0
 	M->C5_XPERCBN	:=	0
 
@@ -480,15 +547,17 @@ static function xfAtuVal()
 
 			M->C5_ZZCUBA 	+=	round(U_MBCALCUB(aCols[xi,GDFieldPos("C6_PRODUTO")],aCols[xi,GDFieldPos("C6_QTDVEN")],.T.),2)
 
-			if aCols[xi,GDFieldPos("C6_PRODUTO")] == aCols[n,GDFieldPos("C6_PRODUTO")] .AND. xi <> n
+			if xcTipoOper $ '01 04 09 12'
+				if aCols[xi,GDFieldPos("C6_PRODUTO")] == aCols[n,GDFieldPos("C6_PRODUTO")] .AND. xi <> n
 
-				if aCols[xi,GDFieldPos("C6_ZZTPOPE")] == aCols[n,GDFieldPos("C6_ZZTPOPE")]
+					if aCols[xi,GDFieldPos("C6_ZZTPOPE")] == aCols[n,GDFieldPos("C6_ZZTPOPE")]
 
-					alert('Produto jï¿½ informado')
-					aCols[n,GDFieldPos("C6_PRODUTO")]	:=	SPACE(15)
-					aCols[n,GDFieldPos("C6_QTDVEN")]	:=	0
-					aCols[n,GDFieldPos("C6_PRCVEN")]	:=	0
+						alert('Produto ja informado')
+						aCols[n,GDFieldPos("C6_PRODUTO")]	:=	SPACE(15)
+						aCols[n,GDFieldPos("C6_QTDVEN")]	:=	0
+						aCols[n,GDFieldPos("C6_PRCVEN")]	:=	0
 
+					endif
 				endif
 			endif
 
@@ -504,12 +573,12 @@ static function xfAtuVal()
 					if aCols[n,GDFieldPos("C6_QTDVEN")] != aCols[xi,GDFieldPos("C6_QTDVEN")] .AND. aCols[n,GDFieldPos("C6_QTDVEN")] > 0
 						if DA1->DA1_ZQTLOT == 0
 							if aCols[n,GDFieldPos("C6_QTDVEN")] < xnQtdFer * 1.5
-								alert('Nï¿½O ï¿½ permitido quantidades diferentes para Feirinha')
+								alert('Nao e permitido quantidades diferentes para Feirinha')
 								aCols[n,GDFieldPos("C6_PRODUTO")]	:=	SPACE(15)
 								aCols[n,GDFieldPos("C6_QTDVEN")]	:=	0
 							endif
 						else
-							alert('Nï¿½O ï¿½ permitido quantidades diferentes para Feirinha')
+							alert('NAo e permitido quantidades diferentes para Feirinha')
 							aCols[n,GDFieldPos("C6_PRODUTO")]	:=	SPACE(15)
 							aCols[n,GDFieldPos("C6_QTDVEN")]	:=	0
 						endif
@@ -554,6 +623,7 @@ static function xfAtuVal()
 	endif
 
 	M->C5_XCIDADE	:=	alltrim(SA1->A1_MUN) + ' - ' + SA1->A1_EST
+	M->C5_XEST		:=	SA1->A1_EST
 
 	if xnBaseCom > 0
 		M->C5_COMIS1 := ROUND((M->C5_XVLCOMI / xnBaseCom) * 100,2)
@@ -570,19 +640,25 @@ return
 static function xfComis()
 	local xlEntrou	:=	.T.
 	local grpVar	:=	''
+
+
 	//INDICE DA PAC PAC_FILIAL, PAC_TABELA, PAC_CHAVE, R_E_C_N_O_, D_E_L_E_T_
 	if PAC->(dbSeek(xFilial('PAC') + '32' + codVend))
 		xnComis1 :=	PAC->PAC_VLR01
 		xlEntrou := .F.
 	endIf
+
 	if PAC->(dbSeek(xFilial('PAC') + '32' + codSuper))
 		xnComis2 :=	PAC->PAC_VLR01
 	endIf
+
 	if PAC->(dbSeek(xFilial('PAC') + '32' + codGeren))
 		xnComis3 :=	PAC->PAC_VLR01
 	endIf
+
 	SB1->(DbSeek(xFilial("SB1") + aCols[n,GDFieldPos("C6_PRODUTO")]))
 	grpVar := SB1->B1_XGRPVAR
+
 	if PAC->(dbSeek(xFilial('PAC') + '33' + grpVar))
 		xnComis1 += PAC->PAC_VLR01
 	endIf
@@ -667,13 +743,19 @@ static function xfCalcCom()
 	endif
 
 
-	if DA1->DA1_XREGRA == '007' .AND. DA1->DA1_CODTAB = '002' .AND. aCols[n,GDFieldPos("C6_QTDVEN")] > 0
+	if DA1->DA1_XREGRA == '007' .AND. DA1->DA1_CODTAB == '002' .AND. aCols[n,GDFieldPos("C6_QTDVEN")] > 0
 		refPromocao()
 	endif
 
-	aCols[n,GDFieldPos("C6_COMIS1")] := xnComis1
-	aCols[n,GDFieldPos("C6_COMIS2")] := xnComis2
-	aCols[n,GDFieldPos("C6_COMIS3")] := xnComis3
+	if codCliente + lojaCliente == '01671401'
+		aCols[n,GDFieldPos("C6_COMIS1")] := 0
+		aCols[n,GDFieldPos("C6_COMIS2")] := 0
+		aCols[n,GDFieldPos("C6_COMIS3")] := 0
+	else
+		aCols[n,GDFieldPos("C6_COMIS1")] := xnComis1
+		aCols[n,GDFieldPos("C6_COMIS2")] := xnComis2
+		aCols[n,GDFieldPos("C6_COMIS3")] := xnComis3
+	endif
 
 return
 
@@ -719,6 +801,10 @@ static function xfPosic()
 	SB1->(DbSetOrder(1))
 	SB1->(DbSeek(xFilial("SB1") + xcProduto))
 
+	dbSelectArea('SB2')
+	SB2->(DbSetOrder(1))
+	SB2->(DbSeek(xFilial("SB2")+xcProduto+"10"))
+
 	dbSelectArea('SB5')
 	SB5->(DbSetOrder(1))
 	SB5->(DbSeek(xFilial("SB5") + xcProduto))
@@ -748,150 +834,244 @@ return
 
 //calculando os preï¿½os do item de pedido
 static function xfPreco()
-	local xnDesc	:=	0
-	local xnDescVal	:=	0
-	local xnFrtDesc	:=	0
-	local xnPercJur	:=	0
-	local xnValJur	:=	0
-	local vlrLimite	:=	0
-	local retSaldo	:=	{}
+	local xnDesc		:=	M->C5_ZZDESCO
+	local xnPercJur		:=	M->C5_XPERJUR
+	local xnValJur		:=	0
+	local vlrTotal		:=	0
+	local vlrTabela		:=	0
+	local vlrFrete		:=	0
+	local vlrBruto		:=	0
+	local xnQtdeProd	:=	0
+	local percDescon	:=	0
+	local vlrDescon		:=	0
+	local freteCli		:=	1
+	local freteRep		:=	1
+	local xcCliente		:=	M->C5_CLIENTE
+	local xcLoja		:=	M->C5_LOJACLI
+	local xcFreteMB		:=	M->C5_FRETEMB
+	local xcVend1		:=	M->C5_VEND1
+	local xcVend2		:=	M->C5_VEND2
+	local xcVend3		:=	M->C5_VEND3
+	local retSaldo		:=	{}
+	local percComis		:=	{}
+	local buscaTES		:=	{}
 
-	pricVari := M->C5_ZZDESCO
-	pricVari := M->C5_EMISSAO
-	xnDesc := M->C5_ZZDESCO
-	xnPercJur := M->C5_XPERJUR
 
+	DA0->(dbSeek(xFilial('DA0') + xcTabela))
+	DA1->(dbSeek(xFilial("DA1") + xcTabela + xcProduto))
 
 
 	aCols[n,GDFieldPos("C6_XPRCTAB")]	:=	DA1->DA1_PRCVEN
 	aCols[n,GDFieldPos("C6_XEMISSA")]	:=	M->C5_EMISSAO
 	aCols[n,GDFieldPos("C6_ZZNCM")]		:=	SB1->B1_POSIPI
-	// aCols[n,GDFieldPos("C6_ZZTPOPE")]		:=	M->C5_ZZTPOPE
-	aCols[n,GDFieldPos("C6_QTDLIB")]	:=	aCols[n,GDFieldPos("C6_QTDVEN")]
 
-	vlrLimite							:=	DA1->DA1_XLIMIT
+	//xfFrete() //Aliquota do frete
+
+	aliqFrete := val(TCSPEXEC("sp_pedidoCalculoFrete",  xcProduto, xcTabela, xcCliente, xcLoja, xcFreteMB, xcVend1, 'TABELAS')[1])
+
+	freteRep := aliqFrete
+	// ajuste da aliquota do frete em relação
+	aliqFrete	:=	iif((xcFreteMB $ '1|3' .or. SA1->A1_EST == 'SP'), aliqFrete - 4, aliqFrete)
+	aliqFrete	:=	iif(estadoUf $ 'ES|RJ|', 0, aliqFrete)
+	aliqFrete	:=	iif(aliqFrete < 0, 0, aliqFrete)
+
+	freteCli := aliqFrete
+
+
+	//Calculo do Frete para compor o valor dos descontos
+	xnQtdeProd	:=	aCols[n,GDFieldPos("C6_QTDVEN")]
+
+	if DA0->DA0_XFRTIN == 'S'
+		vlrTabela	:=	ROUND(DA1->DA1_PRCVEN, 2)
+	else
+		vlrTabela	:=	ROUND(DA1->DA1_PRCVEN/((100 - freteCli)/100), 2)
+	endif
+
 
 	if xcPar == 'P'
 
-		xnDescVal := ROUND(DA1->DA1_PRCVEN - (xnDesc * DA1->DA1_PRCVEN) / 100,2)
-		if xnDescVal < (DA1->DA1_PRCVEN - (xnDesc * DA1->DA1_PRCVEN) / 100)
-			xnDescVal += 0.01
+		xcTipoOper := iif(empty(aCols[n,GDFieldPos("C6_ZZTPOPE")]), M->C5_ZZTPOPE, aCols[n,GDFieldPos("C6_ZZTPOPE")])
+
+		buscaTES := TCSPEXEC("sp_pedidoBuscaTES",  xcCliente, xcLoja, xcTipoOper, M->C5_TIPO, xcProduto, 'TES')
+		buscaTES := StrTokArr(buscaTES[1], '|')
+
+		if buscaTES[1] == 'XYZ'
+			alert('TES INTELIGENTE - SEM CADASTRO')
+			return
 		endif
 
-		aCols[n,GDFieldPos("C6_ZPRCUNI")]	:=	xnDescVal //ROUND(DA1->DA1_PRCVEN - (xnDesc * DA1->DA1_PRCVEN) / 100,2)
-		aCols[n,GDFieldPos("C6_PRCVEN")]	:=	xnDescVal //ROUND(DA1->DA1_PRCVEN - (xnDesc * DA1->DA1_PRCVEN) / 100,2)
-		aCols[n,GDFieldPos("C6_PRUNIT")]	:=	xnDescVal //ROUND(DA1->DA1_PRCVEN - (xnDesc * DA1->DA1_PRCVEN) / 100,2)
+		aCols[n,GDFieldPos("C6_TES")]		:=	buscaTES[1]
+		aCols[n,GDFieldPos("C6_CF")]		:=	buscaTES[2]
+		aCols[n,GDFieldPos("C6_CLASFIS")]	:=	buscaTES[3]
+	endif
 
-	elseif xcPar $ 'V|Q'
+	if xcPar == 'Q'
 
-		//Cï¿½lculo do Frete para compor o valor dos descontos
-		xfFrete() //Aliquota do frete
+		vlrDescon	:=	vlrTabela - ROUND((vlrTabela * xnDesc) / 100, 2)
 
-		//Preco de venda digitado no pedido
-		aCols[n,GDFieldPos("C6_PRCVEN")] := aCols[n,GDFieldPos("C6_ZPRCUNI")]
-		aCols[n,GDFieldPos("C6_PRUNIT")] := aCols[n,GDFieldPos("C6_ZPRCUNI")]
+		vlrTotal	:=	round(vlrDescon * xnQtdeProd, 2)
+		vlrFrete	:=	ROUND(vlrDescon * (freteRep/100) * xnQtdeProd, 2)
+		vlrBruto	:=	vlrTabela * xnQtdeProd
 
-		//Valor do pedido de acordo com a digitaï¿½ï¿½o
-		if M->C5_TIPO $ 'I | P '
-			aCols[n,GDFieldPos("C6_VALOR")]	:=	aCols[n,GDFieldPos("C6_PRCVEN")]
+		//Valor do pedido de acordo com a digitacao
+		if !(M->C5_TIPO $ 'I | P ')
+			aCols[n,GDFieldPos("C6_VALOR")]	:=	vlrTotal
 		else
-			aCols[n,GDFieldPos("C6_VALOR")]	:=	round(aCols[n,GDFieldPos("C6_PRCVEN")] * aCols[n,GDFieldPos("C6_QTDVEN")],2)
+			aCols[n,GDFieldPos("C6_VALOR")]	:=	vlrTotal
 		endif
 
-		if aCols[n,GDFieldPos("C6_QTDVEN")] > 0 .and. aCols[n,GDFieldPos("C6_ZTABELA")] == '709'
-			retSaldo := TCSPEXEC("spComercialTabelaLimite709", aCols[n,GDFieldPos("C6_ZTABELA")], rtrim(aCols[n,GDFieldPos("C6_PRODUTO")]), 0)
-			if aCols[n,GDFieldPos("C6_QTDVEN")] > retSaldo[1]
+		if xnQtdeProd > 0 .and. xcTabela == '709'
+			retSaldo := TCSPEXEC("spComercialTabelaLimite709", xcTabela, xcProduto, 0)
+			if xnQtdeProd > retSaldo[1]
 				alert('Qtde Maior que saldo na Tabela: ' + alltrim(str(retSaldo[1])))
-				aCols[n,GDFieldPos("C6_QTDVEN")] := retSaldo[1]
+				xnQtdeProd := retSaldo[1]
 			endif
 
 		endif
 
-		//DESCONTO do pedido entre o valor tabela e o valor informado
-		if DA1->DA1_PRCVEN > 0
-			xnFrtDesc	:=	iif((M->C5_FRETEMB $ '1|3' .or. SA1->A1_EST == 'SP'), aCols[n,GDFieldPos("C6_ZPERFRT")] - 4, aCols[n,GDFieldPos("C6_ZPERFRT")])
+		xnValJur	:=	vlrTotal *  (xnPercJur / 100)
 
-			if DA0->DA0_XFRTIN == 'N' .AND. DA0->DA0_XFRETE > 0
-				xnFrtDesc	-= DA0->DA0_XFRETE
-			endif
-
-			xnFrtDesc	:=	iif(estadoUf $ 'ES|RJ|', 0, xnFrtDesc)
-
-			// se for menor que zero, o sistema corrige
-			xnFrtDesc	:=	iif(xnFrtDesc < 0, 0, xnFrtDesc)
-			xnValJur	:=	(aCols[n,GDFieldPos("C6_QTDVEN")] * DA1->DA1_PRCVEN) *  (xnPercJur / 100)
-			aCols[n,GDFieldPos("C6_XVLRBRU")]		:=	(aCols[n,GDFieldPos("C6_QTDVEN")] * DA1->DA1_PRCVEN) / ((100 - xnFrtDesc) / 100)
-
-			aCols[n,GDFieldPos("C6_XVLRBRU")]		+=	xnValJur
-			aCols[n,GDFieldPos("C6_XVLRBRU")]		:=	round(aCols[n,GDFieldPos("C6_XVLRBRU")], 2)
-
-			aCols[n,GDFieldPos("C6_XVALJUR")]		:=	xnValJur
-			aCols[n,GDFieldPos("C6_XPERJUR")]		:=	xnPercJur
-
-			if round((aCols[n,GDFieldPos("C6_XVLRBRU")] - (aCols[n,GDFieldPos("C6_PRCVEN")] * aCols[n,GDFieldPos("C6_QTDVEN")])),2) < 0
-				aCols[n,GDFieldPos("C6_XVLDESC")]	:=	0
-			else
-				aCols[n,GDFieldPos("C6_XVLDESC")]	:=	round((aCols[n,GDFieldPos("C6_XVLRBRU")] - (aCols[n,GDFieldPos("C6_PRCVEN")] * aCols[n,GDFieldPos("C6_QTDVEN")])),2)
-			endif
-
-			do case
-			case DA0->DA0_ZZMARG == '4'
-				if aCols[n,GDFieldPos("C6_PRCVEN")] <>  DA1->DA1_PRCVEN
-					alert('Tabela tipo Feirinha, Nï¿½o Pode alterar o preï¿½o')
-					aCols[n,GDFieldPos("C6_QTDVEN")] := 0
-					aCols[n,GDFieldPos("C6_PRCVEN")] :=  DA1->DA1_PRCVEN
-					aCols[n,GDFieldPos("C6_ZPRCUNI")]:=  DA1->DA1_PRCVEN
-				endif
-			case DA0->DA0_ZZMARG == '3'
-				if aCols[n,GDFieldPos("C6_PRCVEN")] <>  DA1->DA1_PRCVEN
-					alert('Tabela fixa, Nï¿½o Pode alterar o preï¿½o')
-					aCols[n,GDFieldPos("C6_QTDVEN")] := 0
-					aCols[n,GDFieldPos("C6_PRCVEN")] :=  DA1->DA1_PRCVEN
-					aCols[n,GDFieldPos("C6_ZPRCUNI")]:=  DA1->DA1_PRCVEN
-				endif
-			case DA0->DA0_ZZMARG == '2'
-				if aCols[n,GDFieldPos("C6_PRCVEN")] <  DA1->DA1_PRCVEN
-					alert('Tabela Promocional, O Preï¿½o deve ser igual ou maior')
-					aCols[n,GDFieldPos("C6_QTDVEN")] := 0
-					aCols[n,GDFieldPos("C6_PRCVEN")] :=  DA1->DA1_PRCVEN
-					aCols[n,GDFieldPos("C6_ZPRCUNI")]:=  DA1->DA1_PRCVEN
-				endif
-
-			end case
-			aCols[n,GDFieldPos("C6_XPERDES")]	:=	round((aCols[n,GDFieldPos("C6_XVLDESC")]  / aCols[n,GDFieldPos("C6_XVLRBRU")]) * 100,2)
-		endif
-
-		//calculo do frete a partir da informaï¿½ï¿½o no cabec do pedido
-		if aCols[n,GDFieldPos("C6_ZPERFRT")] == 0
-			aCols[n,GDFieldPos("C6_ZFRETE")] 	:=	0
-		else
-			aCols[n,GDFieldPos("C6_ZFRETE")] 	:=	round((aCols[n,GDFieldPos("C6_VALOR")] / (1-aCols[n,GDFieldPos("C6_ZPERFRT")]/100))-aCols[n,GDFieldPos("C6_VALOR")],2)
-		endif
+		//calculo do frete a partir da informacao no cabec do pedido
+		aCols[n,GDFieldPos("C6_ZPRCUNI")]	:=	vlrDescon
+		aCols[n,GDFieldPos("C6_PRCVEN")]	:=	vlrDescon
+		aCols[n,GDFieldPos("C6_PRUNIT")]	:=	vlrDescon
+		aCols[n,GDFieldPos("C6_QTDLIB")]	:=	xnQtdeProd
 
 
-		//Calculando o percentual do desconto //Calculo da base de comissï¿½o
-		aCols[n,GDFieldPos("C6_ZBASCOM")] := round(aCols[n,GDFieldPos("C6_VALOR")] - aCols[n,GDFieldPos("C6_ZFRETE")],2) - xnValJur
+		vlrDescon	:=	vlrBruto - round(vlrDescon * xnQtdeProd, 2)
+		percDescon	:=	round((vlrDescon / vlrBruto) * 100,2)
 
-		//Calculando o preï¿½o unitï¿½rio
+		aCols[n,GDFieldPos("C6_XVLDESC")]	:=	vlrDescon
+		aCols[n,GDFieldPos("C6_XPERDES")]	:=	percDescon
+		aCols[n,GDFieldPos("C6_XFRTINC")] 	:=	DA0->DA0_XFRTIN
+		aCols[n,GDFieldPos("C6_ZPERFRT")]  	:=	freteRep  //-- ((100 - freteRep)/100))
+		aCols[n,GDFieldPos("C6_ZFRETE")] 	:=	vlrFrete
+		aCols[n,GDFieldPos("C6_XVLRBRU")]	:=	round(vlrBruto + xnValJur, 2)
+		aCols[n,GDFieldPos("C6_XVALJUR")]	:=	xnValJur
+		aCols[n,GDFieldPos("C6_XPERJUR")]	:=	xnPercJur
+		aCols[n,GDFieldPos("C6_ZBASCOM")]	:=	vlrBruto - vlrFrete - vlrDescon
+
+		//Calculando o preco unitario
 		aCols[n,GDFieldPos("C6_ZPRCUNI")] := round(aCols[n,GDFieldPos("C6_ZBASCOM")] / aCols[n,GDFieldPos("C6_QTDVEN")],2)
 
+
+		percComis := TCSPEXEC("sp_pedidoCalculoComissao",  xcProduto, xcTabela, percDescon, xcCliente, xcLoja, xcFreteMB, xcVend1, xcVend2, xcVend3, 'COMISSAO')
+		percComis := StrTokArr(percComis[1], '|')
+
+		aCols[n,GDFieldPos("C6_COMIS1")]	:=	val(percComis[1])
+		aCols[n,GDFieldPos("C6_COMIS2")]	:=	val(percComis[2])
+		aCols[n,GDFieldPos("C6_COMIS3")]	:=	val(percComis[3])
+		aCols[n,GDFieldPos("C6_XTIPCOM")]	:=	percComis[4]
+		aCols[n,GDFieldPos("C6_ZVALCOM")]	:=	round(aCols[n,GDFieldPos("C6_ZBASCOM")] * (aCols[n,GDFieldPos("C6_COMIS1")]) / 100,2)
+		aCols[n,GDFieldPos("C6_XVLCOMG")]	:=	round(aCols[n,GDFieldPos("C6_VALOR")] * (aCols[n,GDFieldPos("C6_COMIS2")]) / 100,2)
+		aCols[n,GDFieldPos("C6_XVLCOMD")]	:=	round(aCols[n,GDFieldPos("C6_VALOR")] * (aCols[n,GDFieldPos("C6_COMIS3")]) / 100,2)
+		aCols[n,GDFieldPos("C6_XGRPVAR")]	:=	SB1->B1_XGRPVAR
+		GetDRefresh()
 		//	elseif xcPar == 'Q'
 	endif
+
+	if xcPar == 'V'
+
+		vlrDescon	:=	aCols[n,GDFieldPos("C6_ZPRCUNI")]
+
+		vlrTotal	:=	round(vlrDescon * xnQtdeProd, 2)
+		vlrFrete	:=	ROUND(vlrDescon * (freteRep/100) * xnQtdeProd, 2)
+		vlrBruto	:=	vlrTabela * xnQtdeProd
+
+		//Valor do pedido de acordo com a digitacao
+		if !(M->C5_TIPO $ 'I | P ')
+			aCols[n,GDFieldPos("C6_VALOR")]	:=	vlrTotal
+		else
+			aCols[n,GDFieldPos("C6_VALOR")]	:=	vlrTotal
+		endif
+
+		if xnQtdeProd > 0 .and. xcTabela == '709'
+			retSaldo := TCSPEXEC("spComercialTabelaLimite709", xcTabela, xcProduto, 0)
+			if xnQtdeProd > retSaldo[1]
+				alert('Qtde Maior que saldo na Tabela: ' + alltrim(str(retSaldo[1])))
+				xnQtdeProd := retSaldo[1]
+			endif
+
+		endif
+
+		xnValJur	:=	vlrTotal *  (xnPercJur / 100)
+
+		// ajuste da aliquota do frete em relação
+		aliqFrete	:=	iif((xcFreteMB $ '1|3' .or. SA1->A1_EST == 'SP'), aliqFrete - 4, aliqFrete)
+		aliqFrete	:=	iif(estadoUf $ 'ES|RJ|', 0, aliqFrete)
+		aliqFrete	:=	iif(aliqFrete < 0, 0, aliqFrete)
+
+		//calculo do frete a partir da informacao no cabec do pedido
+		aCols[n,GDFieldPos("C6_ZPRCUNI")]	:=	vlrDescon
+		aCols[n,GDFieldPos("C6_PRCVEN")]	:=	vlrDescon
+		aCols[n,GDFieldPos("C6_PRUNIT")]	:=	vlrDescon
+		aCols[n,GDFieldPos("C6_QTDLIB")]	:=	xnQtdeProd
+
+
+		vlrDescon	:=	vlrBruto - round(vlrDescon * xnQtdeProd, 2)
+		vlrDescon	:=	iif(vlrDescon<0,0,vlrDescon)
+		percDescon	:=	round((vlrDescon / vlrBruto) * 100,2)
+		percDescon	:=	iif(percDescon<0,0,percDescon)
+
+		aCols[n,GDFieldPos("C6_XVLDESC")]	:=	vlrDescon
+		aCols[n,GDFieldPos("C6_XPERDES")]	:=	percDescon
+		aCols[n,GDFieldPos("C6_XFRTINC")] 	:=	DA0->DA0_XFRTIN
+		aCols[n,GDFieldPos("C6_ZPERFRT")]  	:=	aliqFrete
+		aCols[n,GDFieldPos("C6_ZFRETE")] 	:=	vlrFrete
+		aCols[n,GDFieldPos("C6_XVLRBRU")]	:=	round(vlrBruto + xnValJur, 2)
+		aCols[n,GDFieldPos("C6_XVALJUR")]	:=	xnValJur
+		aCols[n,GDFieldPos("C6_XPERJUR")]	:=	xnPercJur
+		aCols[n,GDFieldPos("C6_ZBASCOM")]	:=	vlrBruto - vlrFrete - vlrDescon
+
+		//Calculando o preco unitario
+		aCols[n,GDFieldPos("C6_ZPRCUNI")] := round(aCols[n,GDFieldPos("C6_ZBASCOM")] / aCols[n,GDFieldPos("C6_QTDVEN")],2)
+
+
+		percComis := TCSPEXEC("sp_pedidoCalculoComissao",  xcProduto, xcTabela, percDescon, xcCliente, xcLoja, xcFreteMB, xcVend1, xcVend2, xcVend3, 'COMISSAO')
+		percComis := StrTokArr(percComis[1], '|')
+
+		aCols[n,GDFieldPos("C6_COMIS1")]	:=	val(percComis[1])
+		aCols[n,GDFieldPos("C6_COMIS2")]	:=	val(percComis[2])
+		aCols[n,GDFieldPos("C6_COMIS3")]	:=	val(percComis[3])
+		aCols[n,GDFieldPos("C6_XTIPCOM")]	:=	percComis[4]
+		aCols[n,GDFieldPos("C6_ZVALCOM")]	:=	round(aCols[n,GDFieldPos("C6_ZBASCOM")] * (aCols[n,GDFieldPos("C6_COMIS1")]) / 100,2)
+		aCols[n,GDFieldPos("C6_XVLCOMG")]	:=	round(aCols[n,GDFieldPos("C6_VALOR")] * (aCols[n,GDFieldPos("C6_COMIS2")]) / 100,2)
+		aCols[n,GDFieldPos("C6_XVLCOMD")]	:=	round(aCols[n,GDFieldPos("C6_VALOR")] * (aCols[n,GDFieldPos("C6_COMIS3")]) / 100,2)
+		aCols[n,GDFieldPos("C6_XGRPVAR")]	:=	SB1->B1_XGRPVAR
+		GetDRefresh()
+		//	elseif xcPar == 'Q'
+	endif
+
+	do case
+	case DA0->DA0_ZZMARG == '4'
+		if aCols[n,GDFieldPos("C6_PRCVEN")] <>  DA1->DA1_PRCVEN
+			alert('Tabela tipo Feirinha, Nao Pode alterar o preco')
+			aCols[n,GDFieldPos("C6_QTDVEN")] := 0
+			aCols[n,GDFieldPos("C6_PRCVEN")] :=  DA1->DA1_PRCVEN
+			aCols[n,GDFieldPos("C6_ZPRCUNI")]:=  DA1->DA1_PRCVEN
+		endif
+	case DA0->DA0_ZZMARG == '3'
+		if aCols[n,GDFieldPos("C6_PRCVEN")] <>  DA1->DA1_PRCVEN
+			alert('Tabela fixa, Nao Pode alterar o preco')
+			aCols[n,GDFieldPos("C6_QTDVEN")] := 0
+			aCols[n,GDFieldPos("C6_PRCVEN")] :=  DA1->DA1_PRCVEN
+			aCols[n,GDFieldPos("C6_ZPRCUNI")]:=  DA1->DA1_PRCVEN
+		endif
+	case DA0->DA0_ZZMARG == '2'
+		if aCols[n,GDFieldPos("C6_PRCVEN")] <  DA1->DA1_PRCVEN
+			alert('Tabela Promocional, O preco deve ser igual ou maior')
+			aCols[n,GDFieldPos("C6_QTDVEN")] := 0
+			aCols[n,GDFieldPos("C6_PRCVEN")] :=  DA1->DA1_PRCVEN
+			aCols[n,GDFieldPos("C6_ZPRCUNI")]:=  DA1->DA1_PRCVEN
+		endif
+
+	end case
+
 
 	if aCols[n,GDFieldPos("C6_ZPRCUNI")] / DA1->DA1_PRCVEN > 1.5
 		alert('Produto com mais de 50% de aumento')
 		aCols[n,GDFieldPos("C6_ZPRCUNI")] := 0
 	endif
-
-	//Calculo da comissï¿½o
-	xfCalcCom()
-
-	aCols[n,GDFieldPos("C6_ZVALCOM")] := round(aCols[n,GDFieldPos("C6_ZBASCOM")] * (aCols[n,GDFieldPos("C6_COMIS1")]) / 100,2)
-	aCols[n,GDFieldPos("C6_XVLCOMG")] := round(aCols[n,GDFieldPos("C6_VALOR")] * (aCols[n,GDFieldPos("C6_COMIS2")]) / 100,2)
-	aCols[n,GDFieldPos("C6_XVLCOMD")] := round(aCols[n,GDFieldPos("C6_VALOR")] * (aCols[n,GDFieldPos("C6_COMIS3")]) / 100,2)
-	aCols[n,GDFieldPos("C6_XGRPVAR")]	:=	SB1->B1_XGRPVAR
-	GetDRefresh()
-
 return
 
 //calculando o resultado do pedido
@@ -967,10 +1147,11 @@ return()
 static function xfFrete()
 	local xlContinua	:=	.T.
 
-	xnPerFrete := 0
+	aliqFrete := 0
 
-	if DA0->DA0_XFRTIN == 'N' .AND. DA0->DA0_XFRETE > 0
-		xnPerFrete := DA0->DA0_XFRETE
+	// if DA0->DA0_XFRTIN == 'N' .AND. DA0->DA0_XFRETE > 0
+	if DA0->DA0_XFRETE > 0
+		aliqFrete := DA0->DA0_XFRETE
 		xlContinua := .F.
 	endif
 
@@ -983,13 +1164,13 @@ static function xfFrete()
 
 				do case
 				case xcFreteMB == '1'
-					xnPerFrete := PAC->PAC_VLR01 + 4
+					aliqFrete := PAC->PAC_VLR01 + 4
 				case xcFreteMB == '2'
-					xnPerFrete := PAC->PAC_VLR01
+					aliqFrete := PAC->PAC_VLR01
 				case xcFreteMB == '3'
-					xnPerFrete := 4
+					aliqFrete := 4
 				case xcFreteMB == '4'
-					xnPerFrete := 0
+					aliqFrete := 0
 				endcase
 
 			endif
@@ -997,21 +1178,21 @@ static function xfFrete()
 			PAC->(dbSkip())
 		end
 
-		if PAC->(dbSeek(xFilial("PAC")+"20" + codVend)) .AND. xnPerFrete == 0 .AND. xcFreteMB == '2'
+		if PAC->(dbSeek(xFilial("PAC")+"20" + codVend)) .AND.  aliqFrete == 0 .AND. xcFreteMB == '2'
 			if estadoUf $ PAC->PAC_TXT01
-				xnPerFrete := PAC->PAC_VLR01
+				aliqFrete := PAC->PAC_VLR01
 			endif
-		elseif PAC->(dbSeek(xFilial("PAC")+"17" + xcFreteMB)) .AND. xnPerFrete == 0
+		elseif PAC->(dbSeek(xFilial("PAC")+"17" + xcFreteMB)) .AND.  aliqFrete == 0
 
-			xnPerFrete := PAC->PAC_VLR01
+			aliqFrete := PAC->PAC_VLR01
 
 			if PAC->(dbSeek(xFilial("PAC") + "18" + codVend)) .AND. xcFreteMB == '2'
 
-				xnPerFrete := PAC->PAC_VLR01
+				aliqFrete := PAC->PAC_VLR01
 
 			elseif PAC->(dbSeek(xFilial("PAC") + "08" + estadoUf)) .AND. xcFreteMB $ '1|2'
 
-				xnPerFrete += PAC->PAC_VLR02
+				aliqFrete += PAC->PAC_VLR02
 
 			endif
 
@@ -1019,7 +1200,6 @@ static function xfFrete()
 
 	endif
 
-	aCols[n,GDFieldPos("C6_ZPERFRT")]	:=	xnPerFrete
 	GetDRefresh()
 
 return

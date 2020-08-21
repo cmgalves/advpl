@@ -20,7 +20,7 @@ Private xaAlias 	:= { {Alias()},{"SE5"},{"SEF"},{"SE1"}}
 Private xcQuery		:=	""
 Private xcR			:=	Char(13) + Char(10)
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 
 If GetMv('MB_BXACHEQ') == 'S'
@@ -59,7 +59,7 @@ If GetMv('MB_BXACHEQ') == 'S'
 	Enddo
 EndIf
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 
 Return
 

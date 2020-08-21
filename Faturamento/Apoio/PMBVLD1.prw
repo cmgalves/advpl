@@ -22,7 +22,7 @@ Private xcR		:=	Char(13) + Char(10)
 Private xaAlias := 	{ {Alias()},{"SA3"},{"SA1"},{"DA0"},{"DA1"}}
 
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 _MBCodImp	:= "00"
 
@@ -91,7 +91,7 @@ If M->C5_TIPO $ "N"
 		EndIf
 	EndIf
 EndIf
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 
 Return (xlRet)
 

@@ -25,7 +25,7 @@ User Function MTA455E()
 
 
 	If GetMV('MB_LIBESTO') == 'S'
-		U_ufAmbiente(xaAlias, "S")
+		//U_ufAmbiente(xaAlias, "S")
 
 		xcRet	:=	xsfPedido(SC9->C9_PEDIDO)
 
@@ -48,7 +48,7 @@ User Function MTA455E()
 		EndIf
 
 
-		U_ufAmbiente(xaAlias, "R")
+		//U_ufAmbiente(xaAlias, "R")
 	EndIf
 
 Return(xcRet)

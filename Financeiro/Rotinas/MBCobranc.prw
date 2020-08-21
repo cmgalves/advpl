@@ -24,7 +24,7 @@ Private xcNome   	:=	SA1->A1_NOME
 Private xcFone   	:=	SA1->A1_DDD + '-' + SA1->A1_TEL
 Private cRec:= {'1=Pago','2=Negociado','3=Cartorio','4=Baixa','5=Abatimento'}
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 
 
@@ -98,7 +98,7 @@ If lOK == .T.
 EndIf
 
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 Return()
 
 Static Function xsfPrcCob(cMarca, cObserv)

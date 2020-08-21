@@ -2,21 +2,33 @@
 
 
 user function M410STTS()
+	local aArea	:= GetArea()
+	local tpOper := '01 04 09 12'
 	local xaRet		:=	{}
-	private xaAlias 	:= { {Alias()},{"PAC"},{"SA3"}}
+	// local xaSqlRet	:=	{}
 
 	if cEmpAnt != '01'
 		return
 	endif
 
-	U_ufAmbiente(xaAlias, "S")
+	// if inclui
+	// 	xaSqlRet	:=	TCSPEXEC("sp_cortePedidoIncluiOriginal", SC5->C5_NUM, 'SEM RETORNO')  //salva pedido original
+	// endif
 
-	xaRet := TCSPEXEC("sp_Fat_Cabec_Pedidos", SC5->C5_NUM, 'OK')	
+	if !(alltrim(SC5->C5_ZZTPOPE) $ tpOper)
+		Reclock("SC5",.F.)
+		SC5->C5_ZZCDBLQ	:=	''
+		SC5->C5_BLQ := ''
+		SC5->(MsUnlock())
+		return
+	endif
+
+	xaRet := TCSPEXEC("sp_Fat_Cabec_Pedidos", SC5->C5_NUM, 'OK') //CALCULO DO CABEÇALHO DO PEDIDO
+	xaRet := TCSPEXEC("sp_cubagemItens", SC5->C5_NUM)
 
 	xfBlqDesc()
 
-
-	U_ufAmbiente(xaAlias, "R")
+	RestArea(aArea)
 
 return
 
@@ -33,6 +45,9 @@ static function xfBlqDesc()
 	dbSelectArea('SA3')
 	SA3->(DbSetOrder(1)) //PAC_FILIAL, PAC_TABELA, PAC_CHAVE, R_E_C_N_O_, D_E_L_E_T_
 
+	dbSelectArea('SA1')
+	SA1->(DbSetOrder(1)) //A1_FILIAL, A1_COD, A1_LOJA, R_E_C_N_O_, D_E_L_E_T_
+
 	PAC->(dbSeek(xFilial('PAC') + '16' + RIGHT(alltrim(SC5->C5_XCIDADE),2)))
 
 	do while !PAC->(EOF()) .AND. RIGHT(alltrim(SC5->C5_XCIDADE),2) == alltrim(PAC->PAC_CHAVE)
@@ -45,6 +60,13 @@ static function xfBlqDesc()
 
 	Reclock("SC5",.F.)
 
+	// SA1->(dbSeek(xFilial('SA1') + SC5->(C5_CLIENTE + C5_LOJACLI)))
+	// if SA1->A1_SALDUP > 0
+	// 	SC5->C5_ZZCDBLQ	:=	'04'
+	// 	SC5->C5_BLQ := '4'
+	// 	xcObs	:=	'Bloq Títulos em aberto'
+	// 	xcSts	:=	'8'
+	// else
 	if ALLTRIM(SC5->C5_VEND1) == '133'
 		SC5->C5_ZZCDBLQ	:=	'04'
 		SC5->C5_BLQ := '4'
@@ -81,6 +103,7 @@ static function xfBlqDesc()
 			endif
 		endif
 	endif
+	// endif
 	SC5->C5_XCARGA := ''
 	SC5->(MsUnlock())
 
@@ -88,6 +111,8 @@ static function xfBlqDesc()
 		xaRet := TCSPEXEC("sp_Inclui_Status_Pedido", SC5->C5_NUM, xcSts, 'Z', 'prtheu', xcObs, 'OK')
 	elseif xcSts == '0'
 		xaRet := TCSPEXEC("sp_Inclui_Status_Pedido", SC5->C5_NUM, xcSts, 'Z', 'prtheu', xcObs, 'OK')
+	else
+		xaRet := TCSPEXEC("sp_Inclui_Status_Pedido", SC5->C5_NUM, SC5->C5_XSTATUS, 'y', 'PROTHE', xcObs, 'OK')
 	endif
 	TCRefresh( 'PA3' )
 

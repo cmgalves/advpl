@@ -123,5 +123,5 @@ ElseIf xcEntrada == '01'
 	
 EndIf
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 Return(xlRet)

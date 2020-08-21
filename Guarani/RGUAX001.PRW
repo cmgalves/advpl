@@ -3,27 +3,42 @@
 #Include "PROTHEUS.CH"
 #include "topconn.ch"
 #include "tbiconn.ch"
+
 #define CRLF	CHR(13)+CHR(10)
 
+/*/{Protheus.doc} RGUAX001
+	(long_description)
+	@type  Function
+	@author user
+	@since 16/03/2020
+	@version version
+	@param param_name, param_type, param_descr
+	@return return_var, return_type, return_description
+	@example
+	(examples)
+	@see (links_or_references)
+	/*/
+
 User Function RGUAX001
-	Private aIndexADC	:=	{}
-	Private bFiltraBrw	:=	{|| FilBrowse("ZB5",@aIndexADC,@cCondicao) }
-	PRIVATE _cMarca		:=	GetMark(,"ZB5","ZB5_OK")
-	PRIVATE aRotina		:=	{  { "Importar" ,"U_RGUAXI01" , 0 , 0},;//}//,; //"Ordem"
+	private aIndexADC	:=	{}
+	private bFiltraBrw	:=	{|| FilBrowse("ZB5",@aIndexADC,@cCondicao) }
+	private _cMarca		:=	GetMark(,"ZB5","ZB5_OK")
+	private aRotina		:=	{  { "Importar" ,"U_RGUAXI01" , 0 , 0},;//}//,; //"Ordem"
 	{ "Remover Pedido" ,"U_RGUAXX01"  , 0 , 4}} //"Prep. Doc's"
 
 
+	// if 2 == 2
+	// 	return
+	// endif
+
 	dbselectarea('PA3')
 
-
 	Processa({||Sincronizar(),"Sincronizando..."})
-
 
 	cCondicao   := 'ZB5_FILIAL=="'+xFilial("ZB5")+'"'
 	If MsgYesNo("Lista somente pedidos pendentes?")
 		cCondicao 	+= ' .And. ZB5_IMPORT=="0" '
 	EndIf
-
 
 	aCores := {	{'ZB5->ZB5_IMPORT=="0" ','BR_AMARELO' },;
 		{'ZB5->ZB5_IMPORT=="1" ','BR_VERDE' },;	//Pedido de Venda liberado
@@ -38,20 +53,19 @@ EndFilBrw("ZB5",aIndexADC)
 
 Return
 
-/*
-�����������������������������������������������������������������������������
-�����������������������������������������������������������������������������
-�������������������������������������������������������������������������ͻ��
-���Programa  �RFATX001  �Autor  �Microsiga           � Data �  04/13/15   ���
-�������������������������������������������������������������������������͹��
-���Desc.     �                                                            ���
-���          �                                                            ���
-�������������������������������������������������������������������������͹��
-���Uso       � AP                                                        ���
-�������������������������������������������������������������������������ͼ��
-�����������������������������������������������������������������������������
-�����������������������������������������������������������������������������
-*/
+
+/*/{Protheus.doc} RFATXMA1
+	(long_description)
+	@type  Function
+	@author user
+	@since 16/03/2020
+	@version version
+	@param param_name, param_type, param_descr
+	@return return_var, return_type, return_description
+	@example
+	(examples)
+	@see (links_or_references)
+	/*/
 
 User Function RFATXMA1
 	Local nRecno := Recno()
@@ -70,21 +84,18 @@ User Function RFATXMA1
 	dbGoto( nRecno )
 Return
 
-/*
-�����������������������������������������������������������������������������
-�����������������������������������������������������������������������������
-�������������������������������������������������������������������������ͻ��
-���Programa  �RFATX001  �Autor  �Microsiga           � Data �  04/13/15   ���
-�������������������������������������������������������������������������͹��
-���Desc.     � Sincroniza os pedidos do SFA_fortaleza para a tabela ZC5   ���
-���          �                                                            ���
-�������������������������������������������������������������������������͹��
-���Uso       � Protheus 11 Fortaleza                                     ���
-�������������������������������������������������������������������������ͼ��
-�����������������������������������������������������������������������������
-�����������������������������������������������������������������������������
-*/
-
+/*/{Protheus.doc} Sincronizar
+	(long_description)
+	@type  Function
+	@author user
+	@since 16/03/2020
+	@version version
+	@param param_name, param_type, param_descr
+	@return return_var, return_type, return_description
+	@example
+	(examples)
+	@see (links_or_references)
+	/*/
 Static Function Sincronizar()
 	local xcQuery		:=	''
 	local xcR			:=	Char(13) + Char(10)
@@ -143,7 +154,7 @@ Static Function Sincronizar()
 		xcQuery += xcR + 	"WHERE "
 		xcQuery += xcR + 	"	HPI_NUMPEDIDOEMP = '" + pedGuarani + "' "
 
-		MemoWrite("\sql\Itens N�o Importados ainda.SQL",xcQuery)
+		MemoWrite("\sql\Itens Nao Importados ainda.SQL",xcQuery)
 
 		if select("ITENS") > 0
 			ITENS->(dbclosearea())
@@ -191,79 +202,87 @@ Static Function Sincronizar()
 		PEDIDO->(DbSkip())
 	EndDo
 	PEDIDO->(DbCloseArea())
+
+
 	If MsgYesNo("Importar os clientes??")
-		arqTrab('clientes') //Executa a fun��o para retornar o arquivo de trabalho
+		aUF := {}
+		aadd(aUF,{"RO","11"})
+		aadd(aUF,{"AC","12"})
+		aadd(aUF,{"AM","13"})
+		aadd(aUF,{"RR","14"})
+		aadd(aUF,{"PA","15"})
+		aadd(aUF,{"AP","16"})
+		aadd(aUF,{"TO","17"})
+		aadd(aUF,{"MA","21"})
+		aadd(aUF,{"PI","22"})
+		aadd(aUF,{"CE","23"})
+		aadd(aUF,{"RN","24"})
+		aadd(aUF,{"PB","25"})
+		aadd(aUF,{"PE","26"})
+		aadd(aUF,{"AL","27"})
+		aadd(aUF,{"MG","31"})
+		aadd(aUF,{"ES","32"})
+		aadd(aUF,{"RJ","33"})
+		aadd(aUF,{"SP","35"})
+		aadd(aUF,{"PR","41"})
+		aadd(aUF,{"SC","42"})
+		aadd(aUF,{"RS","43"})
+		aadd(aUF,{"MS","50"})
+		aadd(aUF,{"MT","51"})
+		aadd(aUF,{"GO","52"})
+		aadd(aUF,{"DF","53"})
+		aadd(aUF,{"SE","28"})
+		aadd(aUF,{"BA","29"})
+		aadd(aUF,{"EX","99"})
 
-		DbSelectArea("CLIENTES")
-		DbGotop()
-		ProcRegua(CLIENTES->(Recno()))
-		While !CLIENTES->(Eof())
-			lMsErroAuto := .F.
 
-			aVetor:= {}
-			aadd(aVetor,{"A1_LOJA"      ,'01'  									,Nil}) // Nome         C 40
-			aadd(aVetor,{"A1_NOME"      ,ALLTRIM(CLIENTES->NOME)				,Nil}) // Nome         C 40
-			aadd(aVetor,{"A1_PESSOA"    ,CLIENTES->PESSOA						,Nil}) // Tipo         C 01 //R Revendedor
-			aadd(aVetor,{"A1_NREDUZ"    ,IF(EMPTY(CLIENTES->FANTASIA),CLIENTES->NOME,CLIENTES->FANTASIA)	,Nil}) // Nome reduz.  C 20
-			aadd(aVetor,{"A1_END"       ,ALLTRIM(CLIENTES->ENDERECO)+", "+cvaltochar(CLIENTES->NUMERO)		,Nil}) // Endereco     C 40
-			aadd(aVetor,{"A1_TIPO"      ,'R'    								,Nil}) // Tipo         C 01 //R Revendedor
-			aadd(aVetor,{"A1_EST"       ,CLIENTES->EST							,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_COD_MUN"   ,CLIENTES->CODMUN						,Nil}) // Cidade       C 15
-			aadd(aVetor,{"A1_BAIRRO"    ,ALLTRIM(CLIENTES->BAIRRO)				,Nil}) // Endereco     C 40
-			aadd(aVetor,{"A1_CEP"       ,STRTRAN(CLIENTES->CEP,"-","")			,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_COMPL"     ,ALLTRIM(CLIENTES->COMPLEMENTO)			,Nil}) // Endereco     C 40
-			aadd(aVetor,{"A1_CGC"  	 	,CLIENTES->CGCCPF						,Nil}) // Tipo         C 01 //R Revendedor
-			aadd(aVetor,{"A1_INSCR"  	,CLIENTES->INSCR						,Nil}) // Tipo         C 01 //R Revendedor
-			aadd(aVetor,{"A1_EMAIL"     ,CLIENTES->EMAIL    					,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_ZZMAIL2"   ,CLIENTES->EMAIL    					,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_DDD"     	,CLIENTES->DDD							,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_TEL"     	,CLIENTES->TEL							,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_VEND"     	,ALLTRIM(CLIENTES->CLI_REPRESENTANTE)	,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_TRANSP"    ,CLIENTES->TRANSP						,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_ZZTPBOL"   ,'2'									,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_ZZTXBOL"   ,'2'									,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_CONTRIB"   ,CLIENTES->CONTNAC						,Nil})  // se � simples nacional ou contribuinte
-			aadd(aVetor,{"A1_SIMPNAC"   ,CLIENTES->CONTNAC						,Nil})  // se � simples nacional ou contribuinte
-			aadd(aVetor,{"A1_ZZSITLL"   ,'001'									,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_ZZOBS"		,CLIENTES->OBSGERAL						,Nil})  // Observações do guarany
-			aadd(aVetor,{"A1_CALCSUF"   ,'N'									,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_TPESSOA"   ,'CI'									,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_MSBLQL"	,'2'									,Nil})  // Estado       C 02
-			aadd(aVetor,{"A1_REGIAO"	,CLIENTES->REGIAO						,Nil})  // Região do cliente
-			aadd(aVetor,{"A1_ZZPERFI"	,CLIENTES->RAMO							,Nil})  // Ramo de atividades       C 02
-			aadd(aVetor,{"A1_XCODGUA"	,CLIENTES->CODGUARANI					,Nil})  // Ramo de atividades       C 02
-			aadd(aVetor,{"A1_XPREDIO"	,CLIENTES->PREDIO						,Nil})  // Ramo de atividades       C 02
-			aadd(aVetor,{"A1_XREDE"		,CLIENTES->REDE							,Nil})  // Ramo de atividades       C 02
-			aadd(aVetor,{"A1_XQTLOJA"	,CLIENTES->LOJAS						,Nil})  // Ramo de atividades       C 02
-			aadd(aVetor,{"A1_XCHOUTS"	,CLIENTES->XCOUTS						,Nil})  // Ramo de atividades       C 02
-			aadd(aVetor,{"A1_XQTFUNC"	,CLIENTES->FUNCS						,Nil})  // Ramo de atividades       C 02
-			MSExecAuto({|x,y| Mata030(x,y)},aVetor,3) //Inclusao
-
-			If lMsErroAuto
-				MostraErro()
-			else
-				TCSPEXEC("guaraniIncluiReferenciasClientes")
-			Endif
-
-			CLIENTES->(DbSkip())
-		EndDo
-		CLIENTES->(DbCloseArea())
-	EndIf
-
-Return
-
-static function arqTrab(xcTipo)
-	local xcQuery		:=	''
-	local xcR			:=	Char(13) + Char(10)
-
-	If xcTipo == 'clientes'
 		xcQuery := xcR + 	"SELECT "
-		xcQuery += xcR + 	"	* "
+		xcQuery += xcR + 	"	CAST(CLI_CODIGOMUNICIPIO AS VARCHAR(7)) CODMUN, "
+		xcQuery += xcR + 	"	CLI_SEQUENCIAL, CLI_CODIGOCLIENTE, RTRIM(CLI_RAZAOSOCIAL) CLI_RAZAOSOCIAL, "
+		xcQuery += xcR + 	"	CLI_CGCCPF CGCCPF, CLI_INSCRESTADUAL INSCR, CLI_ENDERECO ENDERECO, "
+		xcQuery += xcR + 	"	CLI_NUMERO NUMERO, CLI_COMPLEMENTO COMPLEMENTO, CLI_BAIRRO BAIRRO, "
+		xcQuery += xcR + 	"	CLI_TELEFONE TELEFONE, CLI_FAX, CLI_CEP CEP, CLI_STATUS, "
+		xcQuery += xcR + 	"	CLI_NOMEFANTASIA, CLI_DATACADASTRO, CLI_CODREGIAO, CLI_CONDICAOENTREGA, "
+		xcQuery += xcR + 	"	CLI_CODRAMO, CLI_CODTABPRECO, CLI_ULTIMACOMPRA,CLI_ULTIMAVISITA, "
+		xcQuery += xcR + 	"	CLI_OBSCREDITO, CLI_OBSGERAL, CLI_EMAIL, CLI_PRAZOMAXIMO, "
+		xcQuery += xcR + 	"	CLI_CODIGOFORMAPGTO, CLI_FORMASPAGAMENTOS, CLI_DESCFIDELIDADE, "
+		xcQuery += xcR + 	"	CLI_BLOQUEADO, CLI_ALTTABPRECO, CLI_CODIGOCONDPGTO, CLI_FINANCEIRO, "
+		xcQuery += xcR + 	"	CLI_PRAZOMINIMOENT, CLI_PRAZOMAXIMOFAT, CLI_OBRIGARMULTIPLOEMB, "
+		xcQuery += xcR + 	"	CLI_CLIENTEVIP, CLI_MOTIVOBLOQUEIO, CLI_TIPOPESSOA, CLI_TRANSPORTADORA, "
+		xcQuery += xcR + 	"	CLI_DESCONTO, CLI_TRATARLIMITECRED, CLI_TOLERANCIALIMITECRED, "
+		xcQuery += xcR + 	"	CLI_EMPRESAS, CLI_PRACA, CLI_LATITUDE, CLI_LONGITUDE, CLI_PESSOA, "
+		xcQuery += xcR + 	"	CLI_ENDERECOENTREGA, CLI_NUMEROENTREGA, CLI_COMPLEMENTOENTREGA, "
+		xcQuery += xcR + 	"	CLI_BAIRROENTREGA, CLI_CODMUNICIPIOENTREGA, CLI_CEPENTREGA, "
+		xcQuery += xcR + 	"	CLI_ENDERECOCOBRANCA, CLI_NUMEROCOBRANCA, CLI_COMPLEMENTOCOBRANCA, "
+		xcQuery += xcR + 	"	CLI_BAIRROCOBRANCA, CLI_CODMUNICIPIOCOBRANCA, CLI_CEPCOBRANCA, "
+		xcQuery += xcR + 	"	CLI_EMAILSECUNDARIO, CLI_EMAILNF, CLI_CODIGOGRUPOCLIENTE, "
+		xcQuery += xcR + 	"	CLI_PERCFRETE, CLI_EMPRESAPADRAO, CLI_PEDIDOMINIMO, "
+		xcQuery += xcR + 	"	CLI_PARCELAMINIMA, CLI_IMPORTADO, CLI_REPRESENTANTE, "
+		xcQuery += xcR + 	"	CLI_GUA_COD, CLI_FINANCEIROISENTO, CLI_DATAFUNDACAO, "
+		xcQuery += xcR + 	"	CLI_SUFRAMA, CLI_NOMEREFERENCIA1, CLI_NOMEREFERENCIA2, "
+		xcQuery += xcR + 	"	CLI_NOMEREFERENCIA3, CLI_FONEREFERENCIA1, CLI_FONEREFERENCIA2, "
+		xcQuery += xcR + 	"	CLI_FONEREFERENCIA3, CLI_AREACOMERCIAL, CLI_FAIXAFATURAMENTO, "
+		xcQuery += xcR + 	"	CLI_REFERENCIABANCARIA, CLI_PREDIOPROPRIO, "
+		xcQuery += xcR + 	"	CLI_FINANCEIRO_APLICA_TABELA, CLI_POSSUIREDE, "
+		xcQuery += xcR + 	"	CLI_NUMEROLOJAS, CLI_NUMEROCHECKOUTS, CLI_QTDEFUNCIONARIOS, "
+		xcQuery += xcR + 	"	CLI_LIMITECREDBONIF, CLI_REGIMEESPECIAL, CLI_SIVISA_VALIDADE, "
+		xcQuery += xcR + 	"	CLI_CRF_VALIDADE, CLI_SIVISA_REGISTRO, CLI_CRF_REGISTRO "
 		xcQuery += xcR + 	"FROM "
-		xcQuery += xcR + 	"	guaraniIntegraClientesProtheus "
+		xcQuery += xcR + 	"	AND_CLIENTES "
+		xcQuery += xcR + 	"WHERE "
+		xcQuery += xcR + 	"	NOT EXISTS "
+		xcQuery += xcR + 	"	( "
+		xcQuery += xcR + 	"	SELECT "
+		xcQuery += xcR + 	"		A1_COD "
+		xcQuery += xcR + 	"	FROM "
+		xcQuery += xcR + 	"		SA1010 "
+		xcQuery += xcR + 	"	WHERE "
+		xcQuery += xcR + 	"		A1_FILIAL = '  ' AND "
+		xcQuery += xcR + 	"		D_E_L_E_T_ = '' AND "
+		xcQuery += xcR + 	"		A1_CGC = REPLACE(REPLACE(REPLACE(CLI_CGCCPF,'.',''),'-',''),'/','') "
+		xcQuery += xcR + 	"	) "
 
-
-		MemoWrite("\sql\Clientes N�o Importados ainda.SQL",xcQuery)
+		MemoWrite("\sql\Clientes N�o Importados ainda.SQL",xcQuery)
 
 		if select("CLIENTES") > 0
 			CLIENTES->(dbclosearea())
@@ -271,21 +290,107 @@ static function arqTrab(xcTipo)
 
 		TcQuery StrTran(xcQuery,xcR,"") New Alias CLIENTES
 
+		DbSelectArea("CLIENTES")
+		DbGotop()
+		ProcRegua(CLIENTES->(Recno()))
+		While !CLIENTES->(Eof())
+			_cCgcCpf	:=	alltrim(STRTRAN(STRTRAN(STRTRAN(CLIENTES->CGCCPF,".",""),"-",""),"/",""))
+			_cCodEst	:=	SUBSTR(CLIENTES->CODMUN,1,2)
+			_cEst		:=	aUF[aScan(aUF,{|x| x[2] == _cCodEst}),1]
+			_cCodMun	:=	SUBSTR(CLIENTES->CODMUN,3,5)
+			DbSelectArea("SA1")
+			DbSetOrder(3)
+			If !DbSeek(xFilial("SA1")+Padr(_cCgcCpf,14))
+				lMsErroAuto := .F.
+				aVetor:= {}
+
+				RecLock('SA1',.T.)
+				SA1->A1_FILIAL := xFilial('SA1')
+				SA1->A1_COD := U_numSa1()
+				SA1->A1_LOJA    := '01'
+				SA1->A1_NOME    := CLIENTES->CLI_RAZAOSOCIAL
+				SA1->A1_PESSOA  := CLIENTES->CLI_PESSOA		
+				SA1->A1_NREDUZ  := IF(EMPTY(CLIENTES->CLI_NOMEFANTASIA),CLIENTES->CLI_RAZAOSOCIAL,CLIENTES->CLI_NOMEFANTASIA)
+				SA1->A1_END     := ALLTRIM(CLIENTES->ENDERECO)+", "+cvaltochar(CLIENTES->NUMERO)
+				SA1->A1_TIPO    := 'R'    
+				SA1->A1_EST     := _cEst
+				SA1->A1_COD_MUN := _cCodMun
+				SA1->A1_BAIRRO  := ALLTRIM(CLIENTES->BAIRRO)
+				SA1->A1_CEP     := STRTRAN(CLIENTES->CEP,"-","")
+				SA1->A1_COMPLEM := ALLTRIM(CLIENTES->COMPLEMENTO)
+				SA1->A1_CGC     := _cCgccpf
+				SA1->A1_INSCR   := IF(CLIENTES->CLI_PESSOA=='F','ISENTO',CLIENTES->INSCR)
+				SA1->A1_EMAIL   := ALLTRIM(CLIENTES->CLI_EMAIL)
+				SA1->A1_ZZMAIL2 := ALLTRIM(CLIENTES->CLI_EMAIL)
+				SA1->A1_DDD    := Substr(ALLTRIM(CLIENTES->TELEFONE),2,2)
+				SA1->A1_TEL     := Substr(ALLTRIM(CLIENTES->TELEFONE),5,10)
+				SA1->A1_VEND    := CLIENTES->CLI_REPRESENTANTE
+				SA1->A1_TRANSP  := CLIENTES->CLI_TRANSPORTADORA
+				SA1->A1_ZZTPBOL := '2'
+				SA1->A1_ZZTXBOL := '2'
+				SA1->A1_CONTRIB := IF('ISEN'$CLIENTES->INSCR,'1','2')
+				SA1->A1_SIMPNAC := IF('ISEN'$CLIENTES->INSCR,'1','2')
+				SA1->A1_ZZSITLL := '001'
+				SA1->A1_CALCSUF := 'N' 
+				SA1->A1_TPESSOA := 'CI'
+				SA1->A1_MSBLQL  := '2'
+				MsUnlock('SA1')
+
+				/*
+				//aadd(aVetor,{"A1_LOJA"      ,'01'  ,Nil}) // Nome         C 40
+				aadd(aVetor,{"A1_NOME"      ,CLIENTES->CLI_RAZAOSOCIAL  ,Nil}) // Nome         C 40
+				aadd(aVetor,{"A1_PESSOA"    ,CLIENTES->CLI_PESSOA				    ,Nil}) // Tipo         C 01 //R Revendedor
+				aadd(aVetor,{"A1_NREDUZ"    ,IF(EMPTY(CLIENTES->CLI_NOMEFANTASIA),CLIENTES->CLI_RAZAOSOCIAL,CLIENTES->CLI_NOMEFANTASIA)		 ,Nil}) // Nome reduz.  C 20
+				aadd(aVetor,{"A1_END"       ,ALLTRIM(CLIENTES->ENDERECO)+", "+cvaltochar(CLIENTES->NUMERO)	 ,Nil}) // Endereco     C 40
+				aadd(aVetor,{"A1_TIPO"      ,'R'    ,Nil}) // Tipo         C 01 //R Revendedor
+				aadd(aVetor,{"A1_EST"       ,_cEst				    ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_COD_MUN"   ,_cCodMun	 ,Nil}) // Cidade       C 15
+				aadd(aVetor,{"A1_BAIRRO"    ,ALLTRIM(CLIENTES->BAIRRO)	 ,Nil}) // Endereco     C 40
+				aadd(aVetor,{"A1_CEP"       ,STRTRAN(CLIENTES->CEP,"-","")				    ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_COMPL"     ,ALLTRIM(CLIENTES->COMPLEMENTO) ,Nil}) // Endereco     C 40
+				aadd(aVetor,{"A1_CGC"  	 	,_cCgccpf	,Nil}) // Tipo         C 01 //R Revendedor
+				aadd(aVetor,{"A1_INSCR"  	 ,IF(CLIENTES->CLI_PESSOA=='F','ISENTO',CLIENTES->INSCR)	,Nil}) // Tipo         C 01 //R Revendedor
+				aadd(aVetor,{"A1_EMAIL"     ,ALLTRIM(CLIENTES->CLI_EMAIL)    ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_ZZMAIL2"     ,ALLTRIM(CLIENTES->CLI_EMAIL)    ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_DDD"     	,'0'+Substr(ALLTRIM(CLIENTES->TELEFONE),2,2),Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_TEL"     	,Substr(ALLTRIM(CLIENTES->TELEFONE),5,10),Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_VEND"     ,CLIENTES->CLI_REPRESENTANTE    ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_TRANSP"    ,CLIENTES->CLI_TRANSPORTADORA    ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_ZZTPBOL"   ,'2'   ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_ZZTXBOL"   ,'2'   ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_CONTRIB"   ,IF('ISEN'$CLIENTES->INSCR,'1','2')   ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_SIMPNAC"   ,IF('ISEN'$CLIENTES->INSCR,'1','2')   ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_ZZSITLL"   ,'001'   ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_CALCSUF"   ,'N'   ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_TPESSOA"   ,'CI'   ,Nil})  // Estado       C 02
+				aadd(aVetor,{"A1_MSBLQL"   ,'2'   ,Nil})  // Estado       C 02
+				MSExecAuto({|x,y| Mata030(x,y)},aVetor,3) //Inclusao
+				If lMsErroAuto
+					MostraErro()
+				Endif*/
+			EndIf
+			CLIENTES->(DbSkip())
+		EndDo
+		CLIENTES->(DbCloseArea())
 	EndIf
 
 
+Return
+
+static function arqTrab(xcTipo)
+	local xcQuery		:=	''
+	local xcR			:=	Char(13) + Char(10)
+
 	If xcTipo == 'pedidos'
-
-
+		/*
 		xcQuery := 			"SELECT "
 		xcQuery += xcR + 	"	* "
 		xcQuery += xcR + 	"FROM "
 		xcQuery += xcR + 	"	guaraniIntegraPedidosProtheus "
 		xcQuery += xcR + 	"ORDER BY "
-		xcQuery += xcR + 	"	1 "
+		xcQuery += xcR + 	"	1 "*/
 
-
-		MemoWrite("\sql\Pedidos N�o Importados ainda.SQL",xcQuery)
+		MemoWrite("\sql\Pedidos Nao Importados ainda.SQL",xcQuery)
 
 		if select("PEDIDO") > 0
 			PEDIDO->(dbclosearea())
@@ -303,7 +408,6 @@ static function arqTrab(xcTipo)
 		xcQuery += xcR + 	"WHERE "
 		xcQuery += xcR + 	"	ZB5_OK = '" + _cMarca + "' "
 
-
 		MemoWrite("\sql\GUARANI guaraniIntegraPedidosCabec.SQL",xcQuery)
 
 		if select("ZB5I") > 0
@@ -316,20 +420,19 @@ static function arqTrab(xcTipo)
 return
 
 
-/*
-�����������������������������������������������������������������������������
-�����������������������������������������������������������������������������
-�������������������������������������������������������������������������ͻ��
-���Programa  �RCOMX001  �Autor  �Microsiga           � Data �  08/15/14   ���
-�������������������������������������������������������������������������͹��
-���Desc.     �                                                            ���
-���          �                                                            ���
-�������������������������������������������������������������������������͹��
-���Uso       � AP                                                        ���
-�������������������������������������������������������������������������ͼ��
-�����������������������������������������������������������������������������
-�����������������������������������������������������������������������������
-*/
+/*/{Protheus.doc} RGUAXI01
+	(long_description)
+	@type  Function
+	@author user
+	@since 18/03/2020
+	@version version
+	@param param_name, param_type, param_descr
+	@return return_var, return_type, return_description
+	@example
+	(examples)
+	@see (links_or_references)
+	/*/
+
 User Function RGUAXI01
 
 	_nRecOri := ZB5->(Recno())
@@ -352,24 +455,21 @@ User Function RGUAXI01
 
 Return
 
-
-/*
-�����������������������������������������������������������������������������
-�����������������������������������������������������������������������������
-�������������������������������������������������������������������������ͻ��
-���Programa  �RFATX001  �Autor  �Microsiga           � Data �  04/13/15   ���
-�������������������������������������������������������������������������͹��
-���Desc.     �                                                            ���
-���          �                                                            ���
-�������������������������������������������������������������������������͹��
-���Uso       � AP                                                        ���
-�������������������������������������������������������������������������ͼ��
-�����������������������������������������������������������������������������
-�����������������������������������������������������������������������������
-*/
+/*/{Protheus.doc} Importar
+	(long_description)
+	@type  Function
+	@author user
+	@since 16/03/2020
+	@version version
+	@param param_name, param_type, param_descr
+	@return return_var, return_type, return_description
+	@example
+	(examples)
+	@see (links_or_references)
+	/*/
 
 Static Function Importar()
-	local xcQuery		:=	""
+	local cQry2		:=	""
 	local xcR			:=	Char(13) + Char(10)
 	local codTabela		:=	''
 	local ordemCli		:=	''
@@ -379,7 +479,7 @@ Static Function Importar()
 		aCabecalho:={}
 
 		If !empty(alltrim(ZB5I->PEDIDO))
-			Alert("Pedido "+Alltrim(ZB5I->ZB5_PEDEMP)+" j� importado no pedido de venda "+ZB5I->PEDIDO+"!!!")
+			Alert("Pedido "+Alltrim(ZB5I->ZB5_PEDEMP)+" jA importado no pedido de venda " + ZB5I->PEDIDO + "!!!")
 			DisarmTransaction()
 			Return
 		EndIf
@@ -407,9 +507,9 @@ Static Function Importar()
 			{'C5_REDESP',ZB5I->ZB5_TRANSP,NIL},;
 			{'C5_XPEDEMP',ZB5I->ZB5_PEDEMP,NIL}}		// Linha (Tabela B ou R)
 
-		cQry2 := "SELECT ZB6_ITEM, ZB6_COD, ZB6_TABELA, ZB6_QTDVEN, ZB6_PRCVEN "
-		cQry2 += "FROM " + RetSqlName("ZB6") + " ZB6 "
-		cQry2 += "WHERE ZB6.D_E_L_E_T_ = ' ' "
+		cQry2 := "SELECT ZB6_ITEM, ZB6_COD, ZB6_TABELA, ZB6_QTDVEN, ZB6_PRCVEN " + xcR
+		cQry2 += "FROM " + RetSqlName("ZB6") + " ZB6 " + xcR
+		cQry2 += "WHERE ZB6.D_E_L_E_T_ = ' ' " + xcR
 		cQry2 += "AND ZB6_PEDEMP='" + ZB5I->ZB5_PEDEMP + "' "
 
 		TCQUERY CQRY2 NEW ALIAS 'ZB6I'
@@ -450,13 +550,13 @@ Static Function Importar()
 			AADD(aLinha,{'C6_ITEM',ZB6I->ZB6_ITEM,NIL})
 			AADD(aLinha,{'C6_ZTABELA',codTabela,NIL})
 			AADD(aLinha,{'C6_PRODUTO',SB1->B1_COD,NIL})
+			AADD(aLinha,{'C6_XITEORI',SB1->B1_COD,NIL})
 			AADD(aLinha,{'C6_DESCRI',SB1->B1_DESC,NIL})
 			AADD(aLinha,{'C6_QTDVEN',ZB6I->ZB6_QTDVEN,NIL})
+			AADD(aLinha,{'C6_XQTDORI',ZB6I->ZB6_QTDVEN,NIL})
 			AADD(aLinha,{'C6_ZPRCUNI',ZB6I->ZB6_PRCVEN,NIL})
 			AADD(aLinha,{'C6_ITEMPC',ZB6I->ZB6_ITEM,NIL})
 			AADD(aLinha,{'C6_NUMPCOM',ordemCli,NIL})
-
-
 
 			AADD(aItens,aLinha)
 			ZB6I->(dbskip())
@@ -484,20 +584,18 @@ Static Function Importar()
 	END TRANSACTION
 Return
 
-/*
-�����������������������������������������������������������������������������
-�����������������������������������������������������������������������������
-�������������������������������������������������������������������������ͻ��
-���Programa  �RFATX001  �Autor  �Microsiga           � Data �  05/18/15   ���
-�������������������������������������������������������������������������͹��
-���Desc.     �                                                            ���
-���          �                                                            ���
-�������������������������������������������������������������������������͹��
-���Uso       � AP                                                        ���
-�������������������������������������������������������������������������ͼ��
-�����������������������������������������������������������������������������
-�����������������������������������������������������������������������������
-*/
+/*/{Protheus.doc} RGUAXX01
+	(long_description)
+	@type  Function
+	@author user
+	@since 16/03/2020
+	@version version
+	@param param_name, param_type, param_descr
+	@return return_var, return_type, return_description
+	@example
+	(examples)
+	@see (links_or_references)
+	/*/
 User Function RGUAXX01
 	If !MsgYesNo("Tem certeza que deseja remover este pedido da lista???")
 		Return
@@ -508,3 +606,10 @@ User Function RGUAXX01
 	MsUnlock()
 	MsgInfo("Pedido retirado com sucesso!!!")
 Return
+
+
+
+
+
+
+

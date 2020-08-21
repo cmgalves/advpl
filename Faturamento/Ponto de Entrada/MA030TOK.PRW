@@ -7,11 +7,25 @@ user function MA030TOK()
 	local xnRet		:=	0
 	local xcSufr	:=	SuperGetMV('MB_ESTSUFR', .F., .F.)
 	local xcR		:=	Char(13) + Char(10)
-	
+
 	if M->A1_EST $ xcSufr
 		xnRet := Aviso( "AVISO -- ESTADOS SUFRAMA", ;
-			'O Estado: ' + M->A1_EST + ' faz parto do SUFRAMA.' + xcR + ;
-			'Deseja Continuar?', { "Sim", "Não"}, ;
+			'O Estado: ' + M->A1_EST + ' faz parte do SUFRAMA.' + xcR + ;
+			'Deseja Continuar?', { "Sim", "NÃ£o"}, ;
+			3, "CUIDADO!!!! IMPORTANTE.",, '', .F., 50000 )
+		If xnRet == 1
+			xlRet := .T.
+		elseif xnRet == 2
+			xlRet := .F.
+		endif
+	endif
+//* ACRESCENTADO CARGA MEDIA - ESTADO MATO GROSSO  05-11-2019  -- MB_ESTCMED  */
+
+	xcSufr	:=	SuperGetMV('MB_ESTCMED', .F., .F.)
+	if M->A1_EST $ xcSufr
+		xnRet := Aviso( "AVISO -- ESTADOS CARGA MEDIA",;
+			'O Estado: ' + M->A1_EST + ' faz parte do CARGA MEDIA.' + xcR + ;
+			'Deseja Continuar?', { "Sim", "NÃ£o"}, ;
 			3, "CUIDADO!!!! IMPORTANTE.",, '', .F., 50000 )
 		If xnRet == 1
 			xlRet := .T.
@@ -20,31 +34,35 @@ user function MA030TOK()
 		endif
 	endif
 
-	if altera	
+//* FIM DA INCLUSAO CARGA MEDIA */
+
+
+
+	if altera .AND. 2 == 4 //Foi alterado para não enviar o arquivo para o cliente
 		if 	SA1->A1_VEND <> M->A1_VEND .OR. ;
-			SA1->A1_TAB1 <> M->A1_TAB1 .OR. ;
-			SA1->A1_TAB2 <> M->A1_TAB2 .OR. ;
-			SA1->A1_TAB3 <> M->A1_TAB3 .OR. ;
-			SA1->A1_TAB4 <> M->A1_TAB4 .OR. ;
-			SA1->A1_TABELA <> M->A1_TABELA .OR. ;
-			SA1->A1_XTAB6 <> M->A1_XTAB6 .OR. ;
-			SA1->A1_XTAB7 <> M->A1_XTAB7 .OR. ;
-			SA1->A1_XTAB8 <> M->A1_XTAB8 .OR. ;
-			SA1->A1_XTAB9 <> M->A1_XTAB9 .OR. ;
-			SA1->A1_XPRXMEN <> M->A1_XPRXMEN
+				SA1->A1_TAB1 <> M->A1_TAB1 .OR. ;
+				SA1->A1_TAB2 <> M->A1_TAB2 .OR. ;
+				SA1->A1_TAB3 <> M->A1_TAB3 .OR. ;
+				SA1->A1_TAB4 <> M->A1_TAB4 .OR. ;
+				SA1->A1_TABELA <> M->A1_TABELA .OR. ;
+				SA1->A1_XTAB6 <> M->A1_XTAB6 .OR. ;
+				SA1->A1_XTAB7 <> M->A1_XTAB7 .OR. ;
+				SA1->A1_XTAB8 <> M->A1_XTAB8 .OR. ;
+				SA1->A1_XTAB9 <> M->A1_XTAB9 .OR. ;
+				SA1->A1_XPRXMEN <> M->A1_XPRXMEN
 
 			Reclock("SA1",.F.)
-				SA1->A1_VEND := M->A1_VEND
-				SA1->A1_TAB1 := M->A1_TAB1
-				SA1->A1_TAB2 := M->A1_TAB2
-				SA1->A1_TAB3 := M->A1_TAB3
-				SA1->A1_TAB4 := M->A1_TAB4
-				SA1->A1_TABELA := M->A1_TABELA
-				SA1->A1_XTAB6 := M->A1_XTAB6
-				SA1->A1_XTAB7 := M->A1_XTAB7
-				SA1->A1_XTAB8 := M->A1_XTAB8
-				SA1->A1_XTAB9 := M->A1_XTAB9
-				SA1->A1_XPRXMEN := M->A1_XPRXMEN
+			SA1->A1_VEND := M->A1_VEND
+			SA1->A1_TAB1 := M->A1_TAB1
+			SA1->A1_TAB2 := M->A1_TAB2
+			SA1->A1_TAB3 := M->A1_TAB3
+			SA1->A1_TAB4 := M->A1_TAB4
+			SA1->A1_TABELA := M->A1_TABELA
+			SA1->A1_XTAB6 := M->A1_XTAB6
+			SA1->A1_XTAB7 := M->A1_XTAB7
+			SA1->A1_XTAB8 := M->A1_XTAB8
+			SA1->A1_XTAB9 := M->A1_XTAB9
+			SA1->A1_XPRXMEN := M->A1_XPRXMEN
 			SA1->(MsUnlock())
 
 
@@ -55,14 +73,14 @@ user function MA030TOK()
 return xlRet
 
 
-//função para pegar os dados do SQL
+//funÃ§Ã£o para pegar os dados do SQL
 static function expClientes()
 	local xcQuery		:=	""
 	local xcR			:=	Char(13) + Char(10)
-	
+
 	xcQuery := 			"SELECT  "
-	xcQuery += xcR + 	"	* " 
-	xcQuery += xcR + 	"FROM " 
+	xcQuery += xcR + 	"	* "
+	xcQuery += xcR + 	"FROM "
 	xcQuery += xcR + 	"	guaraniExportaClientes "
 	xcQuery += xcR + 	"WHERE "
 	xcQuery += xcR + 	"	FILTRO LIKE '%"+ALLTRIM(M->A1_VEND)+"%' "
@@ -81,44 +99,54 @@ static function expClientes()
 return
 
 
-//função para gerar o arquivo
+//funÃ§Ã£o para gerar o arquivo
 static Function geraFile()
-local cDir		:=	"\expGuarani\"
-local cArq		:=	"CLIENTES.txt"
-local nHandle	:=	FCreate(cDir+cArq)
+	local cDir		:=	"\expGuarani\"
+	local cArq		:=	"CLIENTES.txt"
+	local nHandle	:=	FCreate(cDir+cArq)
 
-If nHandle < 0
-	MsgAlert("Erro durante criação do arquivo.")
-Else
-	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-	//³FWrite - Comando reponsavel pela gravação do texto.                                                                ³
-	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
-	XTRB->(dbGoTop())
-	While !(XTRB->(EOF()))
-		FWrite(nHandle, XTRB->CLIENTES + CRLF)
-		XTRB->(dbSkip())
-	Enddo
+	If nHandle < 0
+		MsgAlert("Erro durante criaÃ§Ã£o do arquivo.")
+	Else
+		//ÃšÃ„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Â¿
+		//Â³FWrite - Comando reponsavel pela gravaÃ§Ã£o do texto.                                                                Â³
+		//Ã€Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã™
+		XTRB->(dbGoTop())
+		While !(XTRB->(EOF()))
+			FWrite(nHandle, XTRB->CLIENTES + CRLF)
+			XTRB->(dbSkip())
+		Enddo
 
-	XTRB->(dbCloseArea())
-	
-	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-	//³FClose - Comando que fecha o arquivo, liberando o uso para outros programas.                                       ³
-	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
-	FClose(nHandle)
-EndIf
-mandaFile()
+		XTRB->(dbCloseArea())
+
+		//ÃšÃ„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Â¿
+		//Â³FClose - Comando que fecha o arquivo, liberando o uso para outros programas.                                       Â³
+		//Ã€Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã™
+		FClose(nHandle)
+	EndIf
+	mandaFile()
 Return
 
 
 
-static function mandaFile()	
-	 
+static function mandaFile()
+
 	local cServidor	:=	'3.214.102.43'
-	local nPortFtp	:=	21 // Porta Padrão FTP
+	local nPortFtp	:=	21 // Porta PadrÃ£o FTP
 	local cUsuftp	:=	'mbftp'
 	local cSenhaftp	:=	''
 	local xcDirDest	:=	''
-	
+
+	local files := {"\expGuarani\clientes.txt"}
+
+	nret := FZip("\expGuarani\clientes.zip",files)
+	if nret!=0
+		conout("Não foi possível criar o arquivo zip")
+	else
+		conout("Arquivo zip criado com sucesso")
+	endif
+
+
 	cSenhaftp := 'FTPpl25ticos'
 	xcDirDest := 'out/' + ALLTRIM(M->A1_VEND)
 
@@ -127,11 +155,11 @@ static function mandaFile()
 
 	If FTPConnect( cServidor, nPortFtp, cUsuftp, cSenhaFTP, .t. )// Conecta FTP
 		If FTPDirChange(xcDirDest) //Seleciona Diretorio no FTP
-			If !FTPUPLOAD( '\expGuarani\clientes.txt', 'CLIENTES.TXT' )
+			If !FTPUPLOAD( '\expGuarani\clientes.zip', 'CLIENTES.ZIP' )
 				Alert( 'Problemas ao copiar arquivo!' )
 			EndIf
 		EndIf
 	EndIf
-	
+
 	FTPDisconnect()
 Return NIL

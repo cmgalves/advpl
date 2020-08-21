@@ -29,7 +29,7 @@ Private xcQuery		:=	""
 Private xcR			:=	Char(13) + Char(10)
 Private xaAlias 	:= 	{ {Alias()},{"ZZ1"},{"SA3"},{"DA0"},{"DA1"}}
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 
 
@@ -133,7 +133,7 @@ EndIf
 
 aRet := {xlRet,xnComissao}
 
-U_ufAmbiente(xaAlias, "R")                                                                                                                `
+//U_ufAmbiente(xaAlias, "R")                                                                                                                `
 Return(aRet)
 
 //*********************************************

@@ -16,6 +16,7 @@
 ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 */
 USER FUNCTION MBPesqTit(cCliente, cLoja, nValor)
+Local 	aArea		:= GetArea()
 Private xcCliente	:=	cCliente
 Private xcLoja   	:=	cLoja
 Private xnValor   	:=	nValor
@@ -24,13 +25,13 @@ Private xcR			:=	Char(13) + Char(10)
 Private xaAlias 	:= { {Alias()},{"SF1"}}
 Private xlRet		:=	.F.
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 
 U_MBTelaTit()
 
-U_ufAmbiente(xaAlias, "R")
-
+//U_ufAmbiente(xaAlias, "R")
+RestArea(aArea)
 Return xcCliente
 
 

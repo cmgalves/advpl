@@ -25,7 +25,7 @@ user function tesIntelig()
 	cTpOpe		:=	aCols[n,GDFieldPos("C6_ZZTPOPE")]
 	codProd		:=	aCols[n,GDFieldPos("C6_PRODUTO")]
 
-	if empty(alltrim(cTpOpe)) .or. empty(alltrim(codProd))
+	if empty(alltrim(cTpOpe)) .or. empty(alltrim(codProd)) .OR. 1==1
 		return aCols[n,GDFieldPos("C6_TES")]
 	endif
 

@@ -43,21 +43,21 @@ Private cString		 := "SE1"
 Private cPerg		 := "FC010 "
 Private xaAlias 	:= { {Alias()},{"SE1"},{"SEF"}}
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 
 //	wnrel := SetPrint(cString,NomeProg,cperg,@titulo,cDesc1,cDesc2,cDesc3,.T.,,.T.,Tamanho,,.T.)
 wnrel := SetPrint("",NomeProg,"",@titulo,cDesc1,cDesc2,cDesc3,.F.,,.F.,Tamanho,,.F.)
 
 If nLastKey == 27
-	U_ufAmbiente(xaAlias, "R")
+	//U_ufAmbiente(xaAlias, "R")
 	Return
 Endif
 
 SetDefault(aReturn,cString)
 
 If nLastKey == 27
-	U_ufAmbiente(xaAlias, "R")
+	//U_ufAmbiente(xaAlias, "R")
 	Return
 Endif
 
@@ -66,7 +66,7 @@ nTipo := If(aReturn[4]==1,15,18)
 
 RptStatus({|| RunReport(Cabec1,Cabec2,Titulo,nLin) },Titulo)
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 
 Return
 

@@ -24,7 +24,7 @@ Private xaAlias 	:= { {Alias()},{"SEF"}}
 Private xcQuery		:=	""
 Private xcR			:=	Char(13) + Char(10)
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 AADD (xaDadoBco,{xcBanco,xcAgencia,xcConta}) 
 
@@ -42,6 +42,6 @@ AADD (xaDadoBco,{xcBanco,xcAgencia,xcConta})
 	TCSQLExec(xcQuery)
                     
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 
 Return xaDadoBco

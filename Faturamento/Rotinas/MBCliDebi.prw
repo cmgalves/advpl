@@ -33,7 +33,7 @@ Private xcCco		:=	''
 Private xcMens		:=	''
 Private xcPath		:=	''
 
-U_ufAmbiente(xaAlias, "S")
+//U_ufAmbiente(xaAlias, "S")
 
 If xcTpPedi $ 'DB'
 	dbSelectArea('SA2')
@@ -95,7 +95,7 @@ EndIf
 
 
 
-U_ufAmbiente(xaAlias, "R")
+//U_ufAmbiente(xaAlias, "R")
 
 Return Iif(xcOri == "C",xcCliente,xcLoja)
 
