@@ -400,7 +400,10 @@ static function xfPedido()
 
 	If xcPar == "REFAZ"
 		ProcRegua(0)
+		nAnt := n
+
 		For x = 1 To Len(aCols)
+			n := x
 			IncProc('Atualizando item '+ Str(x))
 			xfPreco() //calcula os pre�os iniciais
 			xfCustos() // Calcula os custos do pedido
@@ -408,6 +411,7 @@ static function xfPedido()
 			GetDRefresh()
 		Next x
 			XfAtuVal()
+			n:= nAnt
 	EndIf
 
 Return
@@ -867,6 +871,19 @@ static function xfPreco()
 
 	//xfFrete() //Aliquota do frete
 
+	//Validacao para verificar desconto por politica interna (Frete Retira / Pgto Antecipado)
+	If DA0->DA0_XDESRET > 0 .And. M->C5_FRETEMB == '4' 
+		aCols[n,GDFieldPos("C6_XDESRET")]	:=	DA0->DA0_XDESRET
+	EndIf
+
+	If DA0->DA0_XDESANT > 0 .And. M->C5_CONDPAG == '001'
+		aCols[n,GDFieldPos("C6_XDESANT")]   :=  DA0->DA0_XDESANT
+	EndIf
+
+	If aCols[n,GDFieldPos("C6_XDESANT")]+aCols[n,GDFieldPos("C6_XDESRET")] > 0
+		aCols[n,GDFieldPos("C6_XOBSIMP")]   := 'DESCONTO POLITICA INTERNA (RETIRA/ANTECIPADO)'
+	EndIf
+
 	aliqFrete := val(TCSPEXEC("sp_pedidoCalculoFrete",  xcProduto, xcTabela, xcCliente, xcLoja, xcFreteMB, xcVend1, 'TABELAS')[1])
 
 	freteRep := aliqFrete
@@ -888,7 +905,7 @@ static function xfPreco()
 	endif
 
 
-	if xcPar == 'P'
+	if xcPar == 'P' .Or. xcPar == 'REFAZ'
 
 		xcTipoOper := iif(empty(aCols[n,GDFieldPos("C6_ZZTPOPE")]), M->C5_ZZTPOPE, aCols[n,GDFieldPos("C6_ZZTPOPE")])
 
@@ -905,13 +922,30 @@ static function xfPreco()
 		aCols[n,GDFieldPos("C6_CLASFIS")]	:=	buscaTES[3]
 	endif
 
-	if xcPar == 'Q'
+	if xcPar == 'Q' .Or. xcPar =='REFAZ'
 
 		vlrDescon	:=	vlrTabela - ROUND((vlrTabela * xnDesc) / 100, 2)
+		vlrDesPol := 0
+		
+		//Tratamento politica interna...
+		If aCols[n,GDFieldPos("C6_XDESRET")]	> 0
+			nVlrpol := vlrDescon * ( 1 - (aCols[n,GDFieldPos("C6_XDESRET")]/100) )
+			vlrDesPol += (vlrDesPol*xnQtdeProd)
+			vlrDescon := nVlrpol
+		EndIf
 
+		If 	aCols[n,GDFieldPos("C6_XDESANT")] > 0
+			nVlrpol := vlrDescon * (1-(aCols[n,GDFieldPos("C6_XDESANT")]/100))
+			vlrDesPol += (vlrDesPol*xnQtdeProd)
+			vlrDescon := nVlrpol
+		EndIf
+
+		//-----------------------------
+		
 		vlrTotal	:=	round(vlrDescon * xnQtdeProd, 2)
 		vlrFrete	:=	ROUND(vlrDescon * (freteRep/100) * xnQtdeProd, 2)
 		vlrBruto	:=	vlrTabela * xnQtdeProd
+		
 
 		//Valor do pedido de acordo com a digitacao
 		if !(M->C5_TIPO $ 'I | P ')
@@ -949,11 +983,10 @@ static function xfPreco()
 		aCols[n,GDFieldPos("C6_XVLRBRU")]	:=	round(vlrBruto + xnValJur, 2)
 		aCols[n,GDFieldPos("C6_XVALJUR")]	:=	xnValJur
 		aCols[n,GDFieldPos("C6_XPERJUR")]	:=	xnPercJur
-		aCols[n,GDFieldPos("C6_ZBASCOM")]	:=	vlrBruto - vlrFrete - vlrDescon
+		aCols[n,GDFieldPos("C6_ZBASCOM")]	:=	vlrBruto - vlrFrete - vlrDescon + vlrDesPol
 
 		//Calculando o preco unitario
 		aCols[n,GDFieldPos("C6_ZPRCUNI")] := round(aCols[n,GDFieldPos("C6_ZBASCOM")] / aCols[n,GDFieldPos("C6_QTDVEN")],2)
-
 
 		percComis := TCSPEXEC("sp_pedidoCalculoComissao",  xcProduto, xcTabela, percDescon, xcCliente, xcLoja, xcFreteMB, xcVend1, xcVend2, xcVend3, 'COMISSAO')
 		percComis := StrTokArr(percComis[1], '|')
