@@ -172,7 +172,6 @@ Static Function impBolet(cMarca)
 	cCpoMark	:=	"E1_OK"
 	wnrel    	:=	"BOLETO"
 	nModelo	  	:=	nModelo
-	// aLogoBco	:=	{"System\Bitmaps\LOGOBB.BMP"}
 	areturn  	:=	{"Zebrado", 1,"Administracao", 2, 2, 1, "",1 }
 	nLastKey 	:=	0
 
@@ -182,6 +181,7 @@ Static Function impBolet(cMarca)
 	oReport:SetPortrait()
 	oReport:Setup()
 
+	XTIT->(dbGoTop())
 	SE1->(dbSetOrder(1))
 
 	While !(XTIT->(EOF()))
@@ -198,14 +198,15 @@ Static Function impBolet(cMarca)
 			XTIT->(dbSkip())
 			Loop
 		endif
-		oReport:EndPage()
-		oReport:StartPage()
 		XTIT->(dbSkip())
+		if  !(XTIT->(EOF()))
+			oReport:EndPage()
+			oReport:StartPage()
+		endif
 	Enddo
 
 	oReport:EndPage()
 	oReport:Preview()
-	// alert(ctaMaisUm)
 	XTIT->(dbGoTop())
 	oMarkF:oBrowse:Refresh()
 
@@ -225,38 +226,36 @@ static function xfMontaRel()
 	aAdd(aDadosEmp,"CNPJ: "+Transform(SM0->M0_CGC,"@R 99.999.999/9999-99"))  					&& [6]CNPJ
 	aAdd(aDadosEmp,"I.E.: "+Transform(SM0->M0_INSC,"@R 999.999.999.999")) 						&& [7]I.E
 
-	dbGoTop()
-
-
-	// Do While SE1->(!EOF()) .AND. SE1->E1_NUM == numTit //&& Percorre o Arquivo do SE1 Ativo que estç filtrado
-
-
 	SA1->(dbSetOrder(1))
 	SA1->(dbSeek( xFilial("SA1") + SE1->E1_CLIENTE + SE1->E1_LOJA  ))
 
+	If SA1->A1_ZZTXBOL == "1"
+		nTaxa := GetMv("ZZ_TXBOL")
+	Endif
+
 	dbSelectArea("SA6")
 	dbSetOrder(1)
-	dbSeek(xFilial("SA6")+mv_par17+mv_par18+mv_par19,.T.)
+	dbSeek(xFilial("SA6")+'0013362680677-3   ',.T.)
 
 	dbSelectArea("SEE")
 	dbSetOrder(1)
-	dbSeek(xFilial("SEE")+mv_par17+mv_par18+mv_par19+MV_PAR20,.T.)
+	dbSeek(xFilial("SEE")+'0013362680677-3   003',.T.)
 
 	dbSelectArea("SA1")
 	dbSetOrder(1)
 	dbSeek(xFilial()+SE1->E1_CLIENTE+SE1->E1_LOJA,.T.)
 
 	aDadosBanco := {}
-	aAdd(aDadosBanco,SA6->A6_COD)													&& [1]Numero do Banco
-	aAdd(aDadosBanco,SA6->A6_NREDUZ)												&& [2]Nome do Banco
+	aAdd(aDadosBanco,SA6->A6_COD)												&& [1]Numero do Banco
+	aAdd(aDadosBanco,SA6->A6_NREDUZ)											&& [2]Nome do Banco
 	aAdd(aDadosBanco,subStr(SA6->A6_AGENCIA, 1, 5))								&& [3]Agçncia
 	aAdd(aDadosBanco,subStr(SA6->A6_NUMCON,1,Len(alltrim(SA6->A6_NUMCON))-2)) 	&& [4]Conta Corrente
 	aAdd(aDadosBanco,subStr(SA6->A6_NUMCON,Len(alltrim(SA6->A6_NUMCON)),1))		&& [5]Dçgito da conta corrente
 	aAdd(aDadosBanco,"17-019") 													&& [6]Codigo da Carteira Completo
-	aAdd(aDadosBanco,alltrim(SEE->EE_ZZCART))										&& [7]Carteira - Campo Pers. no SEE
+	aAdd(aDadosBanco,alltrim(SEE->EE_ZZCART))									&& [7]Carteira - Campo Pers. no SEE
 	aAdd(aDadosBanco,alltrim(SEE->EE_CODEMP)) 									&& [8]Convçnio do Banco
 	aAdd(aDadosBanco,Len(alltrim(SEE->EE_CODEMP))) 								&& [9]Nç de Dçgitos do Convçnio do Banco
-	aAdd(aDadosBanco,SEE->EE_FAXATU) 												&& [10]Nç Seq. Interno para Uso com o Boleto
+	aAdd(aDadosBanco,SEE->EE_FAXATU) 											&& [10]Nç Seq. Interno para Uso com o Boleto
 	aAdd(aDadosBanco,"")
 
 	aDadosSac:={}
@@ -297,7 +296,7 @@ static function xfMontaRel()
 
 	aAdd(aFrases,"PARCELA N.: " + SE1->E1_PARCELA )
 
-	NossoNro(SE1->E1_NUMBCO)
+	nossoNro()
 
 	CodBarra()
 
@@ -306,137 +305,45 @@ static function xfMontaRel()
 return
 
 
-static function nossoNro(cNossNroOld)
+static function nossoNro()
 
-	local cBase		:= ""
-	local cDV		:= ""
-	local cNossoNro	:= ""
+	local cBase		:=	""
+	local cDV		:=	""
+	local cNossoNro	:=	""
 
-	local cBanco	:= alltrim(aDadosBanco[1])
-	local cAgencia	:= alltrim(aDadosBanco[3])
-	local cConta	:= alltrim(aDadosBanco[4]) && Sem Dçgito Verificador (DAC)
-	local cCarteira := alltrim(aDadosBanco[7])
-	local cConvenio	:= alltrim(aDadosBanco[8])
-	local nDigConv	:= aDadosBanco[9]
-	local cCodSeq	:= alltrim(aDadosBanco[10])
+	local cBanco	:=	alltrim(aDadosBanco[1])
+	local cCarteira :=	alltrim(aDadosBanco[7])
+	local cConvenio	:=	alltrim(aDadosBanco[8])
+	local nDigConv	:=	aDadosBanco[9]
+	local cCodSeq	:=	alltrim(aDadosBanco[10])
 
-	&& cNossNroOld := "" && Dellano - Força o calculo
+	cNossoNro	:=	alltrim(replace(SE1->E1_NUMBCO, '-', ''))
 
-	if !Empty(cNossNroOld)
-		cNossoNro:= cNossNroOld
-	else
-		&& Banco do Brasil
-		if cBanco == "001"
-			if cCarteira == "18" && Cobrança Simples - Boleto Impresso na Empresa
-				cBase	   := alltrim(cConvenio)+alltrim(cCodSeq) && Convçnio + Nç Seq.
-				if nDigConv == 4 && Dçgitos do Convçnio de 4 Dçgitos
-					&& Convenio deve ter 4 Dçgitos e Nç Seq. 7 Dçgitos = 11 Dçgitos
-					cDV	   := U_xfMod11(cBase,9,2,cBanco) && 12 Dçgitos no Total com Dçgito Verif.
-				elseif nDigConv == 6 && Dçgitos do Convçnio de 6 Dçgitos
-					&& Convenio deve ter 6 Dçgitos e Nç Seq. 5 Dçgitos = 11 Dçgitos
-					cDV	   := U_xfMod11(cBase,9,2,cBanco) && 12 Dçgitos no Total com Dçgito Verif.
-				elseif nDigConv == 7 && Convçnio de 7 Dçgitos
-					&& Convenio deve ter 7 Dçgitos e Nç Seq. 10 Dçgitos  = 17 Dçgitos
-					cDV	   := "" && 17 Dçgitos no Total Sem DV
-				else
-					cDV	   := "" && Sem DV
-				endif
+	if Empty(cNossoNro)
+		if cCarteira == "17"
+			if nDigConv == 7
+				cBase := alltrim(cConvenio)+right(alltrim(cCodSeq),10)
+				cDV	  := ""
+			elseif nDigConv == 6
 
-				cNossoNro  := cBase + cDV && Grava o Nosso Nçmero Completo
-
-				&& Atualiza o Numero Sequencial do Cadastro de Parçmetros Banco
-				GrvNumSeq(Soma1(alltrim(cCodSeq)))
-
-			elseif cCarteira == "17"
-
-				if nDigConv == 7
-					cBase := alltrim(cConvenio)+right(alltrim(cCodSeq),10) && Convçnio + Nç Seq.
-					cDV	  := ""
-				elseif nDigConv == 6 && Dçgitos do Convçnio de 6 Dçgitos
-					&& Convenio deve ter 6 Dçgitos e Nç Seq. 5 Dçgitos = 11 Dçgitos
-					cBase := alltrim(cConvenio)+right(alltrim(cCodSeq),5) && Convçnio + Nç Seq.
-					cDV	  := U_xfMod11(cBase,9,2,cBanco) && 12 Dçgitos no Total com Dçgito Verif.
-				endif
-
-				cNossoNro  := cBase + cDV && Grava o Nosso Nçmero Completo
-
-				&& Atualiza o Numero Sequencial do Cadastro de Parçmetros Banco
-				GrvNumSeq(Soma1(alltrim(cCodSeq)))
-
-			elseif cCarteira == "11" && Boleto Impresso no Banco, bem como geraçço do Nosso Nçmero.
-
-				cNossoNro := "00000000000000000"
+				cBase := alltrim(cConvenio)+right(alltrim(cCodSeq),5)
+				cDV	  := U_xfMod11(cBase,9,2,cBanco)
 			endif
-
-			&& Caixa Econçmica Federal
-		elseif cBanco == "104"
-			if cCarteira == "12" && Cobrança Simples - Boleto Impresso na Empresa
-				cBase	  := "9"+subStr(cCodSeq,4,9)
-				cDV		  := U_xfMod11(cBase,7,2,cBanco)
-				cNossoNro := cBase + cDV
-
-				&& Atualiza o Numero Sequencial do Cadastro de Parçmetros Banco
-				GrvNumSeq(strZero(val(cCodSeq)+1,12))
-
-			elseif cCarteira == "14" && Cobrança sem Registro - Boleto Impresso na Empresa
-				cBase	  := "82"+subStr(cCodSeq,5,8)
-				cDV		  := U_xfMod11(cBase,7,2,cBanco)
-				cNossoNro := cBase + cDV
-
-				&& Atualiza o Numero Sequencial do Cadastro de Parçmetros Banco
-				GrvNumSeq(strZero(val(cCodSeq)+1,12))
-			endif
-
-			&& Bradesco ou Safra
-		elseif cBanco == "237" .or. cBanco == "422"
-			if cCarteira == "19" && Cobrança sem Registro
-				cBase	  := alltrim(cCodSeq) && 11 Dçgitos Sequenciais
-				cDV	   	  := U_xfMod11(cCarteira+cBase,2,7,cBanco) && 12 Dçgitos no Total com Dçgito Verif. - Modulo 11 sobre Carteira + Nosso Nro
-				cNossoNro := cBase + cDV && Grava o Nosso Nçmero Completo
-
-			elseif cCarteira == "09"
-				cBase	  := subStr(dtos(SE1->E1_EMISSAO),3,2) +alltrim(cCodSeq)
-				cDV	   	  := U_xfMod11(cCarteira+cBase,2,7,"422")
-				cNossoNro := cCarteira + cBase + cDV
-				cDV	   	  := U_xfMod11(cNossoNro,2,7,"237")
-				cNossoNro := cNossoNro + cDV
-			endif
-
-			&& Atualiza o Numero Sequencial do Cadastro de Parçmetros Banco
-			GrvNumSeq(Soma1(alltrim(cCodSeq)))
-
-			&& Banco Itaç ou Votorantim
-		elseif cBanco == "341" .or. cBanco == "655"
-			cBase	  := cCarteira+alltrim(cCodSeq) && 3 Dçgitos da Carteira + 8 Dçgitos Sequenciais = 11 Dçgitos
-
-			if cCarteira == "126" .Or. cCarteira == "131" .Or. cCarteira == "145" .Or. ;
-					cCarteira == "150" .Or. cCarteira == "168" && Carteiras Escriturais e na Modalidade Direta
-
-				cDV:= U_xfMod10(cBase,2,1,"Divisor") && 12 Dçgitos no Total com Dçgito Verif. - Somente Carteira e Num. Seq.
-			else
-				cDV:= U_xfMod10(cAgencia+cConta+cBase,2,1,"Divisor") && 12 Dçgitos no Total com Dçgito Verif. - Agencia+CC sem DAC+Carteira+Num. Seq
-			endif
-			cNossoNro := cBase + cDV && Grava o Nosso Nçmero Completo
-
-			&& Atualiza o Numero Sequencial do Cadastro de Parçmetros Banco
+			cNossoNro  := cBase + cDV
 			GrvNumSeq(Soma1(alltrim(cCodSeq)))
 		endif
 	endif
 
-	If !Empty(Alltrim(cNossoNro))
-		cNossoNum:= Alltrim(cNossoNro)
-	Else
-		cNossoNum:= RetNossoNro()
-	Endif
-
+	cNossoNum := Alltrim(cNossoNro)
 	GrvNossNum()
 
-return (cNossoNum)
+return
+
 
 Static Function GrvNumSeq(cCodSeq)
 	dbSelectArea("SEE")
 	RecLock("SEE")
-	SEE->EE_FAXATU:= cCodSeq
+	SEE->EE_FAXATU := cCodSeq
 	MsUnLock()
 return
 
@@ -444,41 +351,23 @@ static function grvNossNum()
 	dbSelectArea("SE1")
 	RecLock("SE1",.f.)
 	SE1->E1_NUMBCO := cNossoNum
-	SE1->E1_ZZBLT := .T. && Indica que o Boleto foi impresso - Campo Personalizado
+	SE1->E1_ZZBLT := .T.
 	MsUnlock()
 return
 
 static function retNossoNro()
-
-	local cBanco	:= aDadosBanco[1]
 	local nDigConv	:= aDadosBanco[9]
 	local cNossoNro := cNossoNum
 
-	&& Banco do Brasil
-	if cBanco == "001" .and. Empty(cNossoNro)
-		if nDigConv == 6 && Dçgitos do Convçnio de 6 Dçgitos
-			cNossoNro:= left(cNossoNro,Len(cNossoNro)-1) + "-" + Right(cNossoNro,1)
-		elseif nDigConv == 7 && Dçgitos do Convçnio de 7 Dçgitos
-			cNossoNro:= cNossoNro
-		else
-			cNossoNro:= cNossoNro
-		endif
 
-		&& Bradesco
-	elseif cBanco == "237" .and. Empty(cNossoNro)
+	if nDigConv == 6
 		cNossoNro:= left(cNossoNro,Len(cNossoNro)-1) + "-" + Right(cNossoNro,1)
-
-		&& Safra
-	elseif cBanco == "422" .and. Empty(cNossoNro)
-		cNossoNro:= left(cNossoNro,4) + "/" + subStr(cNossoNro,5,Len(allTrim(cNossoNro))-5) + "-" + Right(cNossoNro,1)
-
-		&& Banco Itaç ou Votorantim
-	elseif (cBanco == "341" .or. cBanco == "655") .and. Empty(cNossoNro)
-		cNossoNro:= left(cNossoNro,3) + "/" + subStr(cNossoNro,4,Len(cNossoNro)-4) + "-" + Right(cNossoNro,1)
-
+	elseif nDigConv == 7
+		cNossoNro:= cNossoNro
 	else
 		cNossoNro:= cNossoNro
 	endif
+
 
 return (cNossoNro)
 
@@ -626,7 +515,7 @@ static function printRel()
 	oReport:say(nRow1+0200,1060,aDadosBanco[3]+"/"+aDadosBanco[4]+"-"+aDadosBanco[5],oFont10)
 
 	oReport:say(nRow1+0150,1510,"Nro.Documento",oFont8)
-	oReport:say(nRow1+0200,1510,aDadosTit[6]+aDadosTit[1],oFont10) && Prefixo+Numero+Parcela
+	oReport:say(nRow1+0200,1510,aDadosTit[6]+aDadosTit[1],oFont10)
 
 	oReport:say(nRow1+0250,100 ,"Sacado",oFont8)
 	oReport:say(nRow1+0300,100 ,SubStr(aDadosSac[1],1,56),oFont10) && Nome do Cliente
@@ -729,7 +618,7 @@ static function printRel()
 	oReport:say(nRow2+0940,1550,strZero(Day(aDadosTit[3]),2) +"/"+ strZero(Month(aDadosTit[3]),2) +"/"+ Right(Str(Year(aDadosTit[3])),4),oFont10) && Data de impressao
 
 	oReport:say(nRow2+0910,1810,"Nosso Nçmero",oFont8)
-	cString:= RetNossoNro() && Retorna o Nosso Nçmero Formatado
+	cString:= RetNossoNro()
 	nCol := 1850+(374-(len(cString)*22))
 	oReport:say(nRow2+0940,nCol,cString,oFont11c)
 
@@ -843,7 +732,7 @@ static function printRel()
 	oReport:say(nRow3+2230,1550,strZero(Day(aDadosTit[3]),2) +"/"+ strZero(Month(aDadosTit[3]),2) +"/"+ Right(Str(Year(aDadosTit[3])),4),oFont10) && Data impressao
 
 	oReport:say(nRow3+2200,1810,"Nosso Nçmero",oFont8)
-	cString  := RetNossoNro() && Retorna o Nosso Nçmero Formatado
+	cString  := RetNossoNro()
 	nCol 	 := 1850+(374-(len(cString)*22))
 	oReport:say(nRow3+2230,nCol,cString,oFont11c)
 
@@ -1079,9 +968,6 @@ Static function xfBuscar(xTitDe, xTitTe)
 		return
 	endif
 
-
-
-
 	cQuery 	:= 		 "SELECT "
 	cQuery  += xcR + "	* "
 	cQuery 	+= xcR + "FROM "
@@ -1114,7 +1000,7 @@ Static function xfBuscar(xTitDe, xTitTe)
 
 	TcQuery StrTran(cQuery,xcR,"") New Alias XTT
 
-
+	XTIT->(dbGoTop())
 	While !(XTIT->(EOF()))
 		RecLock("XTIT",.F.,.T.)
 		XTIT->(dbDelete())
@@ -1165,7 +1051,7 @@ Static function xfBuscaTit()
 	cQuery 	+= xcR + "FROM "
 	cQuery 	+= xcR + "	vw_boletoReceber "
 	cQuery 	+= xcR + "WHERE "
-	cQuery 	+= xcR + "	E1_EMISSAO >= CONVERT(VARCHAR(08), GETDATE()-4, 112) AND "
+	cQuery 	+= xcR + "	E1_EMISSAO = CONVERT(VARCHAR(08), GETDATE(), 112) AND "
 	cQuery 	+= xcR + "	E1_NUMBCO = '' "
 	cQuery 	+= xcR + "ORDER BY "
 	cQuery 	+= xcR + "	1,2,3,4 "
@@ -1183,9 +1069,6 @@ Static function xfBuscaTit()
 
 	XTT->(dbGoTop())
 	While !(XTT->(EOF()))
-
-
-
 		dbSelectArea("XTIT")
 		RecLock("XTIT",.T.)
 		XTIT->OK   			:=	iif(empty(XTT->E1_NUMBCO), cMarca, '')
